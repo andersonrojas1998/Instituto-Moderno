@@ -144,6 +144,11 @@ Route::any('/{page?}',function(){
 })->where('page','.*');*/
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::group(['middleware' => ['auth']], function () {
 
-Route::get('/Boletin/inicio', 'BoletinController@index');
+    //require (__DIR__ . '/rt_user.php');
+    Route::get('/home', 'HomeController@index')->name('home');
+    Route::get('/Boletin/inicio', 'BoletinController@index');
+    Route::get('/ts', 'BoletinController@genetedBulletin');
+});
+

@@ -8,17 +8,23 @@
         <form class="form-horizontal" method="POST" action="{{ route('login') }}">
         {{ csrf_field() }}
 
-        <div class="row">
-            <img class="rounded" src="{{ asset('/icon.jpg') }}" height="100" width="100">
-        </div><br>
-        <p ><b>Ingrese sus credenciales</b></p>
+        <div class="row w-100">
+        <div class="col-lg-4"></div>
+        <div class="col-lg-4">
+            <img class="rounded" src="{{ asset('/icon.jpg') }}" height="100" width="110">
+            <p>"Versiculo del colegio"</p>
+        </div>            
+        </div>        
+        <br>
+        <b class="text-center">Ingrese sus credenciales de usuario</b></p>
+        
           <div class="form-group">
             <label class="label">Identificaci&oacute;n :</label>
             <div class="input-group">
               <input type="text" name="identificacion" class="form-control" placeholder="Ingrese Identificacion" required>
               <div class="input-group-append">
                 <span class="input-group-text">
-                  <i class="mdi mdi-check-circle-outline"></i>
+                  <i class="mdi mdi-account-key"></i>
                 </span>
               </div>
             </div>
@@ -29,13 +35,13 @@
               <input type="password" class="form-control" name="password" placeholder="*********" required>
               <div class="input-group-append">
                 <span class="input-group-text">
-                  <i class="mdi mdi-check-circle-outline"></i>
+                  <i class="mdi mdi mdi-lock"></i>
                 </span>
               </div>
             </div>
           </div>
           <div class="form-group">
-            <button class="btn btn-primary submit-btn btn-block">Iniciar sesi&oacute;n</button>
+            <button class="btn btn-primary submit-btn btn-block">Iniciar Sesi&oacute;n  <i class="mdi mdi-login"></i></button>
           </div>
           <div class="form-group d-flex justify-content-between">
             <!--<div class="form-check form-check-flat mt-0">
