@@ -2,7 +2,7 @@
   "_args": [
     [
       "@mdi/font@4.9.95",
-      "F:\\wamp64\\www\\InstitutoModerno"
+      "C:\\wamp64\\www\\Instituto-Moderno"
     ]
   ],
   "_from": "@mdi/font@4.9.95",
@@ -27,7 +27,7 @@
   ],
   "_resolved": "https://registry.npmjs.org/@mdi/font/-/font-4.9.95.tgz",
   "_spec": "4.9.95",
-  "_where": "F:\\wamp64\\www\\InstitutoModerno",
+  "_where": "C:\\wamp64\\www\\Instituto-Moderno",
   "author": {
     "name": "Austin Andrews",
     "url": "http://twitter.com/templarian"

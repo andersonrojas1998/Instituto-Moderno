@@ -7,10 +7,15 @@
       <div class="auto-form-wrapper">        
         <form class="form-horizontal" method="POST" action="{{ route('login') }}">
         {{ csrf_field() }}
+
+        <div class="row">
+            <img class="rounded" src="{{ asset('/icon.jpg') }}" height="100" width="100">
+        </div><br>
+        <p ><b>Ingrese sus credenciales</b></p>
           <div class="form-group">
-            <label class="label">Identificacion</label>
+            <label class="label">Identificaci&oacute;n :</label>
             <div class="input-group">
-              <input type="text" name="identificacion" class="form-control" placeholder="Identificacion" required>
+              <input type="text" name="identificacion" class="form-control" placeholder="Ingrese Identificacion" required>
               <div class="input-group-append">
                 <span class="input-group-text">
                   <i class="mdi mdi-check-circle-outline"></i>
@@ -19,7 +24,7 @@
             </div>
           </div>
           <div class="form-group">
-            <label class="label">Password</label>
+            <label class="label">Contraseña :</label>
             <div class="input-group">
               <input type="password" class="form-control" name="password" placeholder="*********" required>
               <div class="input-group-append">
@@ -30,14 +35,14 @@
             </div>
           </div>
           <div class="form-group">
-            <button class="btn btn-primary submit-btn btn-block">Login</button>
+            <button class="btn btn-primary submit-btn btn-block">Iniciar sesi&oacute;n</button>
           </div>
           <div class="form-group d-flex justify-content-between">
-            <div class="form-check form-check-flat mt-0">
+            <!--<div class="form-check form-check-flat mt-0">
               <label class="form-check-label">
                 <input type="checkbox" class="form-check-input" checked> Keep me signed in </label>
-            </div>
-            <a href="#" class="text-small forgot-password text-black">Forgot Password</a>
+            </div>-->
+            <a href="#" class="text-small forgot-password text-primary">¿Olvido Contraseña ?</a>
           </div>
           <div class="form-group">
             <button class="btn btn-block g-login">

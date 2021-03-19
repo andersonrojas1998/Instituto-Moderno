@@ -7,7 +7,7 @@
             <img src="{{ url('assets/images/faces/face8.jpg') }}" alt="profile image">
           </div>
           <div class="text-wrapper">
-            <p class="profile-name">Richard V.Welsh</p>
+            <p class="profile-name">{{Auth::user()->name }}</p>
             <div class="dropdown" data-display="static">
               <a href="#" class="nav-link d-flex user-switch-dropdown-toggler" id="UsersettingsDropdown" href="#" data-toggle="dropdown" aria-expanded="false">
                 <small class="designation text-muted">Manager</small>
@@ -34,17 +34,82 @@
             </div>
           </div>
         </div>
-        <button class="btn btn-success btn-block">New Project <i class="mdi mdi-plus"></i>
-        </button>
+        <!--<button class="btn btn-success btn-block">New Project <i class="mdi mdi-plus"></i>
+        </button>-->
       </div>
     </li>
-    <li class="nav-item {{ active_class(['/']) }}">
+
+
+    <li class="nav-item {{ active_class(['basic-ui/*']) }}">
+      <a class="nav-link" data-toggle="collapse" href="#mod-students" aria-expanded="{{ is_active_route(['basic-ui/*']) }}" aria-controls="basic-ui">
+        <i class="menu-icon mdi mdi-account-card-details"></i>
+        <span class="menu-title">Estudiantes</span>
+        <i class="menu-arrow"></i>
+      </a>
+      <div class="collapse {{ show_class(['basic-ui/*']) }}" id="mod-students">
+        <ul class="nav flex-column sub-menu">
+          <li class="nav-item {{ active_class(['icons/material']) }}">            
+            <a class="nav-link" href="{{ url('/Boletin/inicio') }}"><i class="menu-icon  mdi mdi-bullseye"></i> Inicio</a>
+          </li>          
+        </ul>
+      </div>
+    </li>
+
+
+    <li class="nav-item {{ active_class(['basic-ui/*']) }}">
+      <a class="nav-link" data-toggle="collapse" href="#mod-teacher" aria-expanded="{{ is_active_route(['basic-ui/*']) }}" aria-controls="basic-ui">
+        <i class="menu-icon mdi mdi-dna"></i>
+        <span class="menu-title">Docentes</span>
+        <i class="menu-arrow"></i>
+      </a>
+      <div class="collapse {{ show_class(['basic-ui/*']) }}" id="mod-teacher">
+        <ul class="nav flex-column sub-menu">
+          <li class="nav-item {{ active_class(['icons/material']) }}">            
+            <a class="nav-link" href="{{ url('/Boletin/inicio') }}"><i class="menu-icon mdi mdi-television"></i> Inicio</a>
+          </li>          
+        </ul>
+      </div>
+    </li>
+    <li class="nav-item {{ active_class(['basic-ui/*']) }}">
+      <a class="nav-link" data-toggle="collapse" href="#mod-boletin" aria-expanded="{{ is_active_route(['basic-ui/*']) }}" aria-controls="basic-ui">
+        <i class="menu-icon mdi mdi-dna"></i>
+        <span class="menu-title">Boletines</span>
+        <i class="menu-arrow"></i>
+      </a>
+      <div class="collapse {{ show_class(['basic-ui/*']) }}" id="mod-boletin">
+        <ul class="nav flex-column sub-menu">
+          <li class="nav-item {{ active_class(['icons/material']) }}">            
+            <a class="nav-link" href="{{ url('/Boletin/inicio') }}"><i class="menu-icon mdi mdi-television"></i> Inicio</a>
+          </li>          
+        </ul>
+      </div>
+    </li>
+    
+    <li class="nav-item {{ active_class(['basic-ui/*']) }}">
+      <a class="nav-link" data-toggle="collapse" href="#mod-categoria" aria-expanded="{{ is_active_route(['basic-ui/*']) }}" aria-controls="basic-ui">
+        <i class="menu-icon mdi mdi-dna"></i>
+        <span class="menu-title">Parametrizaci&oacute;n</span>
+        <i class="menu-arrow"></i>
+      </a>
+      <div class="collapse {{ show_class(['basic-ui/*']) }}" id="mod-categoria">
+        <ul class="nav flex-column sub-menu">
+          <li class="nav-item {{ active_class(['icons/material']) }}">            
+            <a class="nav-link" href="{{ url('/Boletin/inicio') }}"><i class="menu-icon mdi mdi-television"></i> Grados</a>
+          </li>          
+          <li class="nav-item {{ active_class(['icons/material']) }}">            
+            <a class="nav-link" href="{{ url('/Boletin/inicio') }}"><i class="menu-icon mdi mdi-television"></i>Materias</a>
+          </li>          
+        </ul>
+      </div>
+    </li>
+
+    <!--<li class="nav-item {{ active_class(['/']) }}">
       <a class="nav-link" href="{{ url('/') }}">
         <i class="menu-icon mdi mdi-television"></i>
         <span class="menu-title">Dashboard</span>
       </a>
-    </li>
-    <li class="nav-item {{ active_class(['basic-ui/*']) }}">
+    </li>-->
+   <!-- <li class="nav-item {{ active_class(['basic-ui/*']) }}">
       <a class="nav-link" data-toggle="collapse" href="#basic-ui" aria-expanded="{{ is_active_route(['basic-ui/*']) }}" aria-controls="basic-ui">
         <i class="menu-icon mdi mdi-dna"></i>
         <span class="menu-title">Basic UI Elements</span>
@@ -108,6 +173,6 @@
         <i class="menu-icon mdi mdi-file-outline"></i>
         <span class="menu-title">Documentation</span>
       </a>
-    </li>
+    </li>-->
   </ul>
 </nav>

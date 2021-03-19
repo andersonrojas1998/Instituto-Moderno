@@ -145,3 +145,5 @@ Route::any('/{page?}',function(){
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('/Boletin/inicio', 'BoletinController@index');
