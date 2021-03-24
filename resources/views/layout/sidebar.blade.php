@@ -49,7 +49,7 @@
       <div class="collapse {{ show_class(['basic-ui/*']) }}" id="mod-students">
         <ul class="nav flex-column sub-menu">
           <li class="nav-item {{ active_class(['icons/material']) }}">            
-            <a class="nav-link" href="{{ url('/Boletin/inicio') }}"><i class="menu-icon  mdi mdi-bullseye"></i> Inicio</a>
+            <a class="nav-link" href="{{ url('/Estudiantes/inicio') }}"><i class="menu-icon  mdi mdi-bullseye"></i> Inicio</a>
           </li>          
         </ul>
       </div>

@@ -57,15 +57,15 @@
 <!-- https://www.w3schools.com/w3css/w3css_padding.asp -->
 <p class="w3-tiny">CONVENCIONES: APA = Actividades pedagógicas de apoyo, NMP = Nota mínima para ganar el siguiente periodo, ACUM = Acumulado.</p>                 
 <h6 class="w3-center w3-small">RESUMEN DE EVALUACIONES</h6>
+    <div class="w3-row">
+    <div class="w3-half w3-container w3-tiny">
 
-<div class="w3-row w3-tiny">
-    <div class="w3-half">
-    <table class="w3-table" border="1">
-        <thead>
+    <table class="w3-table" border="1" >
+        <thead >
         <tr>
             <td>ÁREAS O ASIGNATURAS</td>
-            <td>IH</td>
-            <td>1P 35%</td>
+            <td class="w3-light-grey">IH</td>
+            <td class="w3-light-grey">1P 35%</td>
             <td> AP1</td>
             <td>ACUM</td>
         </tr>
@@ -73,39 +73,97 @@
         <tbody>
         <tr>
             <td>1. MATEMATICAS</td>
-            <td>6</td>
-            <td>4.0</td>
+            <td class="text-center">6</td>
+            <td class="text-center">4.0</td>
             <td></td>
-            <td>3.9</td>
+            <td class="text-center">3.9</td>
         </tr>
         <tr>
             <td>1. MATEMATICAS</td>
-            <td>6</td>
-            <td>4.0</td>
+            <td class="text-center">6</td>
+            <td class="text-center">4.0</td>
             <td></td>
-            <td>3.9</td>
+            <td class="text-center">3.9</td>
         </tr>
         <tr>
             <td>1. MATEMATICAS</td>
-            <td>6</td>
-            <td>4.0</td>
+            <td class="text-center">6</td>
+            <td class="text-center">4.0</td>
             <td></td>
-            <td>3.9</td>
+            <td class="text-center">3.9</td>
         </tr>
         <tr>
             <td>1. MATEMATICAS</td>
-            <td>6</td>
-            <td>4.0</td>
+            <td class="text-center">6</td>
+            <td class="text-center">4.0</td>
             <td></td>
-            <td>3.9</td>
-        </tr>
-        
-        </tbody>
-
+            <td class="text-center">3.9</td>
+        </tr>        
+        </tbody>        
     </table>
+</div>        
+</div>        
+<div class="w3-row w3-padding-16">
+<div class="w3-half w3-container w3-tiny">
+    <b class="w3-center"> CIENCIAS SOCIALES</b>    
+<table class="w3-table" border="1">    
+            <tbody>
+            <tr>
+                <td>CIENCIAS SOCIALES</td>
+                <td>4.0</td>
+                <td>4.0</td>
+                <td>4.0</td>
+                <td>4.0</td>
+            </tr>
+            <tr>
+                <td>10. CÁTEDRA DE PAZ</td>
+                <td>4.0</td>
+                <td>4.0</td>
+                <td>4.0</td>
+                <td>4.0</td>
+            </tr>            
+            </tbody>            
+        </table>
+</div>    
+</div>
+
+    <div class="w3-row w3-padding-16">    
+        <div class="w3-half w3-container w3-tiny">
+        <b class="w3-center ">ÉTICA Y VALORES</b>    
+        <table class="w3-table" border="1">        
+                <tbody>
+                <tr>
+                    <td>CIENCIAS SOCIALES</td>
+                    <td>4.0</td>
+                    <td>4.0</td>
+                    <td>4.0</td
+                    <td>4.0</td>
+                </tr>
+                </tbody>
+                
+            </table>
+        </div>    
     </div>
 
-</div>
+
+<div class="w3"></div>
+    <div class="col-lg-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="p-4 border-bottom bg-light">
+        <h4 class="card-title mb-0">Bar Chart</h4>
+      </div>
+      <div class="card-body">
+        <div class="d-sm-flex justify-content-between align-items-center pb-4">
+          <h4 class="card-title mb-0">Sales Revenue</h4>
+          <div id="bar-traffic-legend"></div>
+        </div>
+        <p class="mb-4">17% increase in sales than last week</p>
+        <canvas id="barChart" style="height:250px"></canvas>
+      </div>
+    </div>
+  </div>
+
+
     
     
          

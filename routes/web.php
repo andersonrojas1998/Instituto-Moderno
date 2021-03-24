@@ -149,6 +149,7 @@ Route::group(['middleware' => ['auth']], function () {
     //require (__DIR__ . '/rt_user.php');
     Route::get('/home', 'HomeController@index')->name('home');
     Route::get('/Boletin/inicio', 'BoletinController@index');
+    Route::get('/Estudiantes/inicio', 'EstudiantesController@index');
     Route::get('/ts', 'BoletinController@genetedBulletin');
 });
 

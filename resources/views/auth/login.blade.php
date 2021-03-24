@@ -11,9 +11,13 @@
         <div class="row w-100">
         <div class="col-lg-4"></div>
         <div class="col-lg-4">
-            <img class="rounded" src="{{ asset('/icon.jpg') }}" height="100" width="110">
-            <p>"Versiculo del colegio"</p>
+            <img class="rounded" src="{{ asset('/icon.jpg') }}" height="100" width="110">                        
         </div>            
+        <div class="col-lg-12">
+        <figcaption class="blockquote-footer text-center">
+        Instruye al niño en su camino que aún aunque fuera viejo no se apartará de él. <cite title="Source Title">Proverbio 22:6</cite>
+        </figcaption>        
+        </div>
         </div>        
         <br>
         <b class="text-center">Ingrese sus credenciales de usuario</b></p>
