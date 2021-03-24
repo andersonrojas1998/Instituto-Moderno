@@ -9,6 +9,10 @@
 <h4>Administraci&oacute;n de estudiantes</h4>
 </div>
 
+<!--http://repository.lasallista.edu.co/dspace/bitstream/10567/741/1/Sistema_notas_SAGA.pdf
+crear tabla resumen final  , materias vistas por el estudiantes en el año x notas , aprobo o no aprobo
+-->
+
 
 <div class="container">
 
