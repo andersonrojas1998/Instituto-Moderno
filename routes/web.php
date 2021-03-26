@@ -151,5 +151,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/Boletin/inicio', 'BoletinController@index');
     Route::get('/Estudiantes/inicio', 'EstudiantesController@index');
     Route::get('/ts', 'BoletinController@genetedBulletin');
+    Route::get('/tsExcel', 'BoletinController@loadExcelMatricula');
+
+    Route::get('/Qualification/{idTeach}/{grade}', 'BoletinController@generatedEnrollmentQualification');
 });
 
