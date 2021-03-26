@@ -20,8 +20,7 @@
         </div>
         </div>        
         <br>
-        <b class="text-center">Ingrese sus credenciales de usuario</b></p>
-        
+        <b class="text-center">Ingrese sus credenciales de usuario</b></p>        
           <div class="form-group">
             <label class="label">Identificaci&oacute;n :</label>
             <div class="input-group">
@@ -30,8 +29,11 @@
                 <span class="input-group-text">
                   <i class="mdi mdi-account-key"></i>
                 </span>
-              </div>
+              </div>              
             </div>
+            @if($errors->has('identificacion'))
+              <p class="text-danger p-1">Por favor valida la identificaci&oacute;n </p>              
+              @endif
           </div>
           <div class="form-group">
             <label class="label">Contraseña :</label>
@@ -41,17 +43,20 @@
                 <span class="input-group-text">
                   <i class="mdi mdi mdi-lock"></i>
                 </span>
-              </div>
+              </div>              
             </div>
+            @if($errors->has('identificacion'))
+              <p class="text-danger p-1">Por favor valida la contraseña </p>
+              @endif
           </div>
           <div class="form-group">
             <button class="btn btn-primary submit-btn btn-block">Iniciar Sesi&oacute;n  <i class="mdi mdi-login"></i></button>
           </div>
           <div class="form-group d-flex justify-content-between">
-            <!--<div class="form-check form-check-flat mt-0">
+            <div class="form-check form-check-flat mt-0">
               <label class="form-check-label">
-                <input type="checkbox" class="form-check-input" checked> Keep me signed in </label>
-            </div>-->
+                <input type="checkbox" class="form-check-input text-primary" name="remember" {{ old('remember') ? 'checked' : '' }} checked> Recordarme </label>
+            </div>
             <a href="#" class="text-small forgot-password text-primary">¿Olvido Contraseña ?</a>
           </div>
           <div class="form-group">
@@ -80,3 +85,12 @@
   </div>
 </div>
 @endsection
+
+@push('custom-scripts')    
+<style>
+.error{
+  border-color:#ff0017 !important;  
+  color:#ff0017 !important;  
+}
+</style>
+@endpush
