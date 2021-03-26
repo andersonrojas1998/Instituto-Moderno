@@ -45,22 +45,40 @@ class BoletinController extends Controller
 
 
                 $styleArray = array( 'font' => array( 'bold' => true ) );  /** Negrita */
-               // $sheet->getStyle('B13')->applyFromArray($styleArray);  
-                //$sheet->setCellValue('B13','Anderson Rojas Capera');
+                $styleTitle = array('alignment' => array('horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER), 'font' => array( 'bold' => true )); /** Titulo */
+               
+              /*  $sheet->getStyle('C2')->applyFromArray($styleArray); */ 
+               $sheet->setCellValue('A2','INSTITUTO MODERNO');
+               $sheet->mergeCells("A2:P2"); 
+               /*$sheet->setCellValue('A3','Resolución No 4143.010.21.9981 del 18 de Diciembre de 2017 de la Secretaría de Educación.');
+               $sheet->setCellValue('A4','PLANILLA DE EVALUACIÓN');
+               $sheet->setCellValue('A5','PROFESOR: LILIA DEL SOCORRO IBARGUEN');	*/									
+
+              
                 
 
-               // $row=0;
+                $row=0;
                 $letter='A';
                 //GRADO,ASIGNATURA,DOCENTE
 
 
                 $title=['Matricula','Estudiante','Grado','Asignatura','Periodo','Cog1','Cog2','Cog3','Soc1','Soc2','Soc3','Per1','Per2','Per3','Auto','Coe'];
-                for($x=0;$x<15;$x++){
+                for($x=0;$x<=15;$x++){
+
+                    $sheet->getStyle('A2:'.$letter.'2')->applyFromArray($styleTitle);
+
                     
                    $sheet->getStyle($letter.'10')->applyFromArray($styleArray);
                     $sheet->setCellValueByColumnAndRow($x,10,$title[$x]); 
-                    $sheet->setBorder('A10:'.$letter. '10', 'thin');            
+                    $sheet->setBorder('A10:O10', 'thin');           // .$letter. '10'
                     ++$letter;
+                }
+                $alu=11;
+                foreach($title as $key=> $alumno){
+                    $sheet->setCellValueByColumnAndRow($row,$alu,$alu);  
+                    $sheet->setCellValueByColumnAndRow($row+1,$alu,113);  
+                    $sheet->setCellValueByColumnAndRow($row+2,$alu,$alumno);  
+                    ++$alu;
                 }
                /* $sheet->setCellValueByColumnAndRow($row,9,'Matricula');   
                 $sheet->setCellValueByColumnAndRow($row+1,9,'Estudiante');   
