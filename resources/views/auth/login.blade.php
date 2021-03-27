@@ -15,7 +15,7 @@
         </div>            
         <div class="col-lg-12">
         <figcaption class="blockquote-footer text-center">
-        Instruye al niño en su camino que aún aunque fuera viejo no se apartará de él. <cite title="Source Title">Proverbio 22:6</cite>
+        Instruye al niño en su camino que a&uacute;n aunque fuera viejo no se apartar&aacute; de &eacute;l. <cite title="Source Title">Proverbio 22:6</cite>
         </figcaption>        
         </div>
         </div>        
