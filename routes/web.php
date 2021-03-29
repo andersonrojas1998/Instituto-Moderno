@@ -150,9 +150,17 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/home', 'HomeController@index')->name('home');
     Route::get('/Boletin/inicio', 'BoletinController@index');
     Route::get('/Estudiantes/inicio', 'EstudiantesController@index');
+    
+    
     Route::get('/ts', 'BoletinController@genetedBulletin');
     Route::get('/tsExcel', 'BoletinController@loadExcelMatricula');
 
     Route::get('/Qualification/{idTeach}/{grade}', 'BoletinController@generatedEnrollmentQualification');
+    //Route::get('/loadUser', 'BoletinController@loadUser');
+    Route::get('/loadGroup', 'BoletinController@loadGroup');
+
+    /** Docentes */
+    Route::get('/docentes/inicio', 'DocenteController@index');
+    Route::get('/dt_user', 'DocenteController@dt_user');
 });
 

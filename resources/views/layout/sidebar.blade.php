@@ -65,7 +65,7 @@
       <div class="collapse {{ show_class(['basic-ui/*']) }}" id="mod-teacher">
         <ul class="nav flex-column sub-menu">
           <li class="nav-item {{ active_class(['icons/material']) }}">            
-            <a class="nav-link" href="{{ url('/Boletin/inicio') }}"><i class="menu-icon mdi mdi-television"></i> Inicio</a>
+            <a class="nav-link" href="{{ url('/docentes/inicio') }}"><i class="menu-icon mdi mdi-television"></i> Inicio</a>
           </li>          
         </ul>
       </div>
@@ -80,6 +80,20 @@
         <ul class="nav flex-column sub-menu">
           <li class="nav-item {{ active_class(['icons/material']) }}">            
             <a class="nav-link" href="{{ url('/Boletin/inicio') }}"><i class="menu-icon mdi mdi-television"></i> Inicio</a>
+          </li>          
+        </ul>
+      </div>
+    </li>
+    <li class="nav-item {{ active_class(['basic-ui/*']) }}">
+      <a class="nav-link" data-toggle="collapse" href="#mod-calificacion" aria-expanded="{{ is_active_route(['basic-ui/*']) }}" aria-controls="basic-ui">
+        <i class="menu-icon mdi mdi-dna"></i>
+        <span class="menu-title">Calificaciones</span>
+        <i class="menu-arrow"></i>
+      </a>
+      <div class="collapse {{ show_class(['basic-ui/*']) }}" id="mod-calificacion">
+        <ul class="nav flex-column sub-menu">
+          <li class="nav-item {{ active_class(['icons/material']) }}">            
+            <a class="nav-link" href="{{-- url('/Calificaciones/inicio') --}}"><i class="menu-icon mdi mdi-television"></i> Inicio</a>
           </li>          
         </ul>
       </div>

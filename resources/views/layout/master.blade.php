@@ -22,7 +22,9 @@
   {!! Html::style('css/app.css') !!}
   <!-- end common css -->
 
-  {!! Html::style('https://cdn.datatables.net/1.10.24/css/dataTables.bootstrap4.min.css') !!}
+      {!! Html::style('https://cdn.datatables.net/1.10.24/css/dataTables.bootstrap4.min.css') !!}
+      {!! Html::style('https://cdn.datatables.net/buttons/1.7.0/css/buttons.bootstrap4.min.css') !!}
+  
 
   @stack('style')
 </head>
@@ -46,6 +48,7 @@
 
   {!! Html::script('https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js') !!}
   {!! Html::script('https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap4.min.js') !!}
+  
 
   {!! Html::script('assets/plugins/perfect-scrollbar/perfect-scrollbar.min.js') !!}
   <!-- end base js -->

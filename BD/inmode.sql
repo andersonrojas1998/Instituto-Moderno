@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 26-03-2021 a las 05:40:42
+-- Tiempo de generación: 29-03-2021 a las 01:46:29
 -- Versión del servidor: 5.7.26
 -- Versión de PHP: 7.2.18
 
@@ -71,9 +71,11 @@ CREATE TABLE IF NOT EXISTS `alumno` (
   `id_barrio` int(11) NOT NULL,
   `id_tipo_eps` int(11) NOT NULL,
   `fecha_nacimiento` date DEFAULT NULL,
+  `nac_depto` varchar(60) COLLATE utf8_spanish_ci NOT NULL,
+  `nac_muni` varchar(60) COLLATE utf8_spanish_ci NOT NULL,
   `id_departamento` int(11) NOT NULL,
   `id_municipio` int(11) NOT NULL,
-  `genero` bigint(20) DEFAULT NULL,
+  `genero` varchar(10) COLLATE utf8_spanish_ci DEFAULT NULL,
   `estado` bigint(20) DEFAULT '1',
   `celular` int(11) DEFAULT NULL,
   `foto` varchar(50) COLLATE utf8_spanish_ci DEFAULT NULL,
@@ -182,7 +184,59 @@ CREATE TABLE IF NOT EXISTS `barrio` (
   `estrato` varchar(45) COLLATE utf8_spanish_ci DEFAULT NULL,
   PRIMARY KEY (`id_barrio`),
   KEY `fk_barrio_municipio1_idx` (`id_municipio`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=64 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `barrio`
+--
+
+INSERT INTO `barrio` (`id_barrio`, `nombre`, `id_municipio`, `estrato`) VALUES
+(1, 'ALAMOS', 1, '1'),
+(2, 'ALFONSO BONILLA', 1, '1'),
+(3, 'ALIRIO MORA', 1, '1'),
+(4, 'ANTONIO NARIÑO', 1, '1'),
+(5, 'BRISAS DE LOS ALAMOS', 1, '1'),
+(6, 'CALIMIO DESEPAZ', 1, '1'),
+(7, 'CALIPSO', 1, '1'),
+(8, 'CIUDAD CORDOBA', 1, '1'),
+(9, 'CIUDADELA DEL RIO', 1, '1'),
+(10, 'CIUDADELA DESEPAZ', 1, '1'),
+(11, 'CIUDADELA INVICALI', 1, '1'),
+(12, 'COMPARTIR', 1, '1'),
+(13, 'COMUNEROS 2', 1, '1'),
+(14, 'DESEPAZ', 1, '1'),
+(15, 'EL TRONCAL', 1, '1'),
+(16, 'FRANJA DEL RIO', 1, '1'),
+(17, 'JARILLON', 1, '1'),
+(18, 'JARILLÓN REMANSOS DE COMFANDI', 1, '1'),
+(19, 'LA PAZ', 1, '1'),
+(20, 'LAS ORQUIDEAS', 1, '1'),
+(21, 'LIDERES', 1, '1'),
+(22, 'LLANO VERDE', 1, '1'),
+(23, 'MANANTIAL', 1, '1'),
+(24, 'MANUELA BELTRAN', 1, '1'),
+(25, 'MARROQUIN', 1, '1'),
+(26, 'NAVARRO', 1, '1'),
+(27, 'NUEVE DE ENERO ', 1, NULL),
+(28, 'PETECUY', 1, NULL),
+(29, 'PIZAMOS', 1, NULL),
+(30, 'PIZAMOS 1', 1, NULL),
+(31, 'PIZAMOS 2', 1, NULL),
+(32, 'PIZAMOS 3', 1, NULL),
+(34, 'POBLADO 2', 1, NULL),
+(35, 'POTRERO GRANDE', 1, NULL),
+(36, 'PUERTAS DEL SOL', 1, '1'),
+(37, 'REMANSOS DE COMFANDI', 1, NULL),
+(38, 'RIO CAUCA', 1, '1'),
+(39, 'SAN MARCOS', 1, '1'),
+(40, 'SIETE DE AGOSTO', 1, NULL),
+(41, 'SOL DE ORIENTE', 1, NULL),
+(42, 'TALANGA', 1, NULL),
+(43, 'TALLERES', 1, '1'),
+(44, 'TERCER MILENIO', 1, ''),
+(45, 'TRONCAL', 1, ''),
+(46, 'VALLEGRANDE', 1, '2'),
+(47, 'NO DISPONIBLE', 1, '');
 
 -- --------------------------------------------------------
 
@@ -192,10 +246,19 @@ CREATE TABLE IF NOT EXISTS `barrio` (
 
 DROP TABLE IF EXISTS `calendario`;
 CREATE TABLE IF NOT EXISTS `calendario` (
-  `id_calendario` int(11) NOT NULL AUTO_INCREMENT,
-  `descripcion` varchar(5) COLLATE utf8_spanish_ci DEFAULT NULL,
+  `id_calendario` int(10) NOT NULL AUTO_INCREMENT,
+  `tag` varchar(10) COLLATE utf8_spanish_ci NOT NULL,
+  `descripcion` varchar(150) COLLATE utf8_spanish_ci DEFAULT NULL,
   PRIMARY KEY (`id_calendario`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `calendario`
+--
+
+INSERT INTO `calendario` (`id_calendario`, `tag`, `descripcion`) VALUES
+(1, 'A', NULL),
+(2, 'B', NULL);
 
 -- --------------------------------------------------------
 
@@ -235,20 +298,6 @@ CREATE TABLE IF NOT EXISTS `calificaciones` (
   KEY `fk_nota_profesor1_idx` (`id_docente`),
   KEY `fk_nota_matricula1_idx` (`id_matricula`),
   KEY `fk_calificaciones_notas_adicionales1_idx` (`notas_adicionales_id_nota`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `comunidadreligiosa`
---
-
-DROP TABLE IF EXISTS `comunidadreligiosa`;
-CREATE TABLE IF NOT EXISTS `comunidadreligiosa` (
-  `idComunidadReligiosa` int(11) NOT NULL,
-  `Descripcion` varchar(45) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `Otras` varchar(45) COLLATE utf8_spanish_ci DEFAULT NULL,
-  PRIMARY KEY (`idComunidadReligiosa`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 -- --------------------------------------------------------
@@ -297,9 +346,17 @@ CREATE TABLE IF NOT EXISTS `departamento` (
   `id_departamento` int(11) NOT NULL AUTO_INCREMENT,
   `nombre` varchar(45) COLLATE utf8_spanish_ci DEFAULT NULL,
   `id_pais` int(11) NOT NULL,
+  `tag` varchar(20) COLLATE utf8_spanish_ci NOT NULL,
   PRIMARY KEY (`id_departamento`),
   KEY `fk_departamento_pais1_idx` (`id_pais`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci COMMENT='	';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci COMMENT='	';
+
+--
+-- Volcado de datos para la tabla `departamento`
+--
+
+INSERT INTO `departamento` (`id_departamento`, `nombre`, `id_pais`, `tag`) VALUES
+(1, 'VALLE', 1, '');
 
 -- --------------------------------------------------------
 
@@ -338,29 +395,50 @@ DROP TABLE IF EXISTS `grado`;
 CREATE TABLE IF NOT EXISTS `grado` (
   `id_grado` int(11) NOT NULL AUTO_INCREMENT,
   `nombre` varchar(30) COLLATE utf8_spanish_ci NOT NULL,
-  `grupo` varchar(5) COLLATE utf8_spanish_ci NOT NULL,
+  `grupo` varchar(25) COLLATE utf8_spanish_ci NOT NULL,
   `id_jornada` int(11) NOT NULL,
   `id_nivel_educativo` int(11) NOT NULL,
   `tag` varchar(30) COLLATE utf8_spanish_ci DEFAULT NULL,
   `id_docente` int(11) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_grado`),
   KEY `fk_grado_jornada_idx` (`id_jornada`),
   KEY `fk_grado_nivel_educativo1_idx` (`id_nivel_educativo`),
   KEY `fk_grado_users1_idx` (`id_docente`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-
--- --------------------------------------------------------
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
--- Estructura de tabla para la tabla `grupoetnico`
+-- Volcado de datos para la tabla `grado`
 --
 
-DROP TABLE IF EXISTS `grupoetnico`;
-CREATE TABLE IF NOT EXISTS `grupoetnico` (
-  `idGrupoEtnico` int(11) NOT NULL,
-  `Descripcion` varchar(45) COLLATE utf8_spanish_ci DEFAULT NULL,
-  PRIMARY KEY (`idGrupoEtnico`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+INSERT INTO `grado` (`id_grado`, `nombre`, `grupo`, `id_jornada`, `id_nivel_educativo`, `tag`, `id_docente`, `created_at`, `updated_at`) VALUES
+(1, 'GRUPO 0', '0-1', 1, 2, '0', NULL, '2021-03-28 23:57:21', '2021-03-28 23:57:53'),
+(2, 'JARDIN', 'JARDIN-1', 1, 1, 'J', NULL, '2021-03-29 04:57:57', '2021-03-29 04:57:57'),
+(3, 'JARDIN', 'JARDIN-2', 2, 1, 'J', NULL, '2021-03-29 04:57:57', '2021-03-29 04:57:57'),
+(4, 'GRUPO 0', '0-2', 2, 2, '0', NULL, '2021-03-29 04:57:57', '2021-03-29 04:57:57'),
+(5, 'PRIMERO', '1-1', 1, 2, '1', NULL, '2021-03-29 04:57:57', '2021-03-29 04:57:57'),
+(6, 'PRIMERO', '1-2', 2, 2, '1', NULL, '2021-03-29 04:57:57', '2021-03-29 04:57:57'),
+(7, 'SEGUNDO', '2-1', 1, 2, '2', NULL, '2021-03-29 04:57:57', '2021-03-29 04:57:57'),
+(8, 'SEGUNDO', '2-2', 2, 2, '2', NULL, '2021-03-29 04:57:57', '2021-03-29 04:57:57'),
+(9, 'TERCERO', '3-1', 1, 2, '3', NULL, '2021-03-29 04:57:57', '2021-03-29 04:57:57'),
+(10, 'TERCERO', '3-2', 2, 2, '3', NULL, '2021-03-29 04:57:57', '2021-03-29 04:57:57'),
+(11, 'CUARTO', '4-1', 1, 2, '4', NULL, '2021-03-29 04:57:57', '2021-03-29 04:57:57'),
+(12, 'CUARTO', '4-2', 2, 2, '4', NULL, '2021-03-29 04:57:57', '2021-03-29 04:57:57'),
+(13, 'QUINTO', '5-1', 1, 2, '5', NULL, '2021-03-29 04:57:57', '2021-03-29 04:57:57'),
+(14, 'QUINTO', '5-2', 2, 2, '5', NULL, '2021-03-29 04:57:57', '2021-03-29 04:57:57'),
+(15, 'SEXTO', '6-1', 1, 3, '6', NULL, '2021-03-29 04:57:57', '2021-03-29 04:57:57'),
+(16, 'SEXTO', '6-2', 2, 3, '6', NULL, '2021-03-29 04:57:57', '2021-03-29 04:57:57'),
+(17, 'SEPTIMO', '7-1', 1, 3, '7', NULL, '2021-03-29 04:57:58', '2021-03-29 04:57:58'),
+(18, 'SEPTIMO', '7-2', 1, 3, '7', NULL, '2021-03-29 04:57:58', '2021-03-29 04:57:58'),
+(19, 'SEPTIMO', '7-3', 2, 3, '7', NULL, '2021-03-29 04:57:58', '2021-03-29 04:57:58'),
+(20, 'OCTAVO', '8-1', 1, 3, '8', NULL, '2021-03-29 04:57:58', '2021-03-29 04:57:58'),
+(21, 'OCTAVO', '8-2', 2, 3, '8', NULL, '2021-03-29 04:57:58', '2021-03-29 04:57:58'),
+(22, 'NOVENO', '9-1', 1, 3, '9', NULL, '2021-03-29 04:57:58', '2021-03-29 04:57:58'),
+(23, 'NOVENO', '9-2', 2, 3, '9', NULL, '2021-03-29 04:57:58', '2021-03-29 04:57:58'),
+(24, 'DECIMO', '10-1', 1, 4, '10', NULL, '2021-03-29 04:57:58', '2021-03-29 04:57:58'),
+(25, 'DECIMO', '10-2', 1, 4, '10', NULL, '2021-03-29 04:57:58', '2021-03-29 04:57:58'),
+(26, 'ONCE', '11-1', 1, 4, '11', NULL, '2021-03-29 04:57:58', '2021-03-29 04:57:58');
 
 -- --------------------------------------------------------
 
@@ -375,6 +453,14 @@ CREATE TABLE IF NOT EXISTS `grupo_etnico` (
   PRIMARY KEY (`id_grupo_etnico`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
+--
+-- Volcado de datos para la tabla `grupo_etnico`
+--
+
+INSERT INTO `grupo_etnico` (`id_grupo_etnico`, `descripcion`) VALUES
+(1, 'AFRO'),
+(2, 'NINGUNO');
+
 -- --------------------------------------------------------
 
 --
@@ -386,7 +472,7 @@ CREATE TABLE IF NOT EXISTS `institucion` (
   `id_institucion` int(11) NOT NULL AUTO_INCREMENT,
   `nombre` varchar(30) COLLATE utf8_spanish_ci DEFAULT NULL,
   `nit` varchar(30) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `lema` varchar(45) COLLATE utf8_spanish_ci DEFAULT NULL,
+  `lema` varchar(150) COLLATE utf8_spanish_ci DEFAULT NULL,
   `codigo_dane` varchar(45) COLLATE utf8_spanish_ci DEFAULT NULL,
   `resolucion1` varchar(45) COLLATE utf8_spanish_ci DEFAULT NULL,
   `resolucionCiclos` varchar(45) COLLATE utf8_spanish_ci DEFAULT NULL,
@@ -397,7 +483,14 @@ CREATE TABLE IF NOT EXISTS `institucion` (
   `logo` varchar(40) COLLATE utf8_spanish_ci DEFAULT NULL,
   PRIMARY KEY (`id_institucion`),
   KEY `fk_institucion_calendario1_idx` (`id_calendario`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `institucion`
+--
+
+INSERT INTO `institucion` (`id_institucion`, `nombre`, `nit`, `lema`, `codigo_dane`, `resolucion1`, `resolucionCiclos`, `especialidad`, `comuna`, `paginaWeb`, `id_calendario`, `logo`) VALUES
+(2, 'Instituto Moderno Desepaz', '900294173', 'Instruye al niño en su camino que aún aunque fuera viejo no se apartará de él. Proverbio 22:6', NULL, NULL, NULL, NULL, 21, 'inmode.edu.co', 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -413,7 +506,15 @@ CREATE TABLE IF NOT EXISTS `jornada` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_jornada`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `jornada`
+--
+
+INSERT INTO `jornada` (`id_jornada`, `nombre`, `codigo`, `created_at`, `updated_at`) VALUES
+(1, 'MAÑANA', 'A', '2021-03-28 20:42:39', '2021-03-28 20:42:39'),
+(2, 'TARDE', 'B', '2021-03-28 20:42:39', '2021-03-28 20:42:39');
 
 -- --------------------------------------------------------
 
@@ -425,11 +526,12 @@ DROP TABLE IF EXISTS `matricula`;
 CREATE TABLE IF NOT EXISTS `matricula` (
   `id_matricula` int(11) NOT NULL AUTO_INCREMENT,
   `cod_libro` varchar(45) COLLATE utf8_spanish_ci DEFAULT NULL,
+  `simat` varchar(70) COLLATE utf8_spanish_ci NOT NULL,
   `grupo_simat` varchar(50) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `grado_cursar` varchar(20) COLLATE utf8_spanish_ci DEFAULT NULL,
+  `grado_cursar` varchar(20) COLLATE utf8_spanish_ci NOT NULL,
   `id_grado` int(11) DEFAULT NULL,
   `metodologia` int(11) DEFAULT '1',
-  `año` year(4) DEFAULT NULL,
+  `año` year(4) NOT NULL,
   `fecha_matricula` datetime DEFAULT NULL,
   `id_alumno` int(11) NOT NULL,
   `id_estado_matricula` int(11) DEFAULT NULL,
@@ -437,8 +539,8 @@ CREATE TABLE IF NOT EXISTS `matricula` (
   `ciudad_colegio_origen` varchar(60) COLLATE utf8_spanish_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `victima_conflicto` bigint(20) DEFAULT NULL,
-  `subsidiado` bigint(20) DEFAULT NULL,
+  `victima_conflicto` varchar(10) COLLATE utf8_spanish_ci DEFAULT NULL,
+  `subsidiado` varchar(10) COLLATE utf8_spanish_ci DEFAULT NULL,
   `viveCon` varchar(45) COLLATE utf8_spanish_ci DEFAULT NULL,
   `id_motivos_retiro` int(11) DEFAULT NULL,
   `fecha_retiro` date DEFAULT NULL,
@@ -459,7 +561,7 @@ CREATE TABLE IF NOT EXISTS `matricula` (
   `conQuienPermanceMas` varchar(30) COLLATE utf8_spanish_ci DEFAULT NULL,
   `areaEstudioPreferida` varchar(30) COLLATE utf8_spanish_ci DEFAULT NULL,
   `areaMayorDificultad` varchar(30) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `sede_id_sede` int(11) NOT NULL,
+  `id_sede` int(11) NOT NULL,
   `id_tipo_matricula` int(11) DEFAULT NULL,
   `id_modalidad_sena` int(11) DEFAULT NULL,
   PRIMARY KEY (`id_matricula`),
@@ -471,7 +573,7 @@ CREATE TABLE IF NOT EXISTS `matricula` (
   KEY `fk_matricula_comunidad_religiosa1_idx` (`comunidad_religiosa`),
   KEY `fk_matricula_grupo_etnico1_idx` (`grupo_etnico`),
   KEY `fk_matricula_tipo_discapacidad1_idx` (`tipo_discapacidad`),
-  KEY `fk_matricula_sede1_idx` (`sede_id_sede`),
+  KEY `fk_matricula_sede1_idx` (`id_sede`),
   KEY `fk_matricula_tipo_matricula1_idx` (`id_tipo_matricula`),
   KEY `fk_matricula_modalidad_sena1_idx` (`id_modalidad_sena`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
@@ -501,24 +603,19 @@ CREATE TABLE IF NOT EXISTS `modalidad_sena` (
   `id_modalidad_sena` int(11) NOT NULL AUTO_INCREMENT,
   `nombre` varchar(45) COLLATE utf8_spanish_ci DEFAULT NULL,
   `descripcion` varchar(45) COLLATE utf8_spanish_ci DEFAULT NULL,
+  `tag` varchar(20) COLLATE utf8_spanish_ci NOT NULL,
   `estado` bigint(20) DEFAULT '1',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_modalidad_sena`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-
--- --------------------------------------------------------
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
--- Estructura de tabla para la tabla `motivoretiro`
+-- Volcado de datos para la tabla `modalidad_sena`
 --
 
-DROP TABLE IF EXISTS `motivoretiro`;
-CREATE TABLE IF NOT EXISTS `motivoretiro` (
-  `idMotivosRetiro` int(11) NOT NULL,
-  `Descripcion` varchar(45) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `Cual` varchar(45) COLLATE utf8_spanish_ci DEFAULT NULL,
-  PRIMARY KEY (`idMotivosRetiro`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+INSERT INTO `modalidad_sena` (`id_modalidad_sena`, `nombre`, `descripcion`, `tag`, `estado`, `created_at`) VALUES
+(1, 'MODALIDAD MIPS', 'Paneles solares', 'M1', 1, '2021-03-27 22:38:52'),
+(2, 'MODALIDAD MA', 'Medio ambiente', 'M2', 1, '2021-03-27 22:38:52');
 
 -- --------------------------------------------------------
 
@@ -559,7 +656,14 @@ CREATE TABLE IF NOT EXISTS `municipio` (
   `id_departamento` int(11) NOT NULL,
   PRIMARY KEY (`id_municipio`),
   KEY `fk_municipio_departamento1_idx` (`id_departamento`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci COMMENT='		';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci COMMENT='		';
+
+--
+-- Volcado de datos para la tabla `municipio`
+--
+
+INSERT INTO `municipio` (`id_municipio`, `nombre`, `id_departamento`) VALUES
+(1, 'CALI', 1);
 
 -- --------------------------------------------------------
 
@@ -573,7 +677,17 @@ CREATE TABLE IF NOT EXISTS `nivel_educativo` (
   `nombre` varchar(30) COLLATE utf8_spanish_ci DEFAULT NULL,
   `tag` varchar(30) COLLATE utf8_spanish_ci DEFAULT NULL,
   PRIMARY KEY (`id_nivel_educativo`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `nivel_educativo`
+--
+
+INSERT INTO `nivel_educativo` (`id_nivel_educativo`, `nombre`, `tag`) VALUES
+(1, 'PRESCOLAR', 'PRI'),
+(2, 'PRIMARIA', 'SEC'),
+(3, 'SECUNDARIA', NULL),
+(4, 'EDUCACION MEDIA', NULL);
 
 -- --------------------------------------------------------
 
@@ -599,8 +713,17 @@ DROP TABLE IF EXISTS `pais`;
 CREATE TABLE IF NOT EXISTS `pais` (
   `id_pais` int(11) NOT NULL AUTO_INCREMENT,
   `nombre` varchar(45) COLLATE utf8_spanish_ci DEFAULT NULL,
+  `tag` varchar(20) COLLATE utf8_spanish_ci NOT NULL,
   PRIMARY KEY (`id_pais`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `pais`
+--
+
+INSERT INTO `pais` (`id_pais`, `nombre`, `tag`) VALUES
+(1, 'Colombia', 'COL'),
+(2, 'Venezuela', 'VENZ');
 
 -- --------------------------------------------------------
 
@@ -632,7 +755,7 @@ DROP TABLE IF EXISTS `sede`;
 CREATE TABLE IF NOT EXISTS `sede` (
   `id_sede` int(11) NOT NULL,
   `nombre` varchar(30) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `telefono` int(11) DEFAULT NULL,
+  `telefono` varchar(25) COLLATE utf8_spanish_ci DEFAULT NULL,
   `direccion` varchar(45) COLLATE utf8_spanish_ci DEFAULT NULL,
   `email` varchar(45) COLLATE utf8_spanish_ci DEFAULT NULL,
   `id_institucion` int(11) NOT NULL,
@@ -640,6 +763,13 @@ CREATE TABLE IF NOT EXISTS `sede` (
   PRIMARY KEY (`id_sede`),
   KEY `fk_sede_institucion1_idx` (`id_institucion`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `sede`
+--
+
+INSERT INTO `sede` (`id_sede`, `nombre`, `telefono`, `direccion`, `email`, `id_institucion`, `barrio`) VALUES
+(1, 'PRINCIPAL', '301 3772939', 'CRA. 25BIS NO. 122-19', 'inmode12@yahoo.es', 2, 'Desepaz');
 
 -- --------------------------------------------------------
 
@@ -652,7 +782,17 @@ CREATE TABLE IF NOT EXISTS `tipo_discapacidad` (
   `id_tipo_discapacidad` int(11) NOT NULL AUTO_INCREMENT,
   `descripcion` varchar(45) COLLATE utf8_spanish_ci DEFAULT NULL,
   PRIMARY KEY (`id_tipo_discapacidad`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `tipo_discapacidad`
+--
+
+INSERT INTO `tipo_discapacidad` (`id_tipo_discapacidad`, `descripcion`) VALUES
+(1, 'AUDITIVA'),
+(2, 'VISUAL'),
+(3, 'SI'),
+(4, 'NINGUNA');
 
 -- --------------------------------------------------------
 
@@ -664,8 +804,22 @@ DROP TABLE IF EXISTS `tipo_documento`;
 CREATE TABLE IF NOT EXISTS `tipo_documento` (
   `id_tipo_doc` int(11) NOT NULL AUTO_INCREMENT,
   `descripcion` varchar(45) COLLATE utf8_spanish_ci DEFAULT NULL,
+  `tag` varchar(20) COLLATE utf8_spanish_ci NOT NULL,
   PRIMARY KEY (`id_tipo_doc`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `tipo_documento`
+--
+
+INSERT INTO `tipo_documento` (`id_tipo_doc`, `descripcion`, `tag`) VALUES
+(1, 'Registro Civil TI', 'RC'),
+(2, 'Tarjeta de identidad', 'TI'),
+(4, ' Cédula de ciudadanía', 'CC'),
+(5, 'Cédula de extranjería', 'CE'),
+(6, 'Pasaporte', 'PA'),
+(7, 'Menor sin identificación', ' MS'),
+(8, 'Permiso especial', 'PE');
 
 -- --------------------------------------------------------
 
@@ -676,9 +830,53 @@ CREATE TABLE IF NOT EXISTS `tipo_documento` (
 DROP TABLE IF EXISTS `tipo_eps`;
 CREATE TABLE IF NOT EXISTS `tipo_eps` (
   `id_tipo_eps` int(11) NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(45) COLLATE utf8_spanish_ci DEFAULT NULL,
+  `nombre` varchar(60) COLLATE utf8_spanish_ci DEFAULT NULL,
   PRIMARY KEY (`id_tipo_eps`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `tipo_eps`
+--
+
+INSERT INTO `tipo_eps` (`id_tipo_eps`, `nombre`) VALUES
+(1, 'ASMED SALUD '),
+(2, 'ASOCIACION INDIGENA DEL CAUCA '),
+(3, 'ASOCIACION MUTUAL BARRIOS UNIDOS DE QUIBDO '),
+(4, 'ASOCIACION MUTUAL EMPRESA SOLIDARIA DE SALUD NARIÑO '),
+(5, 'CAFE SALUD'),
+(6, 'CALI SALUD '),
+(7, 'CAPRECOM '),
+(8, 'CARTA SISBEN'),
+(9, 'CEDIMA'),
+(10, 'COFENALCO'),
+(11, 'COLSUBSIDIO '),
+(12, 'COMFA CHOCO '),
+(14, 'COMFENALCO'),
+(15, 'COMPENSAR '),
+(16, 'COODSALUD'),
+(17, 'COOMEVA'),
+(18, 'COONGUA'),
+(19, 'CRUZ BLANCA'),
+(20, 'E.S.E MUNICIPAL'),
+(21, 'EMSSANAR  '),
+(22, 'FAMISANAR EPS CAFAM'),
+(23, 'MEDICALL'),
+(24, 'MEDIMAS '),
+(25, 'N/A'),
+(26, 'NO APLICA'),
+(27, 'NUEVA EPS'),
+(28, 'PENDIENTE'),
+(29, 'POLICIA NACIONAL '),
+(30, 'POLICLINICA '),
+(31, 'S.O.S'),
+(32, 'SALUD TOTAL'),
+(33, 'SALUDCOOP'),
+(34, 'SANIDAD FUERZAS MILITARES '),
+(35, 'SANITAS '),
+(36, 'SERVICIO OCCIDENTAL DE SALUD-S.O.S. S.A.'),
+(37, 'SISBEN '),
+(38, 'SURA '),
+(39, 'COMFAMILIAR NARIÑO');
 
 -- --------------------------------------------------------
 
@@ -691,7 +889,16 @@ CREATE TABLE IF NOT EXISTS `tipo_matricula` (
   `id_tipo_matricula` int(11) NOT NULL AUTO_INCREMENT,
   `descripcion` varchar(45) COLLATE utf8_spanish_ci DEFAULT NULL,
   PRIMARY KEY (`id_tipo_matricula`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `tipo_matricula`
+--
+
+INSERT INTO `tipo_matricula` (`id_tipo_matricula`, `descripcion`) VALUES
+(1, 'NUEVO'),
+(2, 'REPITENTE'),
+(3, 'ANTIGUO');
 
 -- --------------------------------------------------------
 
@@ -704,7 +911,32 @@ CREATE TABLE IF NOT EXISTS `tipo_parentesco` (
   `id_tipo_parentesco` int(11) NOT NULL AUTO_INCREMENT,
   `nombre` varchar(45) COLLATE utf8_spanish_ci DEFAULT NULL,
   PRIMARY KEY (`id_tipo_parentesco`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `tipo_parentesco`
+--
+
+INSERT INTO `tipo_parentesco` (`id_tipo_parentesco`, `nombre`) VALUES
+(1, 'ABUELA'),
+(2, 'ABUELO'),
+(3, 'AMIGA'),
+(4, 'MADRASTRA'),
+(5, 'TIA'),
+(6, 'BISABUELA'),
+(7, 'HERMANA'),
+(8, 'HERMANO'),
+(9, 'MADRE'),
+(10, 'MADRE ADOPTIVA'),
+(11, 'MADRINA'),
+(12, 'NIÑERA'),
+(13, 'OTRO'),
+(14, 'PADRASTRO'),
+(15, 'PADRE'),
+(16, 'PADRINO'),
+(17, 'PRIMA'),
+(18, 'TIA '),
+(19, 'TIO');
 
 -- --------------------------------------------------------
 
@@ -738,26 +970,48 @@ CREATE TABLE IF NOT EXISTS `users` (
   `password` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `remember_token` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `direccion` varchar(60) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `telefono` int(11) DEFAULT NULL,
-  `celular` int(11) DEFAULT NULL,
+  `telefono` varchar(25) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `celular` varchar(25) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `id_sede` int(11) DEFAULT NULL,
   `fecha_nacimiento` date DEFAULT NULL,
   `lugar_expedicion` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `cargo` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `genero` bigint(10) DEFAULT NULL,
+  `genero` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `foto` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `id_estado_civil` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_users_sede1_idx` (`id_sede`),
   KEY `fk_users_estado_civil1_idx` (`id_estado_civil`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `users`
 --
 
 INSERT INTO `users` (`id`, `identificacion`, `name`, `estado`, `created_at`, `updated_at`, `email`, `email_verified_at`, `password`, `remember_token`, `direccion`, `telefono`, `celular`, `id_sede`, `fecha_nacimiento`, `lugar_expedicion`, `cargo`, `genero`, `foto`, `id_estado_civil`) VALUES
-(1, 1143991688, 'Anderson David Rojas', 1, '2021-03-26 03:06:58', '2021-03-26 03:06:58', 'rojasanderson07@gmail.com', NULL, '$2y$10$odheLv9bS5EGTjxmIgFUmeaqy/GZrhT9UFn0lfUIpCX8tjc5Lo0ni', '7DRZE5xAiYZABSmEorAPNd3u6XPUCwPpjmJ0qWmXGYaPLL4zW13RxOE1xgmk', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+(1, 1143991688, 'Anderson David Rojas', 1, '2021-03-26 03:06:58', '2021-03-26 03:06:58', 'rojasanderson07@gmail.com', NULL, '$2y$10$odheLv9bS5EGTjxmIgFUmeaqy/GZrhT9UFn0lfUIpCX8tjc5Lo0ni', 'mwqvZZzYMeUrRJopHl0FlvjJmp6RZuVcmWsbsMVs0m5UFZbUwNDAIZC7zCFQ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(2, 31991910, 'ADRIANA ACOSTA', 1, '2021-03-29 04:15:19', '2021-03-29 04:15:19', NULL, NULL, '$2y$10$odheLv9bS5EGTjxmIgFUmeaqy/GZrhT9UFn0lfUIpCX8tjc5Lo0ni', 'CHGLoC1CKYPQ5TBljycjYE7iikFaYMPxugXvO0qERvRIvUBtilLpCg5VztYD', NULL, NULL, '3168115832', 1, NULL, NULL, 'Docente', 'F', NULL, NULL),
+(3, 31532061, 'ALEXANDRA CUEVAS', 1, '2021-03-29 04:15:19', '2021-03-29 04:15:19', NULL, NULL, '$2y$10$odheLv9bS5EGTjxmIgFUmeaqy/GZrhT9UFn0lfUIpCX8tjc5Lo0ni', NULL, NULL, NULL, '3187480447', 1, NULL, NULL, 'Docente', 'F', NULL, NULL),
+(4, 87944792, 'ANGELO CORTES', 1, '2021-03-29 04:15:19', '2021-03-29 04:15:19', NULL, NULL, '$2y$10$odheLv9bS5EGTjxmIgFUmeaqy/GZrhT9UFn0lfUIpCX8tjc5Lo0ni', NULL, NULL, NULL, '3175919954', 1, NULL, NULL, 'Docente', 'M', NULL, NULL),
+(5, 31176988, 'ELIZABETH BONILLA', 1, '2021-03-29 04:15:19', '2021-03-29 04:15:19', NULL, NULL, '$2y$10$odheLv9bS5EGTjxmIgFUmeaqy/GZrhT9UFn0lfUIpCX8tjc5Lo0ni', NULL, NULL, NULL, '3152726784', 1, NULL, NULL, 'Docente', 'F', NULL, NULL),
+(6, 7534502, 'HECTOR ANTONIO GONZALEZ', 1, '2021-03-29 04:15:19', '2021-03-29 04:15:19', NULL, NULL, '$2y$10$odheLv9bS5EGTjxmIgFUmeaqy/GZrhT9UFn0lfUIpCX8tjc5Lo0ni', NULL, NULL, NULL, '315238829', 1, NULL, NULL, 'Docente', 'M', NULL, NULL),
+(7, 1144149099, 'ILVIA MARCELA VILLAREAL', 1, '2021-03-29 04:15:19', '2021-03-29 04:15:19', NULL, NULL, '$2y$10$odheLv9bS5EGTjxmIgFUmeaqy/GZrhT9UFn0lfUIpCX8tjc5Lo0ni', NULL, NULL, NULL, '3043411895', 1, NULL, NULL, 'Docente', 'F', NULL, NULL),
+(8, 1126454580, 'JHONIER MAURICIO ORTIZ', 1, '2021-03-29 04:15:19', '2021-03-29 04:15:19', NULL, NULL, '$2y$10$odheLv9bS5EGTjxmIgFUmeaqy/GZrhT9UFn0lfUIpCX8tjc5Lo0ni', NULL, NULL, NULL, '3217155204', 1, NULL, NULL, 'Docente', 'M', NULL, NULL),
+(9, 29120588, 'LILIA DEL SOCORRO IBARGUEN MACHADO', 1, '2021-03-29 04:15:19', '2021-03-29 04:15:19', NULL, NULL, '$2y$10$odheLv9bS5EGTjxmIgFUmeaqy/GZrhT9UFn0lfUIpCX8tjc5Lo0ni', NULL, NULL, NULL, '3104176453', 1, NULL, NULL, 'Docente', 'F', NULL, NULL),
+(10, 1130666252, 'NANCY LUCIA  CASTILLO', 1, '2021-03-29 04:15:19', '2021-03-29 04:15:19', NULL, NULL, '$2y$10$odheLv9bS5EGTjxmIgFUmeaqy/GZrhT9UFn0lfUIpCX8tjc5Lo0ni', NULL, NULL, NULL, '3142976543', 1, NULL, NULL, 'Docente', 'F', NULL, NULL),
+(11, 66920722, 'NAYDA CUERO', 1, '2021-03-29 04:15:19', '2021-03-29 04:15:19', NULL, NULL, '$2y$10$odheLv9bS5EGTjxmIgFUmeaqy/GZrhT9UFn0lfUIpCX8tjc5Lo0ni', NULL, NULL, NULL, '3153066048', 1, NULL, NULL, 'Docente', 'F', NULL, NULL),
+(12, 31490312, 'OLGA MARIA HERNANDEZ', 1, '2021-03-29 04:15:19', '2021-03-29 04:15:19', NULL, NULL, '$2y$10$odheLv9bS5EGTjxmIgFUmeaqy/GZrhT9UFn0lfUIpCX8tjc5Lo0ni', NULL, NULL, NULL, '3188448098', 1, NULL, NULL, 'Docente', 'F', NULL, NULL),
+(13, 123456789, 'ADRIANA PARDO', 1, '2021-03-29 04:15:19', '2021-03-29 04:15:19', NULL, NULL, '$2y$10$odheLv9bS5EGTjxmIgFUmeaqy/GZrhT9UFn0lfUIpCX8tjc5Lo0ni', NULL, NULL, NULL, '3175144266', 1, NULL, NULL, 'Docente', 'F', NULL, NULL),
+(14, 38463925, 'SANDRA OSORIO', 1, '2021-03-29 04:15:19', '2021-03-29 04:15:19', NULL, NULL, '$2y$10$odheLv9bS5EGTjxmIgFUmeaqy/GZrhT9UFn0lfUIpCX8tjc5Lo0ni', NULL, NULL, NULL, '3184522924', 1, NULL, NULL, 'Docente', 'F', NULL, NULL),
+(15, 1060356144, 'CATHERINE CHOCO', 1, '2021-03-29 04:15:19', '2021-03-29 04:15:19', NULL, NULL, '$2y$10$odheLv9bS5EGTjxmIgFUmeaqy/GZrhT9UFn0lfUIpCX8tjc5Lo0ni', NULL, NULL, NULL, '3234863036', 1, NULL, NULL, 'Docente', 'F', NULL, NULL),
+(16, 1097398325, 'NATALIA SEPULVEDA ', 1, '2021-03-29 04:15:19', '2021-03-29 04:15:19', NULL, NULL, '$2y$10$odheLv9bS5EGTjxmIgFUmeaqy/GZrhT9UFn0lfUIpCX8tjc5Lo0ni', NULL, NULL, NULL, '3176646729', 1, NULL, NULL, 'Docente', 'F', NULL, NULL),
+(17, 16925362, 'JHON CRUZ', 1, '2021-03-29 04:15:20', '2021-03-29 04:15:20', NULL, NULL, '$2y$10$odheLv9bS5EGTjxmIgFUmeaqy/GZrhT9UFn0lfUIpCX8tjc5Lo0ni', NULL, NULL, NULL, '3168121559', 1, NULL, NULL, 'Docente', 'M', NULL, NULL),
+(18, 1143990130, 'JESSICA CASTRO MENESES ', 1, '2021-03-29 04:15:20', '2021-03-29 04:15:20', NULL, NULL, '$2y$10$odheLv9bS5EGTjxmIgFUmeaqy/GZrhT9UFn0lfUIpCX8tjc5Lo0ni', NULL, NULL, NULL, '3114501075', 1, NULL, NULL, 'Docente', 'F', NULL, NULL),
+(19, 66829568, 'LUZ ELENA MORENO', 1, '2021-03-29 04:15:20', '2021-03-29 04:15:20', NULL, NULL, '$2y$10$odheLv9bS5EGTjxmIgFUmeaqy/GZrhT9UFn0lfUIpCX8tjc5Lo0ni', NULL, NULL, NULL, '3041026866', 1, NULL, NULL, 'Docente', 'F', NULL, NULL),
+(20, 1143957806, 'FREINER RAMIREZ', 1, '2021-03-29 04:15:20', '2021-03-29 04:15:20', NULL, NULL, '$2y$10$odheLv9bS5EGTjxmIgFUmeaqy/GZrhT9UFn0lfUIpCX8tjc5Lo0ni', NULL, NULL, NULL, '3052598008', 1, NULL, NULL, 'Coordinador', 'F', NULL, NULL),
+(21, 1118285661, 'LILIANA VARELA MUÑOZ', 1, '2021-03-29 04:15:20', '2021-03-29 04:15:20', NULL, NULL, '$2y$10$odheLv9bS5EGTjxmIgFUmeaqy/GZrhT9UFn0lfUIpCX8tjc5Lo0ni', NULL, NULL, NULL, '3154683200', 1, NULL, NULL, 'Rectora', 'F', NULL, NULL),
+(22, 1144192422, 'DIANA ALEJANDRA ROJAS ', 1, '2021-03-29 04:15:20', '2021-03-29 04:15:20', NULL, NULL, '$2y$10$odheLv9bS5EGTjxmIgFUmeaqy/GZrhT9UFn0lfUIpCX8tjc5Lo0ni', NULL, NULL, NULL, '3185389435', 1, NULL, NULL, 'Secretaria', 'F', NULL, NULL),
+(23, 16743912, 'JAIRO CRUZ BOLAÑOS', 1, '2021-03-29 04:15:20', '2021-03-29 04:15:20', NULL, NULL, '$2y$10$odheLv9bS5EGTjxmIgFUmeaqy/GZrhT9UFn0lfUIpCX8tjc5Lo0ni', NULL, NULL, NULL, '3154663617', 1, NULL, NULL, 'Representante legal', 'M', NULL, NULL);
 
 --
 -- Restricciones para tablas volcadas
@@ -857,7 +1111,7 @@ ALTER TABLE `matricula`
   ADD CONSTRAINT `fk_matricula_modalidad_sena1` FOREIGN KEY (`id_modalidad_sena`) REFERENCES `modalidad_sena` (`id_modalidad_sena`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_matricula_motivo_matricula1` FOREIGN KEY (`id_motivo_matricula`) REFERENCES `motivo_matricula` (`id_motivo_matricula`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_matricula_motivos_retiro1` FOREIGN KEY (`id_motivos_retiro`) REFERENCES `motivos_retiro` (`id_motivos_retiro`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_matricula_sede1` FOREIGN KEY (`sede_id_sede`) REFERENCES `sede` (`id_sede`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_matricula_sede1` FOREIGN KEY (`id_sede`) REFERENCES `sede` (`id_sede`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_matricula_tipo_discapacidad1` FOREIGN KEY (`tipo_discapacidad`) REFERENCES `tipo_discapacidad` (`id_tipo_discapacidad`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_matricula_tipo_matricula1` FOREIGN KEY (`id_tipo_matricula`) REFERENCES `tipo_matricula` (`id_tipo_matricula`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
