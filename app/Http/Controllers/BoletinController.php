@@ -68,11 +68,11 @@ class BoletinController extends Controller
             $modalidaId='';
             if (!empty($row->MODALIDAD_SENA)) {
                 $modalidad=DB::SELECT("select id_modalidad_sena as id from  modalidad_sena where  tag LIKE '%$row->MODALIDAD_SENA%' ");
-                $modalidaId=$modalidad->id;
+                $modalidaId=$modalidad[0]->id;
             }
             
             $grados=DB::SELECT("select id_grado as id from  grado where grupo= '$row->grupo_grado' ");
-            $id_grado=$grados->id;
+            $id_grado=$grados[0]->id;
             
 
             $mat=new matricula();
@@ -100,7 +100,7 @@ class BoletinController extends Controller
             
             $acudiente=DB::SELECT("select id_acudiente as id from acudiente  where identificacion='$row->CC' ");
             // validar si viene array o objeto
-            if(empty($acudiente)){
+            if(empty($acudiente[0])){
                 $ac=new acudiente();
                 $ac->nombre=$row->ACUDIENTENOMBRE;
                 $ac->identificacion=$row->CC;
@@ -220,70 +220,89 @@ public function readEnrollmentQualification(){
 
         \Excel::create('Grado-'.$grade, function($excel) use($idTeacher,$grade) {  
 
-            $excel->sheet($grade, function($sheet) use($idTeacher) {
+            $excel->sheet($grade, function($sheet) use($idTeacher,$grade) {
                 $sheet->setStyle(array('font'=>array('name'=>'Arial','size'=>11)));
-                self::drawings('B1',$sheet,120,120); 
+                self::drawings('B1',$sheet,90,110); 
 
 
                 $styleArray = array( 'font' => array( 'bold' => true ) );  /** Negrita */
                 $styleTitle = array('alignment' => array('horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER), 'font' => array( 'bold' => true )); /** Titulo */
-               
-              /*  $sheet->getStyle('C2')->applyFromArray($styleArray); */ 
+                $styleCenter=array('alignment' => array('horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER)); 
+              
                $sheet->setCellValue('A2','INSTITUTO MODERNO DESEPAZ');
                $sheet->setCellValue('A3','Resolución No 4143.010.21.9981 del 18 de Diciembre de 2017 de la Secretaría de Educación.');
-               /*$sheet->setCellValue('A4','PLANILLA DE EVALUACIÓN');
-               $sheet->setCellValue('A5','PROFESOR: LILIA DEL SOCORRO IBARGUEN');	*/									
+               $sheet->setCellValue('A4','PLANILLA DE EVALUACIÓN');
+               $sheet->setCellValue('A5','PROFESOR: LILIA DEL SOCORRO IBARGUEN');
+               $sheet->setCellValue('A6','GRADO: '.$grade);
+               $sheet->setCellValue('A7','ASIGNATURA: '.'MATEMATICAS');
 
               
                 
 
-                $row=0;
-                $letter='A';
-                //GRADO,ASIGNATURA,DOCENTE
+                
+                $letter=0;                
+                $acb=['A','B','C', 'D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
 
 
-                $title=['Matricula','Estudiante','Grado','Asignatura','Periodo','Cog1','Cog2','Cog3','Soc1','Soc2','Soc3','Per1','Per2','Per3','Auto','Coe'];
-                for($x=0;$x<=15;$x++){
+                $sheet->setCellValue('F9','Cognitivo');
+                $sheet->mergeCells('F9:'.$acb[7].'9');
+                $sheet->getStyle('F9')->applyFromArray($styleTitle);
 
-                    
-                   
-                    
-                   $sheet->getStyle($letter.'10')->applyFromArray($styleArray);
-                    $sheet->setCellValueByColumnAndRow($x,10,$title[$x]); 
-                    $sheet->setBorder('A10:O10', 'thin');           // .$letter. '10'
+                $sheet->setCellValue('I9','Soc. Afectivo');
+                $sheet->mergeCells('I9:'.$acb[10].'9');
+                $sheet->getStyle('I9')->applyFromArray($styleTitle);
+
+                
+                $sheet->setCellValue('L9','Personal');
+                $sheet->mergeCells('L9:'.$acb[13].'9');
+                $sheet->getStyle('L9')->applyFromArray($styleTitle);
+
+                $title=['Matricula','Estudiante','Grado','Asignatura','Periodo','Cog1','Cog2','Cog3','Soc1','Soc2','Soc3','Per1','Per2','Per3','Auto','Coe','Def'];
+                for($x=0;$x<=16;$x++){                                                           
+                    $sheet->getStyle($acb[$letter].'10')->applyFromArray($styleArray);
+                    $sheet->setCellValueByColumnAndRow($x,10,$title[$x]);                      
                     ++$letter;
                 }
 
-                $sheet->mergeCells('A2:'.$letter.'2');
-                $sheet->mergeCells('A3:'.$letter.'3');
-                $sheet->getStyle('A2:'.$letter.'2')->applyFromArray($styleTitle);
+                $sheet->mergeCells('A2:'.$acb[$letter-1].'2');
+                $sheet->mergeCells('A3:'.$acb[$letter-1].'3');
+                $sheet->mergeCells('A4:'.$acb[$letter-1].'4');
+                $sheet->mergeCells('A5:'.$acb[$letter-1].'5');
+                $sheet->mergeCells('A6:'.$acb[$letter-1].'6');
+                $sheet->mergeCells('A7:'.$acb[$letter-1].'7');
+                $sheet->getStyle('A2:'.$acb[$letter-1].'2')->applyFromArray($styleTitle);
+             
 
+                //$sheet->setBorder("A10:Q11",'thin');
+                /*$sheet->cell('A10:Q11', function($cell){
+                    $cell->setBorder('thin','thin','thin','thin');
+                });*/                   
+               // $sheet->setBorder('A10:Q10','thin');    
+                $sheet->cells('A1:'.$acb[$letter-1].'7', function ($cells) {
+                    $cells->setBackground('#FFFDFD');
+                    $cells->setAlignment('center');                    
+                    $cells->setBorder('thin','thin','thin','thin');                    
+                });
+
+
+                $row=0;
                 $alu=11;
+                //   $sheet->setBorder('A10:'.$acb[$key].$key, 'thin');
+                
                 foreach($title as $key=> $alumno){
                     $sheet->setCellValueByColumnAndRow($row,$alu,$alu);  
                     $sheet->setCellValueByColumnAndRow($row+1,$alu,113);  
-                    $sheet->setCellValueByColumnAndRow($row+2,$alu,$alumno);  
+                    $sheet->setCellValueByColumnAndRow($row+2,$alu,$alumno);                   
+
+
+
+                    $sheet->cells('A10:'.$acb[$letter-1].'10', function ($cells) {
+                        $cells->setBackground('#FFFDFD');
+                        $cells->setAlignment('center');                    
+                        $cells->setBorder('thin','thin','thin','thin');                    
+                    });
                     ++$alu;
                 }
-               /* $sheet->setCellValueByColumnAndRow($row,9,'Matricula');   
-                $sheet->setCellValueByColumnAndRow($row+1,9,'Estudiante');   
-                $sheet->setCellValueByColumnAndRow($row+2,9,'Grado');
-                $sheet->setCellValueByColumnAndRow($row+3,9,'Asignatura');
-                $sheet->setCellValueByColumnAndRow($row+4,9,'Periodo');
-                $sheet->setCellValueByColumnAndRow($row+5,9,'Cog1');
-                $sheet->setCellValueByColumnAndRow($row+6,9,'Cog2');
-                $sheet->setCellValueByColumnAndRow($row+7,9,'Cog3');
-                $sheet->setCellValueByColumnAndRow($row+8,9,'Soc1');
-                $sheet->setCellValueByColumnAndRow($row+9,9,'Soc2');
-                $sheet->setCellValueByColumnAndRow($row+10,9,'Soc3');
-
-
-                $sheet->setCellValueByColumnAndRow($row+11,9,'Per1');
-                $sheet->setCellValueByColumnAndRow($row+12,9,'Per2');
-                $sheet->setCellValueByColumnAndRow($row+13,9,'Per3');
-
-                $sheet->setCellValueByColumnAndRow($row+14,9,'Auto');
-                $sheet->setCellValueByColumnAndRow($row+15,9,'Coe');*/
             });
 
         })->export('xls');    
