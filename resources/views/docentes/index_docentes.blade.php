@@ -24,7 +24,7 @@
     <div class="card-body">
     <div class="row">
     <div class="col-lg-12">
-                <table id="dt_teacher" class="table table-bordered" style="width:100%">
+                <table id="dt_teacher" class="table table-bordered table-hover" style="width:100%;" >
                     <thead>
                     <tr class="bg-secondary">
                         <th>#</th>
@@ -39,7 +39,7 @@
                     </thead>
                     <tbody>                            
                     </tbody>
-                    <!--<tfoot>
+                     <tfoot>
                     <tr>
                                 <td><i class="mdi mdi-account-check"></i></td>
                                 <td><i class="mdi mdi-account-check"></i></td>
@@ -50,7 +50,7 @@
                                 <td><i class="mdi mdi-account-check"></i></td>
                                 <td><i class="mdi mdi-account-check"></i></td>
                             </tr>
-                    </tfoot>-->
+                    </tfoot>
                     </table>  
     </div>
     </div>

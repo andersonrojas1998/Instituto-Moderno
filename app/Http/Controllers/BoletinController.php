@@ -58,146 +58,168 @@ class BoletinController extends Controller
 
     public function loadExcelEnrollment(){
 
-    \Excel::load('public\excel.xlsx', function($reader) {        
-        $data=[];         
-        $reader->each(function($row){            
-
-
-        try {
-        DB::transaction(function(){
-            $modalidaId='';
-            if (!empty($row->MODALIDAD_SENA)) {
-                $modalidad=DB::SELECT("select id_modalidad_sena as id from  modalidad_sena where  tag LIKE '%$row->MODALIDAD_SENA%' ");
-                $modalidaId=$modalidad[0]->id;
-            }
-            
-            $grados=DB::SELECT("select id_grado as id from  grado where grupo= '$row->grupo_grado' ");
-            $id_grado=$grados[0]->id;
-            
-
-            $mat=new matricula();
-            $mat->simat=$row->SIMAT;
-            $mat->victima_conflicto=$row->POBLACION_VICTIMA_DEL_CONFLICTO;
-            $mat->id_modalidad_sena=$modalidaId;
-            $mat->grupo_simat=$row->GRUPO_SIMAT;
-            $mat->grado_cursar=$row->GRADO;
-            $mat->id_grado=$id_grado;     
-            $mat->subsidiado=$row->SUBSIDIADO;  
-            $mat->tipo_discapacidad=$row->tipo_discapacidad;
-            $id_tp_matricula=3;
-            if($row->REPITENTE=="SI"){
-                $id_tp_matricula=2;
-            }elseif ($row->NUEVO) {
-                $id_tp_matricula=1;
-            }                        
-            $mat->id_tipo_matricula=$id_tp_matricula;            
-            $mat->inst_anterior=$row->INSTITUCION_ANTERIOR;
-            $mat->ciudad_colegio_origen=$row->ciudad_colegio_origen;
-            $mat->save();
+    \Excel::load('public\matriculas.xlsx', function($reader) {        
+        $data=[];      
+        $i=0;   
+        $reader->each(function($rows){            
 
             
+                try {
+                    DB::transaction(function() use($rows){
+                        
 
-            
-            $acudiente=DB::SELECT("select id_acudiente as id from acudiente  where identificacion='$row->CC' ");
-            // validar si viene array o objeto
-            if(empty($acudiente[0])){
-                $ac=new acudiente();
-                $ac->nombre=$row->ACUDIENTENOMBRE;
-                $ac->identificacion=$row->CC;
-                $ac->expedida =$row->EXPEDIDA;
-                $ac->id_tipo_parentesco =   $row->PARENTESCO;   /** colocar id parentesco */
-                $ac->direccion=$row->DIRECCIONACUDI;
-                $ac->barrio_id=$row->BARRIOACUD;/**  colocar id */
-                $ac->telefono=$row->TELEFONOACUDIENTE;
-                $ac->responsable=1;
-                $ac->save();
-                $id_acudiente=$ac->id;
-            }else{
-                $id_acudiente=$acudiente[0]->id;
-            }
+                        foreach($rows as $row){
 
-            
-            
-
-            $alum= new alumno();
-            $alum->id_tipo_doc=$row->TIPO_DOCUMENTO;
-            $alum->identificacion=$row->DOCUMENTO;
-
-            $alum->lugar_expedicion=$row->EXP_MUN;
-            $alum->apellido1  =$row->APELLIDO1;
-            $alum->apellido2 =$row->APELLIDO2;
-            $alum->nombre1 =$row->NOMBRE1;
-            $alum->nombre2 =$row->NOMBRE2;
-            $alum->direccion =$row->DIRECCION_RESIDENCIA;
-            $alum->telefono	 =$row->TELEFONO;
-            $alum->id_barrio= $row->codigo_barrio; // colocar id
-            $alum->id_departamento =1;
-            $alum->id_municipio=1;
-            $alum->id_tipo_eps=$row->SEGURO; /** colocar id  */
-
-            $alum->fecha_nacimiento=date('Y-m-d',strtotime($row->FECHA_NAC));
-
-            $alum->nac_muni=$row->nac_mun;
-            $alum->nac_depto=$row->NAC_DEPTO;
-
-            $alum->genero=($row->GENERO=="MASCULINO")? 'M':'F';
-            $alum->save();
-
-            
-            DB::SELECT("INSERT INTO alumno_acudiente ('id_alumno', 'id_acudiente') VALUES ( '$alum->id','$id_acudiente') "); /** acudiente */
-
-            
-            if(!empty($row->CCPADRE)){
-                $acudientePadre=DB::SELECT("select id_acudiente as id from acudiente  where identificacion='$row->CCPADRE' ");
-                if(empty($acudientePadre)){
+                            if(!empty($row->tipo_documentoEstidante)){
+                                $modalidaId=3;
+                                if (!empty($row->MODALIDAD_SENA)) {
+                                    $modalidad=DB::SELECT("select id_modalidad_sena as id from  modalidad_sena where  tag LIKE '%$row->MODALIDAD_SENA%' ");
+                                    $modalidaId=$modalidad[0]->id;
+                                }
+                                $grados=DB::SELECT("select id_grado as id from  grado where grupo='$row->GRUPO_GRADO' ");
+                                $id_grado=isset($grados[0]->id)? $grados[0]->id:27;
+                                
+                   
+                                $alum= new alumno();
+                                $alum->id_tipo_doc=$row->tipo_documentoEstidante;
+                                $alum->identificacion=$row->documento;
+                    
+                                $alum->lugar_expedicion=$row->exp_muni;
+                                $alum->apellido1  =$row->APELLIDO1;
+                                $alum->apellido2 =$row->APELLIDO2;
+                                $alum->nombre1 =$row->NOMBRE1;
+                                $alum->nombre2 =$row->NOMBRE2;
+                                $alum->direccion =$row->DIRECCION_RESIDENCIA;
+                                $alum->telefono	 =$row->TELEFONO;
+                                $alum->id_barrio= $row->codigo_barrio; // colocar id
+                                $alum->id_departamento =1;
+                                $alum->id_municipio=1;
+                                $alum->id_tipo_eps=isset($row->codigo_eps)? $row->codigo_eps:25; /** colocar id  */
+                    
+                                $alum->fecha_nacimiento=date('Y-m-d',strtotime($row->FECHA_NAC));
+                    
+                                $alum->nac_muni=1;//$row->nac_mun;
+                                $alum->nac_depto=1;//$row->NAC_DEPTO;
+                    
+                                $alum->genero=($row->GENERO=="MASCULINO")? 'M':'F';
+                                $alum->save();
+                    
     
-                    $padre=new acudiente();
-                    $padre->nombre=$row->NOMBREPADRE;
-                    $padre->identificacion=$row->CCPADRE;
-                    $padre->expedida=$row->EXPEDIDAPADRE;
-                    $padre->id_tipo_parentesco =15; 
-                    $padre->direccion=$row->DIRECCIONPADRE;
-                    $padre->barrio_id=$row->BARRIOPADRE;
-                    $padre->telefono=$row->TELEFONOPADRE;
-                    $padre->profesion=$row->PROFESIONPADRE;
-                    $padre->empresa=$row->EMPRESAPADRE;
-                    $padre->save();
-                    $id_padre=$padre->id;
-                }else{
-                    $id_padre=$acudientePadre[0]->id;
-                }
-                DB::SELECT("INSERT INTO alumno_acudiente ('id_alumno', 'id_acudiente') VALUES ( '$alum->id','$id_padre') "); /** padre */    
-            }
+                                $mat=new matricula();
+                                $mat->simat=$row->simat;
+                                $mat->victima_conflicto=$row->POBLACION_VICTIMA_DEL_CONFLICTO;
+                                $mat->id_modalidad_sena=$modalidaId;
+                                $mat->id_alumno=$alum->id;
+                                $mat->año=date('Y');
+                                $mat->grupo_simat=$row->GRUPO_SIMAT;
+                                $mat->grado_cursar=strval($row->gradoCursa);
+                                $mat->id_grado=$id_grado;     
+                                $mat->subsidiado=$row->SUBSIDIADO;  
+                                $mat->tipo_discapacidad=$row->tipo_discapacidad;
+                                $mat->grupo_etnico= isset($row->GRPO_ETNICO)? $row->GRPO_ETNICO:2;
+                                $mat->id_sede=1;
+                                $id_tp_matricula=3;
+                                if($row->REPITENTE=="SI"){
+                                    $id_tp_matricula=2;
+                                }elseif ($row->NUEVO) {
+                                    $id_tp_matricula=1;
+                                }                        
+                                $mat->id_tipo_matricula=$id_tp_matricula;            
+                                $mat->inst_anterior=$row->INSTITUCION_ANTERIOR;
+                                $mat->ciudad_colegio_origen=$row->ciudad_colegio_origen;
+                                $mat->save();
+    
+    
+                                $acudiente=DB::SELECT("select id_acudiente as id from acudiente  where identificacion='$row->CC' ");
+                                
+                                // validar si viene array o objeto
+                                //$id_acudiente='';
+                               if(!empty($row->ACUDIENTENOMBRE)  ){
+                                    $ac=new acudiente();
+                                    $ac->nombre=$row->ACUDIENTENOMBRE;
+                                    $ac->identificacion=$row->CC;
+                                    $ac->expedida =$row->EXPEDIDA;
+                                    $ac->id_tipo_parentesco =   $row->PARENTESCO;   /** colocar id parentesco */
+                                    $ac->direccion=$row->DIRECCIONACUDI;
+                                    $ac->barrio_id=$row->codigo_barrio_acu;/**  colocar id */
+                                    $ac->telefono=$row->TELEFONOACUDIENTE;
+                                    $ac->updated_at=date('Y-m-d');
+                                    $ac->responsable=1;
+                                    $ac->save();
+                                    $id_acudiente=$ac->id;
+    
+                                    DB::SELECT("INSERT INTO alumno_acudiente ('id_alumno', 'id_acudiente') VALUES ('$alum->id','$id_acudiente') "); /** acudiente */
+                               }
+                    
+                                
+                                
+                    
+                                
+                                if(!empty($row->CCPADRE)  && !empty($row->NOMBREPADRE) ){
+                                    $acudientePadre=DB::SELECT("select id_acudiente as id from acudiente  where identificacion='$row->CCPADRE' ");
+                                    if(empty($acudientePadre)){
+                        
+                                        $padre=new acudiente();
+                                        $padre->nombre=$row->NOMBREPADRE;
+                                        $padre->identificacion=$row->CCPADRE;
+                                        $padre->expedida=$row->EXPEDIDAPADRE;
+                                        $padre->id_tipo_parentesco =15; 
+                                        $padre->direccion=$row->DIRECCIONPADRE;
+                                        $padre->barrio_id=$row->BARRIOPADRE;
+                                        $padre->telefono=$row->TELEFONOPADRE;
+                                        $padre->profesion=$row->PROFESIONPADRE;
+                                        $padre->empresa=$row->EMPRESAPADRE;
+                                        $padre->updated_at=date('Y-m-d');
+                                        $padre->save();
+                                        $id_padre=$padre->id;
+                                    }else{
+                                        $id_padre=$acudientePadre[0]->id;
+                                    }
+                                    DB::SELECT("INSERT INTO alumno_acudiente ('id_alumno', 'id_acudiente') VALUES ( '$alum->id','$id_padre') "); /** padre */    
+                                }
+                    
+                                
+                                if(!empty($row->NOMBREMADRE) && !empty($row->NOMBREMADRE) ){
+                    
+                                    $acudienteMadre=DB::SELECT("select id_acudiente as id from acudiente  where identificacion='$row->CCMADRE' ");
+                    
+                                    if(empty($acudienteMadre)){
+                    
+                                        $madre=new acudiente();
+                                        $madre->nombre=$row->NOMBREMADRE;
+                                        $madre->identificacion= $row->CCMADRE;
+                                        $madre->expedida=$row->EXPEDIDAMADRE;
+                                        $madre->id_tipo_parentesco =9;
+                                        $madre->direccion=$row->DIRECCIONMADRE;
+                                        $madre->barrio_id=$row->CODIGO_BARRIO_MADRE; /** */
+                                        $madre->telefono=$row->TELEFONOMADRE;
+                                        $madre->profesion=$row->PROFESIONMADRE;
+                                        $madre->empresa=$row->EMPRESAMADRE; 
+                                        $madre->updated_at=date('Y-m-d');                                   
+                                        $id_madre=$madre->id;
+                                    }else{
+                                        $id_madre=$acudienteMadre[0]->id;                    
+                                    }
+                                    DB::SELECT("INSERT INTO alumno_acudiente ('id_alumno', 'id_acudiente') VALUES ( '$alum->id','$id_madre') "); /** madre */
+                                }
+                    
+    
+                            }
+                            }
+
+                           
+
+                        
+                    });
+                            
+                    } catch (Exception $th) {                
+                        return response()->json(['message'=>'Error en la base de datos','error' => $th->getMessage()],400);              
+                    }
+
+
 
             
-            if(!empty($row->NOMBREMADRE)){
-
-                $acudienteMadre=DB::SELECT("select id_acudiente as id from acudiente  where identificacion='$row->CCMADRE' ");
-
-                if(empty($acudienteMadre)){
-
-                    $madre=new acudiente();
-                    $madre->nombre=$row->NOMBREMADRE;
-                    $madre->identificacion= $row->CCMADRE;
-                    $madre->expedida=$row->EXPEDIDAMADRE;
-                    $madre->id_tipo_parentesco =9;
-                    $madre->direccion=$row->DIRECCIONMADRE;
-                    $madre->barrio_id=$row->BARRIOMADRE; /** */
-                    $madre->telefono=$row->TELEFONOMADRE;
-                    $madre->profesion=$row->PROFESIONMADRE;
-                    $madre->empresa=$row->EMPRESAMADRE;
-                    $id_madre=$madre->id;
-                }else{
-                    $id_madre=$acudienteMadre[0]->id;                    
-                }
-                DB::SELECT("INSERT INTO alumno_acudiente ('id_alumno', 'id_acudiente') VALUES ( '$alum->id','$id_madre') "); /** madre */
-            }
-
-        });
-                
-        } catch (Exception $th) {                
-            return response()->json(['message'=>'Error en la base de datos','error' => $th->getMessage()],400);              
-        }
+        
 
 
             
@@ -248,7 +270,7 @@ public function readEnrollmentQualification(){
                 $sheet->mergeCells('F9:'.$acb[7].'9');
                 $sheet->getStyle('F9')->applyFromArray($styleTitle);
 
-                $sheet->setCellValue('I9','Soc. Afectivo');
+                $sheet->setCellValue('I9','Social');
                 $sheet->mergeCells('I9:'.$acb[10].'9');
                 $sheet->getStyle('I9')->applyFromArray($styleTitle);
 
@@ -257,8 +279,8 @@ public function readEnrollmentQualification(){
                 $sheet->mergeCells('L9:'.$acb[13].'9');
                 $sheet->getStyle('L9')->applyFromArray($styleTitle);
 
-                $title=['Matricula','Estudiante','Grado','Asignatura','Periodo','Cog1','Cog2','Cog3','Soc1','Soc2','Soc3','Per1','Per2','Per3','Auto','Coe','Def'];
-                for($x=0;$x<=16;$x++){                                                           
+                $title=['Matricula','Estudiante','Grado','Asignatura','Periodo','c1','c2','c3','s1','s2','s3','p1','p2','p3','Autoe','Def'];
+                for($x=0;$x<count($title);$x++){                                                           
                     $sheet->getStyle($acb[$letter].'10')->applyFromArray($styleArray);
                     $sheet->setCellValueByColumnAndRow($x,10,$title[$x]);                      
                     ++$letter;

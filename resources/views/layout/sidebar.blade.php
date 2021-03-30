@@ -93,7 +93,7 @@
       <div class="collapse {{ show_class(['basic-ui/*']) }}" id="mod-calificacion">
         <ul class="nav flex-column sub-menu">
           <li class="nav-item {{ active_class(['icons/material']) }}">            
-            <a class="nav-link" href="{{-- url('/Calificaciones/inicio') --}}"><i class="menu-icon mdi mdi-television"></i> Inicio</a>
+            <a class="nav-link" href="{{ url('/Calificaciones/inicio') }}"><i class="menu-icon mdi mdi-television"></i> Inicio</a>
           </li>          
         </ul>
       </div>

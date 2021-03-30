@@ -155,6 +155,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/ts', 'BoletinController@genetedBulletin'); /** generar boletin */
    // Route::get('/tsExcel', 'BoletinController@loadExcelMatricula');
 
+
+   /** Calificaciones */
+   Route::get('/Calificaciones/inicio', 'CalificacionesController@index');
     Route::get('/Qualification/{idTeach}/{grade}', 'BoletinController@generatedEnrollmentQualification');
     //Route::get('/loadUser', 'BoletinController@loadUser');
     Route::get('/loadGroup', 'BoletinController@loadGroup');
@@ -162,5 +165,9 @@ Route::group(['middleware' => ['auth']], function () {
     /** Docentes */
     Route::get('/docentes/inicio', 'DocenteController@index');
     Route::get('/dt_user', 'DocenteController@dt_user');
+    Route::get('/showTeacher', 'DocenteController@showTeacher');
+
+    /** Load  Matricula*/
+    Route::get('/loadExcelEnrollmentr', 'BoletinController@loadExcelEnrollment');
 });
 

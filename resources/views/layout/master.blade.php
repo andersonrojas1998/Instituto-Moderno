@@ -24,6 +24,11 @@
 
       {!! Html::style('https://cdn.datatables.net/1.10.24/css/dataTables.bootstrap4.min.css') !!}
       {!! Html::style('https://cdn.datatables.net/buttons/1.7.0/css/buttons.bootstrap4.min.css') !!}
+
+      {!! Html::style('https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css') !!}
+
+      
+
   
 
   @stack('style')
@@ -48,9 +53,12 @@
 
   {!! Html::script('https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js') !!}
   {!! Html::script('https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap4.min.js') !!}
-  
 
+  {!! Html::script('https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js') !!}    
   {!! Html::script('assets/plugins/perfect-scrollbar/perfect-scrollbar.min.js') !!}
+
+
+  {!! Html::script('lib/global.js') !!}
   <!-- end base js -->
 
   <!-- plugin js -->

@@ -9,6 +9,11 @@ class DocenteController extends Controller
     public function index(){
         return view('docentes.index_docentes');
     }
+    public function showTeacher($status=1){
+        $dataUs=DB::select("SELECT tb1.id,tb1.name FROM users as tb1  WHERE tb1.estado='$status' ");        
+        return json_encode($dataUs);
+    }
+
     public function dt_user(){
        $dataUs=DB::select("SELECT tb1.identificacion,tb1.name,tb1.estado,tb1.celular,tb2.nombre as sede,tb1.cargo,tb1.genero FROM users as tb1 inner join sede as tb2 on tb1.id_sede=tb2.id_sede");
         $data=[];
