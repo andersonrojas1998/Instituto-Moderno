@@ -135,6 +135,10 @@ Route::group(['prefix' => 'ecommerce'], function(){
 Route::get('/clear-cache', function() {
     Artisan::call('cache:clear');
     return "Cache is cleared";
+    /* php artisan cache:clear
+    php artisan route:clear
+    php artisan config:clear
+    php artisan view:clear */
 });
 
 // 404 for undefined routes
