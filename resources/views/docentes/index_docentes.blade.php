@@ -61,5 +61,15 @@
 @endsection
 
 @push('custom-scripts')    
-    <script src="{{ asset('/lib/teacher.js') }}"></script>    
+    <script src="{{ asset('/lib/teacher.js') }}"></script>   
+    
+    <style>
+td.details-control {
+    background: url('/images/details_open.png') no-repeat center center; ;
+    cursor: pointer;
+}
+tr.shown td.details-control {
+    background: url('/images/details_close.png') no-repeat center center;
+}
+</style>
 @endpush
