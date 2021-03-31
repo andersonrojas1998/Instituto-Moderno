@@ -29,4 +29,19 @@ class DocenteController extends Controller
         }
         return json_encode($data);          
     }
+    public function gradeAssignments(){        
+        $idTeacher = \Request::input('idTeacher');
+        $gradesAll=DB::SELECT("SELECT distinct A.id_grado, concat(A.grupo,' * ',c.nombre) as grupo FROM  grado as A
+                    inner join curso AS B ON A.id_grado=B.id_grado
+                    inner join jornada as C ON A.id_jornada=C.id_jornada         
+                    where B.id_docente='$idTeacher' ");
+        return json_encode($gradesAll);
+    }
+    public function assignmentCourseTeacher(Request $rs){
+        $res=$rs->all();             
+        $teacher=$res['idTeacher'];
+        $grade=$res['idgrade'];
+        $course=DB::SELECT("SELECT A.id_asignatura,A.nombre from asignatura as A inner join curso AS B ON A.id_asignatura=B.id_materia where B.id_docente='$teacher' AND B.id_grado='$grade' ");
+        return json_encode($course);
+    }
 }

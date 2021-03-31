@@ -1,24 +1,9 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
-
-/*
-Route::get('/', function () {
-    return view('dashboard');
-});*/
 Route::get('/','PagesController@homeIndex');
 
-// Route::get('/','DashboardController@index');
 
+/*
 Route::group(['prefix' => 'basic-ui'], function(){
     Route::get('accordions', function () { return view('pages.basic-ui.accordions'); });
     Route::get('buttons', function () { return view('pages.basic-ui.buttons'); });
@@ -129,7 +114,7 @@ Route::group(['prefix' => 'ecommerce'], function(){
     Route::get('product-catalogue', function () { return view('pages.ecommerce.product-catalogue'); });
     Route::get('project-list', function () { return view('pages.ecommerce.project-list'); });
     Route::get('orders', function () { return view('pages.ecommerce.orders'); });
-});
+});*/
 
 // For Clear cache
 Route::get('/clear-cache', function() {
@@ -148,30 +133,12 @@ Route::any('/{page?}',function(){
 })->where('page','.*');*/
 Auth::routes();
 
-Route::group(['middleware' => ['auth']], function () {
-
-    //require (__DIR__ . '/rt_user.php');
-    Route::get('/home', 'HomeController@index')->name('home');
-    Route::get('/Boletin/inicio', 'BoletinController@index');
-    Route::get('/Estudiantes/inicio', 'EstudiantesController@index');
-    
-    
-    Route::get('/ts', 'BoletinController@genetedBulletin'); /** generar boletin */
-   // Route::get('/tsExcel', 'BoletinController@loadExcelMatricula');
-
-
-   /** Calificaciones */
-   Route::get('/Calificaciones/inicio', 'CalificacionesController@index');
-    Route::get('/Qualification/{idTeach}/{grade}', 'BoletinController@generatedEnrollmentQualification');
-    //Route::get('/loadUser', 'BoletinController@loadUser');
-    Route::get('/loadGroup', 'BoletinController@loadGroup');
-
-    /** Docentes */
-    Route::get('/docentes/inicio', 'DocenteController@index');
-    Route::get('/dt_user', 'DocenteController@dt_user');
-    Route::get('/showTeacher', 'DocenteController@showTeacher');
-
-    /** Load  Matricula*/
-    Route::get('/loadExcelEnrollmentr', 'BoletinController@loadExcelEnrollment');
+Route::group(['middleware' => ['auth']], function () {    
+    Route::get('/home', 'HomeController@index')->name('home');                    
+    require (__DIR__ . '/rt_students.php');
+    require (__DIR__ . '/rt_bulletin.php');
+    require (__DIR__ . '/rt_qualifications.php');
+    require (__DIR__ . '/rt_teacher.php');
+    require (__DIR__ . '/rt_enrollment.php');              
 });
 
