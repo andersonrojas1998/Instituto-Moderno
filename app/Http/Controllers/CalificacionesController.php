@@ -192,15 +192,19 @@ class CalificacionesController extends Controller
                    //revisar si  viene con punto o coma
                    //validar si no viene vacio
 
-                   $notafinal=($nota1+$nota2+$nota3+$nota4+$nota5+$nota6+$nota7+$nota8+$nota9+$nota10+$nota11+$nota11+$nota12)/12;
+                   $notafinal=($nota1+$nota2+$nota3+$nota4+$nota5+$nota6+$nota7+$nota8+$nota9+$nota10+$nota11+$nota12)/12;
 
                    $acomulativo=($notafinal*33/100);
 
 
 
-
+                   $aprobo=($notafinal > 3.0)? 1:0;
                     
-                  DB::insert("INSERT INTO `calificaciones`(`id_periodo`, `id_matricula`, `id_docente`, `id_asignatura`, `nota_cog1`, `nota_cog2`, `nota_cog3`, `nota_cog4`, `nota_soc1`, `nota_soc2`, `nota_soc3`, `nota_per1`, `nota_per2`, `nota_per3`, `nota_auto`, `nota_coe`, `nota_recuperacion`, `nota_definitiva`, `aprobo`, `acumulativo`, `notas_adicionales_id_nota`, `created_at`, `updated_at`) VALUES ([value-1],[value-2],[value-3],[value-4],[value-5],[value-6],[value-7],[value-8],[value-9],[value-10],[value-11],[value-12],[value-13],[value-14],[value-15],[value-16],[value-17],[value-18],[value-19],[value-20],[value-21],[value-22],[value-23],[value-24])");} catch (\Throwable $th) {                    
+                  DB::insert("INSERT INTO `calificaciones`(`id_periodo`, `id_matricula`, `id_docente`, `id_asignatura`, `nota_cog1`, `nota_cog2`, `nota_cog3`, `nota_cog4`, `nota_soc1`, 
+                                `nota_soc2`, `nota_soc3`, `nota_per1`, `nota_per2`, `nota_per3`, `nota_auto`, `nota_coe`, `nota_recuperacion`, `nota_definitiva`, `aprobo`, `acumulativo`)
+                                VALUES ($perid,$matricula,$teacher,$course,$nota1,$nota2,$nota3,$nota4,$nota5,$nota6,$nota7,$nota8,$nota9,$nota10,$nota11,$nota12,null,$notafinal,$aprobo,$acomulativo)");
+                
+                } catch (\Throwable $th) {                    
                   DB::commit();
                 }catch (\Exception $e) {
                     DB::rollback();

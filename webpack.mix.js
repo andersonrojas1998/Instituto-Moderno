@@ -12,14 +12,14 @@ const mix = require("laravel-mix");
  */
 
 mix.js("resources/js/app.js", "public/js")
-    .sass("resources/sass/app.scss", "public/css")
+    .sass("resources/sass/app.scss", "public/css")    
     .sourceMaps(true, "source-maps")
     .browserSync({
         proxy: "127.0.0.1:8000",
         port: 3100,
         ghostMode: false,
         notify: false
-    });
+    });    
 
 // Copy plugin files to public folder
 mix.copyDirectory("node_modules/@mdi", "public/assets/plugins/@mdi")
@@ -54,4 +54,4 @@ mix.copyDirectory("node_modules/@mdi", "public/assets/plugins/@mdi")
     .copyDirectory(
         "node_modules/jquery.easing/jquery.easing.min.js",
         "public/assets/plugins/jquery.easing/jquery.easing.min.js"
-    );
+    );    

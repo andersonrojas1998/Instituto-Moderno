@@ -16,8 +16,74 @@ class BoletinController extends Controller
         return view('boletin.index_boletin');
     }
     public function genetedBulletin(){
+        /*$chart = '{
+            "type": "bar",
+            "data": {
+              "labels": [ "January", "February", "March", "April", "May", "June", "July"
+              ],
+              "datasets": [
+                {
+                  "label": "My data",
+                  "fillColor": "rgba(220,220,220,0.5)",
+                  "strokeColor": "rgba(220,220,220,1)",
+                  "pointColor": "rgba(220,220,220,1)",
+                  "pointStrokeColor": "#fff",
+                  "data": [ 65, 59, 90, 81, 56, 55, 40 ],
+                  "bezierCurve": false
+                }
+              ]
+            }
+          }';*/
+          // https://www.chartjs.org/docs/latest/charts/bar.html#borderwidth
+          $chart = new \QuickChart(array(
+            'width' => 720,
+            'height' => 200,
+            'bkg'=>'red'
+          ));
+          
+          $chart->setConfig('{            
+            type: "bar",
+            data: {
+              labels: ["Matematicas", "Españo","Ingles","Fisica","Catedra","Estadistica","Calculo"],
+              datasets: [{
+                label: "Materias Cursadas",
+                data: [1, 2,3,4,5,4,3,2],
+                backgroundColor: [
+                    "rgba(255, 99, 132, 0.2)",
+                    "rgba(255, 159, 64, 0.2)",
+                    "rgba(255, 205, 86, 0.2)",
+                    "rgba(75, 192, 192, 0.2)",
+                    "rgba(54, 162, 235, 0.2)",
+                    "rgba(153, 102, 255, 0.2)",
+                    "rgba(201, 203, 207, 0.2)"
+                  ],
+                borderWidth:"5px", 
+                barThickness:"15" ,                
+              },
+              {
+                type: "line",
+                label: "Line Dataset",
+                data: [3, 3, 3, 3],
+                fill: false,
+                borderColor: "rgb(54, 162, 235)"
+            }
+              ]
+            },
+            options:{
+               
 
-        return $pdf = \PDF::loadView('boletin.pdf_boletin')->stream('archivo.pdf');       
+            }
+          }');
+     
+          
+          
+         // $encoded = urlencode($chart);
+          //$imageUrl = "https://quickchart.io/chart?c=" . $encoded;
+         // $imageUrl='https://quickchart.io/chart?bkg=white&c={type:%27bar%27,data:{labels:[2012,2013,2014,2015,2016],datasets:[{label:%27Users%27,data:[120,60,50,180,120]}]}}';
+
+        $url=$chart->getUrl();
+        
+        return $pdf = \PDF::loadView('boletin.pdf_boletin',compact('url'))->stream('archivo.pdf');       
        //$pdf->setPaper('letter', 'landscape');
        // return $pdf->download();       
     }

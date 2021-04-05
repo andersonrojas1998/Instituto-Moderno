@@ -4,10 +4,21 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>Boletin</title>
         <meta name="description" content="Reporte de Cuidadores , Cuidarte en casa S.A.S">
-        <meta name="viewport" content="width=device-width, initial-scale=1">        
-       <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">       
-    </head>    
-    <body>
+        <meta name="viewport" content="width=device-width, initial-scale=1">                
+        
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">       
+        
+        
+        <!-- <link  href="{{-- public_path('/css/chart.css') --}}" rel="stylesheet" type="text/css"/> -->
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+        
+</head>
+
+
+
+
+
 
 <div class="w3-row w3-tiny w3-padding-16">
 
@@ -25,8 +36,7 @@
 </div>
     
 
-<div class="w3-row">
-<table class="w3-table  w3-padding-0 w3-tiny" border="1" >
+<table class="w3-table w3-tiny" border="1" >
         <tr class="w3-tiny">
             <th  style="width:20%;" class="w3-light-grey">ESTUDIANTE:</th>
             <td>Anderson Rojas</td>
@@ -52,9 +62,11 @@
             <td>{{ date('Y-m-d')}}</td>
         </tr>                            
     </table>
+<div class="w3-row">
+
 
 </div>
-<!-- https://www.w3schools.com/w3css/w3css_padding.asp -->
+
 <p class="w3-tiny">CONVENCIONES: APA = Actividades pedagógicas de apoyo, NMP = Nota mínima para ganar el siguiente periodo, ACUM = Acumulado.</p>                 
 <h6 class="w3-center w3-small">RESUMEN DE EVALUACIONES</h6>
     <div class="w3-row">
@@ -146,31 +158,26 @@
     </div>
 
 
-<div class="w3"></div>
-    <div class="col-lg-6 grid-margin stretch-card">
-    <div class="card">
-      <div class="p-4 border-bottom bg-light">
-        <h4 class="card-title mb-0">Bar Chart</h4>
-      </div>
-      <div class="card-body">
-        <div class="d-sm-flex justify-content-between align-items-center pb-4">
-          <h4 class="card-title mb-0">Sales Revenue</h4>
-          <div id="bar-traffic-legend"></div>
-        </div>
-        <p class="mb-4">17% increase in sales than last week</p>
-        <canvas id="barChart" style="height:250px"></canvas>
-      </div>
+
+    <div class="w3-row">
+    <!-- <img src="https://quickchart.io/chart?bkg=white&c={type:%27bar%27,data:{labels:[2012,2013,2014,2015,2016],datasets:[{label:%27Users%27,data:[120,60,50,180,120]}]}}"> -->
+<img src="{{ $url }}">
     </div>
-  </div>
-
+    
 
     
-    
-         
-         
-         
-         
 
-        <div class="page"></div>                        
+
+    <div class="w3-container w3-margin-left">
+            <p class="w3-small">ANDERSON ROJAS <br>
+            Coordinador General
+            </p>            
+    </div>
+  
+         
+         
+         
+        @include('boletin.footer')                             
+        
     </body>
 </html>
