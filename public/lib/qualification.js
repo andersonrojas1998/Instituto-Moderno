@@ -45,27 +45,29 @@ $(document).ready(function() {
     });
 
     $(document).on("click","#generateExcel",function(){
+        
         let grade=$("#sel_grades").val();  
+        let gradeText=$("#sel_grades option:selected").text();  
         let idTeacher=$("#sel_teacher").val();                 
-        let url='/QualificationExcel';
+        let period=$("#sel_perid").val();
+        let course=$("#sel_course").val();
+        let url='/QualificationExcel/'+grade+'/'+idTeacher+'/'+period+'/'+course;
         var xhr = new XMLHttpRequest();
         xhr.open("GET",url);
         xhr.responseType = 'arraybuffer';        
-        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");        
         xhr.onload = function () {
             if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
                 var blob = new Blob([this.response], {type:"application/octetstream"});                
                 var downloadUrl = URL.createObjectURL(blob);
                     var a = document.createElement("a");
                     a.href = downloadUrl;
-                    a.download = "Planilla-Notas.xls";
+                    a.download = "Planilla-Notas."+gradeText+".xls";
                     document.body.appendChild(a);
                     a.click();
             }            
         };
-         xhr.send("grade="+grade+"&idTeacher="+idTeacher);        
-
-
+        xhr.send(null);        
     });
     
 

@@ -228,31 +228,7 @@ class BoletinController extends Controller
                         return response()->json(['message'=>'Error en la base de datos','error' => $th->getMessage()],400);              
                     }
 
-
-
-            
-        
-
-
-            
-
         });                                 
     })->get();
 }
-
-
-public function readEnrollmentQualification(){
-    \Excel::load('public\excel.xlsx', function($reader) {
-        //$reader->skipRows(9); omitir   filas  
-        $data=[];         
-        $reader->each(function($row){              
-        });
-    });
-}
-
-    
-
-  
-
-
 }

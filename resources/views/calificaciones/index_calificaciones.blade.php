@@ -6,7 +6,7 @@
 </div>
     <div class="card-body">
     <div class="row">
-            <div class="col-lg-4">
+            <div class="col-lg-3">
             <strong>Docentes :</strong>
                 <select class="form-control " name="sel_teacher" id="sel_teacher" style="width:100%" >
                 <option value=""></option>
@@ -27,7 +27,7 @@
                 </select>                  
             </div>
 
-            <div class="col-lg-1">
+            <div class="col-lg-2">
             <strong>Periodo :</strong>
                 <select class="form-control select2" name="sel_perid" id="sel_perid" style="width:100%" >
                 <option value="1">1P</option>
@@ -52,7 +52,7 @@
             <a id="generateExcel" class="dropdown-item"><i class="mdi mdi-file-excel text-success"></i> Excel  </a>
             </div></div></div>            
         </div>
-<div class="row"> 
+<!-- <div class="row">  -->
 
 
 
@@ -99,7 +99,7 @@
 
 
 
-</div>
+<!--</div>-->
 
 
     </div>  
