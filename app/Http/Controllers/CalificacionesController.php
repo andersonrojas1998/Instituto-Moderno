@@ -34,16 +34,14 @@ class CalificacionesController extends Controller
         return $data;
     }
 
-    public function generatedEnrollmentQualification($grade,$teacher,$period,$course){
-                                        /*      -- COLOCAR MODULA ESTUDIANTES CALIFICADOS POR PERIODO 
-                                        SELECT  B.id_matricula,CONCAT(A.nombre1,'-',A.nombre2,'-',A.apellido1,'-',A.apellido2) AS estudiante ,D.nombre,C.nota_cog1,C.nota_cog2,C.nota_cog3,C.nota_cog4 from calificaciones as C
-                                        RIGHT JOIN matricula AS B ON C.id_matricula=B.id_matricula
-                                        INNER JOIN alumno as A ON  B.id_alumno=A.id_alumno
-                                        INNER JOIN grado AS D ON  B.id_grado=D.id_grado
-                                        WHERE B.id_estado_matricula=1 AND B.id_grado=11 
-                                        AND C.id_periodo=1 AND id_asignatura=1
-                                        */
-        $alumnoGrade=DB::SELECT("SELECT B.id_matricula,A.nombre1,A.nombre2,A.apellido1,A.apellido2,C.grupo FROM alumno AS A
+    public function generatedEnrollmentQualification($grade,$teacher,$period,$course){                  
+        $aco=($period==3)? 2:1;                                  
+        $alumnoGrade=DB::SELECT("SELECT B.id_matricula,A.nombre1,A.nombre2,A.apellido1,A.apellido2,C.grupo,
+                                    (SELECT  nota_definitiva from calificaciones as tb1 where tb1.id_periodo=1 AND tb1.id_matricula=B.id_matricula AND tb1.id_docente='$teacher' AND tb1.id_asignatura='$course') as primerPeriodo,
+                                    (SELECT  nota_definitiva from calificaciones as tb2 where tb2.id_periodo=2 AND tb2.id_matricula=B.id_matricula AND tb2.id_docente='$teacher' AND tb2.id_asignatura='$course') as segundoPeriodo,
+                                    (SELECT  nota_definitiva from calificaciones as tb3 where tb3.id_periodo=3 AND tb3.id_matricula=B.id_matricula AND tb3.id_docente='$teacher' AND tb3.id_asignatura='$course') as tercerPeriodo,
+                                    (SELECT  acumulativo from calificaciones as tb3 where tb3.id_periodo='$aco' AND tb3.id_matricula=B.id_matricula AND tb3.id_docente='$teacher' AND tb3.id_asignatura='$course') as acumulativo
+                            FROM alumno AS A
                             INNER JOIN matricula AS B ON A.id_alumno=B.id_alumno
                             INNER JOIN grado AS C ON  B.id_grado=C.id_grado
                             WHERE B.id_estado_matricula=1 AND B.id_grado='$grade' ");
@@ -130,6 +128,9 @@ class CalificacionesController extends Controller
                     $sheet->setCellValueByColumnAndRow($row,$alu,$alumno->id_matricula);                   
                     $name=$alumno->nombre1.'  '. $alumno->nombre2.'  '.$alumno->apellido1.'  '.$alumno->apellido2;
                     $sheet->setCellValueByColumnAndRow($row+1,$alu,$name);
+                    $sheet->setCellValueByColumnAndRow($row+2,$alu,$alumno->primerPeriodo);
+                    $sheet->setCellValueByColumnAndRow($row+3,$alu,$alumno->segundoPeriodo);
+                    $sheet->setCellValueByColumnAndRow($row+18,$alu,$alumno->acumulativo);
                     
                     ++$alu;
                 }
@@ -150,11 +151,8 @@ class CalificacionesController extends Controller
 
     
     public function readEnrollmentQualification(){
-        
-       // dd($_FILES);
         \Excel::load($_FILES['file']['tmp_name'], function($reader) {
-        $sheet = $reader->getSheet(0); 
-        //$grado=$sheet->getCell('A11')->getValue(); 
+        $sheet = $reader->getSheet(0);
         $course=substr($sheet->getCell('A12')->getValue(),13,strlen($sheet->getCell('A12')->getValue())); 
         $perid=intval(substr($sheet->getCell('A5')->getValue(),9,strlen($sheet->getCell('A5')->getValue()))); 
         $teacher=substr($sheet->getCell('A6')->getValue(),10,strlen($sheet->getCell('A6')->getValue()));
@@ -166,53 +164,59 @@ class CalificacionesController extends Controller
         $curso=DB::SELECT("SELECT id_asignatura  from  asignatura WHERE nombre='$course' ");
         $data=[];    
         $data=['period'=>$perid,'teacher'=>$users[0]->id,'course'=>$curso[0]->id_asignatura];    
-
-
-        $reader->each(function($row) use ($data){  
-           
-                if (!$row->filter()->isEmpty()) {
-
-                DB::beginTransaction();
-                try {       
-
-                   $perid=$data['period'];
-                   $matricula=intval($row->matricula); 
-                   $teacher=$data['teacher'];
-                   $course=$data['course'];
-                   $nota1=floatval($row->c1); 
-                   $nota2=floatval($row->c2);
-                   $nota3=floatval($row->c3);
-                   $nota4=floatval($row->c4);
-                   $nota5=floatval($row->s1);
-                   $nota6=floatval($row->s2);
-                   $nota7=floatval($row->s3);
-                   $nota8=floatval($row->p1);
-                   $nota9=floatval($row->p2);
-                   $nota10=floatval($row->p3);
-                   $nota11=floatval($row->au1);
-                   $nota12=floatval($row->au2);
-                                     
-                    if($nota1 >5.0 ||  $nota2 >5.0 || $nota3 >5.0  || $nota4>5.0 ||  $nota5 >5.0 || $nota6 >5.0  || $nota7 >5.0 || $nota8>5.0 || $nota9>5.0 || $nota10>5.0 ||  $nota11>5.0 ||  $nota12>5.0 ){
-                    throw new \Exception(json_encode(['error'=>1,'message'=>'Por favor valida todos los campos , revisa que  La nota no supere  a 5.0 ','colum'=>$matricula ]));
-                   }
-                   $notafinal=round(($nota1+$nota2+$nota3+$nota4+$nota5+$nota6+$nota7+$nota8+$nota9+$nota10+$nota11+$nota12)/12,1);
-                   $acomulativo=round(($notafinal*33/100),1);
-
-                   $aprobo=($notafinal > 3.0)? 1:0;
-                    
-                  DB::insert("INSERT INTO `calificaciones`(`id_periodo`, `id_matricula`, `id_docente`, `id_asignatura`, `nota_cog1`, `nota_cog2`, `nota_cog3`, `nota_cog4`, `nota_soc1`, 
-                                `nota_soc2`, `nota_soc3`, `nota_per1`, `nota_per2`, `nota_per3`, `nota_auto`, `nota_coe`, `nota_recuperacion`, `nota_definitiva`, `aprobo`, `acumulativo`)
-                               VALUES ($perid,$matricula,$teacher,$course,$nota1,$nota2,$nota3,$nota4,$nota5,$nota6,$nota7,$nota8,$nota9,$nota10,$nota11,$nota12,null,$notafinal,$aprobo,$acomulativo)");
                 
-                    DB::commit();
-            }catch (PDOException $e) {
-                DB::rollback();
-                throw new \Exception(json_encode(['error'=>2,'message'=>$e->getMessage()]));
-            } 
-          } 
-                              
-            });
-        });
+        $exception = DB::transaction(function() use ($data,$reader) {
+            try {   
+                $reader->each(function($row) use ($data){             
+                if (!$row->filter()->isEmpty()) {
+                        $perid=$data['period'];
+                        $matricula=intval($row->matricula); 
+                        $teacher=$data['teacher'];
+                        $course=$data['course'];
+                        $nota1=floatval($row->c1); 
+                        $nota2=floatval($row->c2);
+                        $nota3=floatval($row->c3);
+                        $nota4=floatval($row->c4);
+                        $nota5=floatval($row->s1);
+                        $nota6=floatval($row->s2);
+                        $nota7=floatval($row->s3);
+                        $nota8=floatval($row->p1);
+                        $nota9=floatval($row->p2);
+                        $nota10=floatval($row->p3);
+                        $nota11=floatval($row->au1);
+                        $nota12=floatval($row->au2);                                      
+                     $year=date('Y');
+                     $calificaciones=DB::SELECT("SELECT id_matricula FROM calificaciones WHERE  id_periodo='$perid' AND id_docente='$teacher' AND  id_asignatura='$course' AND id_matricula='$matricula' ");
+                     if(!empty($calificaciones[0]->id_matricula)){
+                         throw new \Exception(json_encode(['error'=>1,'message'=>'El alumno con matricula '. $calificaciones[0]->id_matricula .' ya cuenta con calificacion para el periodo '.$perid,'colum'=>$matricula ]));
+                     }
+                                          
+                     if($nota1 >5.0 ||  $nota2 >5.0 || $nota3 >5.0  || $nota4>5.0 ||  $nota5 >5.0 || $nota6 >5.0  || $nota7 >5.0 || $nota8>5.0 || $nota9>5.0 || $nota10>5.0 ||  $nota11>5.0 ||  $nota12>5.0 ){
+                         throw new \Exception(json_encode(['error'=>1,'message'=>'Por favor valida todos los campos , revisa que  La nota no supere  a 5.0 ','colum'=>$matricula ]));
+                     }
+                        $notafinal=round(($nota1+$nota2+$nota3+$nota4+$nota5+$nota6+$nota7+$nota8+$nota9+$nota10+$nota11+$nota12)/12,1);
+     
+     
+                        /// validar lo del 2 perido acomulativo                   
+                        $percentage=DB::SELECT("SELECT porcentaje from periodo where codigo='$perid' ");
+                        $acomulativo=round(($notafinal*$percentage[0]->porcentaje/100),1);
+                        ($row->def!=null)? $acomulativo+floatval($row->def):'';
+     
+                        $aprobo=($notafinal > 3.0)? 1:0;
+                         
+                       DB::insert("INSERT INTO `calificaciones`(`id_periodo`, `id_matricula`, `id_docente`, `id_asignatura`, `nota_cog1`, `nota_cog2`, `nota_cog3`, `nota_cog4`, `nota_soc1`, 
+                                     `nota_soc2`, `nota_soc3`, `nota_per1`, `nota_per2`, `nota_per3`, `nota_auto`, `nota_coe`, `nota_recuperacion`, `nota_definitiva`, `aprobo`, `acumulativo`)
+                                    VALUES ($perid,$matricula,$teacher,$course,$nota1,$nota2,$nota3,$nota4,$nota5,$nota6,$nota7,$nota8,$nota9,$nota10,$nota11,$nota12,null,$notafinal,$aprobo,$acomulativo)");     // Do your SQL here                   
+                    }
+                    });
+
+
+                }catch(\PDOException $e) {                        
+                    throw new \Exception(json_encode(['error'=>2,'message'=>$e->getMessage()]));
+                }               
+            });            
+        });  
+        return 1;     
     }
     public static function drawings($position,$sheet,$height,$widt,$path='/icon.jpg')
     {
@@ -226,6 +230,15 @@ class CalificacionesController extends Controller
         $drawing->setWidth($widt);
         return $drawing;
     }
+
+          /*      -- COLOCAR MODULA ESTUDIANTES CALIFICADOS POR PERIODO 
+                SELECT  B.id_matricula,CONCAT(A.nombre1,'-',A.nombre2,'-',A.apellido1,'-',A.apellido2) AS estudiante ,D.nombre,C.nota_cog1,C.nota_cog2,C.nota_cog3,C.nota_cog4 from calificaciones as C
+                RIGHT JOIN matricula AS B ON C.id_matricula=B.id_matricula
+                INNER JOIN alumno as A ON  B.id_alumno=A.id_alumno
+                INNER JOIN grado AS D ON  B.id_grado=D.id_grado
+                WHERE B.id_estado_matricula=1 AND B.id_grado=11 
+                AND C.id_periodo=1 AND id_asignatura=1
+                */
 
     
 

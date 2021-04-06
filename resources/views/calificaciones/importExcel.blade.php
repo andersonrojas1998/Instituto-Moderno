@@ -12,7 +12,7 @@
 
 
 <div class="row">
-<div class="col-lg-6">
+<div class="col-lg-4">
                         <form enctype="multipart/form-data" id="formExcelLoad"  method="post" >
                         <meta name="csrf-token" content="{{ csrf_token() }}">                          
                                 <label>Plantilla: </label>
@@ -21,7 +21,7 @@
                                 </div>                                                                         
                         </form>
 </div>
-<div class="col-lg-2">
+<div class="col-lg-1">
 <button type="button" id="loadExcel" class="btn btn-success btn-fw">Cargar</button>
 </div>
                     </div>

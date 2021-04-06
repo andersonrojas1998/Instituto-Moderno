@@ -11,31 +11,45 @@ $(document).ready(function() {
     });
     
 
-    $(document).on("click","#loadExcel",function(){
+    $(document).on("click","#loadExcel",function(){        
+        var formData = new FormData($("#formExcelLoad")[0]);        
+        Swal.fire({
+            title: '\u00A1Atenci\u00f3n!',
+            text: "Estas seguro que deseas cargar el boletin de calificaciones !",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si !'
+          }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '/readEnrollmentQualification',
+                    data: formData,
+                    method: 'post',
+                    cache: false,
+                    contentType: false,
+                    processData: false,                                                            
+                    dataType: "JSON",
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    success: function(data){
+                     console.log(data);
+                    sweetMessage('\u00A1Registro exitoso!', '\u00A1 Se ha realizado con \u00E9xito su solicitud!'); setTimeout(function () { location.reload() }, 2000);                    
+                 },error:function(res,tx,status){                    
+                     if(res.status==500){
+                        var data=JSON.parse(res.responseText);                    
+                        sweetMessage('\u00A1Atenci\u00f3n!',JSON.parse(data.message).message, 'error');
+                     }                    
+                 }
+                });
+              
+
+            }
+          })
+
+
+
         
-        var formData = new FormData($("#formExcelLoad")[0]);
-
-        $.ajax({
-            method: 'post',
-            processData: false,
-            contentType: false,
-            cache: false,
-            data: formData,
-            dataType: "JSON", headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-            url: '/readEnrollmentQualification',
-         success:function(data){
-            Swal.fire({
-                title: 'Error!',
-                text: 'Do you want to continue',
-                icon: 'error',
-                confirmButtonText: 'Cool'
-              });
-         },error:function(data){
-
-         }
-
-
-        });
 
     });
 
@@ -69,35 +83,46 @@ $(document).ready(function() {
     });
 
     $(document).on("click","#btn_qualify",function(){
+      
         let idgrade=$("#sel_grades").val();  
-        let sel_perid=$("#sel_perid").val();  
-        dt_qualifications(idgrade,sel_perid);
+        let sel_perid=$("#sel_perid").val(); 
+        if($("#sel_teacher").val()!=""  &&  idgrade!="" && $("#sel_course").val()!="" && sel_perid!=""){
+            dt_qualifications(idgrade,sel_perid);
+        }else{
+            sweetMessage('\u00A1Atenci\u00f3n!', 'Por favor complete  los campos requeridos.', 'warning');
+        }
+          
+         
+       
     });
 
-    $(document).on("click","#generateExcel",function(){
-        
+    $(document).on("click","#generateExcel",function(){        
         let grade=$("#sel_grades").val();  
         let gradeText=$("#sel_grades option:selected").text();  
         let idTeacher=$("#sel_teacher").val();                 
         let period=$("#sel_perid").val();
         let course=$("#sel_course").val();
-        let url='/QualificationExcel/'+grade+'/'+idTeacher+'/'+period+'/'+course;
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET",url);
-        xhr.responseType = 'arraybuffer';        
-        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");        
-        xhr.onload = function () {
-            if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-                var blob = new Blob([this.response], {type:"application/octetstream"});                
-                var downloadUrl = URL.createObjectURL(blob);
-                    var a = document.createElement("a");
-                    a.href = downloadUrl;
-                    a.download = "Planilla-Notas."+gradeText+".xls";
-                    document.body.appendChild(a);
-                    a.click();
-            }            
-        };
-        xhr.send(null);        
+        if(idTeacher!=""  &&  grade!="" && course!="" && period!=""){
+            let url='/QualificationExcel/'+grade+'/'+idTeacher+'/'+period+'/'+course;
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET",url);
+            xhr.responseType = 'arraybuffer';        
+            xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");        
+            xhr.onload = function () {
+                if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                    var blob = new Blob([this.response], {type:"application/octetstream"});                
+                    var downloadUrl = URL.createObjectURL(blob);
+                        var a = document.createElement("a");
+                        a.href = downloadUrl;
+                        a.download = "Planilla-Notas."+gradeText+".xls";
+                        document.body.appendChild(a);
+                        a.click();
+                }            
+            };
+            xhr.send(null);
+        }else{
+            sweetMessage('\u00A1Atenci\u00f3n!', 'Por favor complete  los campos requeridos.', 'warning');
+        }        
     });
     
 

@@ -7,28 +7,28 @@
     <div class="card-body">
     <div class="row">
             <div class="col-lg-3">
-            <strong>Docentes :</strong>
+            <strong>Docentes : <span class="text-danger">*</span></strong>
                 <select class="form-control " name="sel_teacher" id="sel_teacher" style="width:100%" >
                 <option value=""></option>
                 </select>                  
             </div>
 
             <div class="col-lg-2">
-            <strong>Grados :</strong>
+            <strong>Grados : <span class="text-danger">*</span></strong>
                 <select class="form-control" name="sel_grades" id="sel_grades" style="width:100%" >
                 <option value=""></option>
                 </select>                  
             </div>
 
             <div class="col-lg-2">
-            <strong>Asignatura :</strong>
+            <strong>Asignatura : <span class="text-danger">*</span></strong>
                 <select class="form-control" name="sel_course" id="sel_course" style="width:100%" >
                 <option value=""></option>
                 </select>                  
             </div>
 
             <div class="col-lg-2">
-            <strong>Periodo :</strong>
+            <strong>Periodo : <span class="text-danger">*</span></strong>
                 <select class="form-control select2" name="sel_perid" id="sel_perid" style="width:100%" >
                 <option value="1">1P</option>
                 <option value="2">2P</option>
