@@ -94,7 +94,10 @@
         <ul class="nav flex-column sub-menu">
           <li class="nav-item {{ active_class(['icons/material']) }}">            
             <a class="nav-link" href="{{ url('/Calificaciones/inicio') }}"><i class="menu-icon mdi mdi-television"></i> Inicio</a>
-          </li>          
+          </li>                    
+          <li class="nav-item {{ active_class(['icons/material']) }}">            
+            <a class="nav-link" href="{{ url('/Calificaciones/formato-excel') }}"><i class="menu-icon mdi mdi-television"></i> Importar Excel</a>
+          </li>
         </ul>
       </div>
     </li>

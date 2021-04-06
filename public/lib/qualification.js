@@ -9,6 +9,36 @@ $(document).ready(function() {
         $('#sel_teacher').select2();
     }
     });
+    
+
+    $(document).on("click","#loadExcel",function(){
+        
+        var formData = new FormData($("#formExcelLoad")[0]);
+
+        $.ajax({
+            method: 'post',
+            processData: false,
+            contentType: false,
+            cache: false,
+            data: formData,
+            dataType: "JSON", headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            url: '/readEnrollmentQualification',
+         success:function(data){
+            Swal.fire({
+                title: 'Error!',
+                text: 'Do you want to continue',
+                icon: 'error',
+                confirmButtonText: 'Cool'
+              });
+         },error:function(data){
+
+         }
+
+
+        });
+
+    });
+
     $(document).on("change","#sel_teacher",function(){
         let idUser=$(this).val();
         $.ajax({ url:"/showGradesAssign",type:"GET",data:{idTeacher:idUser},success:function(data){

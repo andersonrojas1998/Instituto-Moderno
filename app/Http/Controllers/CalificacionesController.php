@@ -7,6 +7,9 @@ class CalificacionesController extends Controller
     public function index(){        
         return view('calificaciones.index_calificaciones');
     }
+    public function indexLoadExcelFormat(){        
+        return view('calificaciones.importExcel');
+    }
     public function alumnCourse(){
 
     $grade = \Request::input('grade');
@@ -147,7 +150,9 @@ class CalificacionesController extends Controller
 
     
     public function readEnrollmentQualification(){
-        \Excel::load('public\notas.xls', function($reader) {
+        
+       // dd($_FILES);
+        \Excel::load($_FILES['file']['tmp_name'], function($reader) {
         $sheet = $reader->getSheet(0); 
         //$grado=$sheet->getCell('A11')->getValue(); 
         $course=substr($sheet->getCell('A12')->getValue(),13,strlen($sheet->getCell('A12')->getValue())); 
@@ -164,9 +169,9 @@ class CalificacionesController extends Controller
 
 
         $reader->each(function($row) use ($data){  
-            
-            //dd(floatval($row->c4));
-            dd($row);
+           
+                if (!$row->filter()->isEmpty()) {
+
                 DB::beginTransaction();
                 try {       
 
@@ -174,9 +179,7 @@ class CalificacionesController extends Controller
                    $matricula=intval($row->matricula); 
                    $teacher=$data['teacher'];
                    $course=$data['course'];
-
-
-                   $nota1=floatval($row->c1);
+                   $nota1=floatval($row->c1); 
                    $nota2=floatval($row->c2);
                    $nota3=floatval($row->c3);
                    $nota4=floatval($row->c4);
@@ -186,30 +189,28 @@ class CalificacionesController extends Controller
                    $nota8=floatval($row->p1);
                    $nota9=floatval($row->p2);
                    $nota10=floatval($row->p3);
-                   $nota11=floatval($row->Au1);
-                   $nota12=floatval($row->Au2);
-
-                   //revisar si  viene con punto o coma
-                   //validar si no viene vacio
-
-                   $notafinal=($nota1+$nota2+$nota3+$nota4+$nota5+$nota6+$nota7+$nota8+$nota9+$nota10+$nota11+$nota12)/12;
-
-                   $acomulativo=($notafinal*33/100);
-
-
+                   $nota11=floatval($row->au1);
+                   $nota12=floatval($row->au2);
+                                     
+                    if($nota1 >5.0 ||  $nota2 >5.0 || $nota3 >5.0  || $nota4>5.0 ||  $nota5 >5.0 || $nota6 >5.0  || $nota7 >5.0 || $nota8>5.0 || $nota9>5.0 || $nota10>5.0 ||  $nota11>5.0 ||  $nota12>5.0 ){
+                    throw new \Exception(json_encode(['error'=>1,'message'=>'Por favor valida todos los campos , revisa que  La nota no supere  a 5.0 ','colum'=>$matricula ]));
+                   }
+                   $notafinal=round(($nota1+$nota2+$nota3+$nota4+$nota5+$nota6+$nota7+$nota8+$nota9+$nota10+$nota11+$nota12)/12,1);
+                   $acomulativo=round(($notafinal*33/100),1);
 
                    $aprobo=($notafinal > 3.0)? 1:0;
                     
                   DB::insert("INSERT INTO `calificaciones`(`id_periodo`, `id_matricula`, `id_docente`, `id_asignatura`, `nota_cog1`, `nota_cog2`, `nota_cog3`, `nota_cog4`, `nota_soc1`, 
                                 `nota_soc2`, `nota_soc3`, `nota_per1`, `nota_per2`, `nota_per3`, `nota_auto`, `nota_coe`, `nota_recuperacion`, `nota_definitiva`, `aprobo`, `acumulativo`)
-                                VALUES ($perid,$matricula,$teacher,$course,$nota1,$nota2,$nota3,$nota4,$nota5,$nota6,$nota7,$nota8,$nota9,$nota10,$nota11,$nota12,null,$notafinal,$aprobo,$acomulativo)");
+                               VALUES ($perid,$matricula,$teacher,$course,$nota1,$nota2,$nota3,$nota4,$nota5,$nota6,$nota7,$nota8,$nota9,$nota10,$nota11,$nota12,null,$notafinal,$aprobo,$acomulativo)");
                 
-                } catch (\Throwable $th) {                    
-                  DB::commit();
-                }catch (\Exception $e) {
-                    DB::rollback();
-                    throw new Exception(json_encode($e->getMessage()));
-                }                
+                    DB::commit();
+            }catch (PDOException $e) {
+                DB::rollback();
+                throw new \Exception(json_encode(['error'=>2,'message'=>$e->getMessage()]));
+            } 
+          } 
+                              
             });
         });
     }

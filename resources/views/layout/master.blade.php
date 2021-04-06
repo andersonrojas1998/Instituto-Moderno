@@ -57,6 +57,10 @@
   {!! Html::script('https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js') !!}    
   {!! Html::script('assets/plugins/perfect-scrollbar/perfect-scrollbar.min.js') !!}
 
+  <script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+
+
 
   {!! Html::script('lib/global.js') !!}
   <!-- end base js -->
