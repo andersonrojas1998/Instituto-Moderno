@@ -1,7 +1,7 @@
 <nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
   <div class="text-center navbar-brand-wrapper d-flex align-items-top justify-content-center">
     <a class="navbar-brand brand-logo" href="{{ url('/') }}">
-      <img src="{{ url('assets/images/logo.svg') }}" alt="logo" /> </a>
+     <!-- <img src="{{ url('images/slogan.svg') }}" alt="logo" /> </a>-->
     <a class="navbar-brand brand-logo-mini" href="{{ url('/') }}">
       <img src="{{ url('assets/images/logo-mini.svg') }}" alt="logo" /> </a>
   </div>
@@ -9,7 +9,7 @@
     <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
       <span class="mdi mdi-menu"></span>
     </button>
-    <ul class="navbar-nav navbar-nav-left header-links">
+    <!--<ul class="navbar-nav navbar-nav-left header-links">
       <li class="nav-item d-none d-xl-flex">
         <a href="#" class="nav-link">Schedule <span class="badge badge-primary ml-1">New</span>
         </a>
@@ -30,14 +30,14 @@
           <a href="#" class="dropdown-item"><i class="mdi mdi-bookmark-plus-outline"></i>Score</a>
         </div>
       </li>
-    </ul>
+   </ul>-->
     <ul class="navbar-nav navbar-nav-right">
       <li class="nav-item dropdown">
         <a class="nav-link count-indicator dropdown-toggle" id="messageDropdown" href="#" data-toggle="dropdown" aria-expanded="false">
           <i class="mdi mdi-file-outline"></i>
           <span class="count">7</span>
         </a>
-        <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list pb-0" aria-labelledby="messageDropdown">
+        <!--<div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list pb-0" aria-labelledby="messageDropdown">
           <a class="dropdown-item py-3">
             <p class="mb-0 font-weight-medium float-left">You have 7 unread mails </p>
             <span class="badge badge-pill badge-primary float-right">View all</span>
@@ -67,7 +67,7 @@
               <p class="font-weight-light small-text"> The meeting is cancelled </p>
             </div>
           </a>
-        </div>
+       </div>-->
       </li>
       <li class="nav-item dropdown">
         <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-toggle="dropdown">
@@ -110,8 +110,8 @@
       </li>
       <li class="nav-item dropdown d-none d-xl-inline-block">
         <a class="nav-link dropdown-toggle" id="UserDropdown" href="#" data-toggle="dropdown" aria-expanded="false">
-          <span class="profile-text d-none d-md-inline-flex">{{ Auth::user()->name}}</span>
-          <img class="img-xs rounded-circle" src="{{ url('assets/images/faces/face8.jpg') }}" alt="Profile image"> </a>
+          <span class="profile-text d-none d-md-inline-flex">{{ Auth::user()->name }}</span>
+          <img class="img-xs rounded-circle" src="{{ url('/images/user1.png') }}" alt="Profile image"> </a>
         <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="UserDropdown">
           <a class="dropdown-item p-0">
             <div class="d-flex border-bottom w-100 justify-content-center">
