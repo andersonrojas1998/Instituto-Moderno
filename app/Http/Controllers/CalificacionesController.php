@@ -13,9 +13,15 @@ class CalificacionesController extends Controller
     public function alumnCourse(){
 
     $grade = \Request::input('grade');
-    $period = \Request::input('perid');
+    $period = \Request::input('perid');    
+    $teacher=\Request::input('teacher');
+    $course=\Request::input('course');
 
-    $alumnoGrade=DB::SELECT("SELECT B.id_matricula,A.nombre1,A.nombre2,A.apellido1,A.apellido2,C.grupo FROM alumno AS A
+    $alumnoGrade=DB::SELECT("SELECT B.id_matricula,A.nombre1,A.nombre2,A.apellido1,A.apellido2,C.grupo,
+                                (SELECT  nota_definitiva from calificaciones as tb1 where tb1.id_periodo=1 AND tb1.id_matricula=B.id_matricula AND tb1.id_docente='$teacher' AND tb1.id_asignatura='$course' LIMIT 1) as primerPeriodo,
+                                (SELECT  nota_definitiva from calificaciones as tb2 where tb2.id_periodo=2 AND tb2.id_matricula=B.id_matricula AND tb2.id_docente='$teacher' AND tb2.id_asignatura='$course' LIMIT 1) as segundoPeriodo,
+                                (SELECT  nota_definitiva from calificaciones as tb3 where tb3.id_periodo=3 AND tb3.id_matricula=B.id_matricula AND tb3.id_docente='$teacher' AND tb3.id_asignatura='$course' LIMIT 1) as tercerPeriodo
+                            FROM alumno AS A
                             INNER JOIN matricula AS B ON A.id_alumno=B.id_alumno
                             INNER JOIN grado AS C ON  B.id_grado=C.id_grado
                             WHERE B.id_estado_matricula=1 AND B.id_grado='$grade' ");                            
@@ -25,9 +31,9 @@ class CalificacionesController extends Controller
             $data['data'][$key]['mat'] = $row->id_matricula;
             $data['data'][$key]['alumn'] = $row->nombre1.' '.$row->nombre2.' '.$row->apellido1. ' '.$row->apellido1;
             $data['data'][$key]['grupo']=$row->grupo;
-            $data['data'][$key]['period1']=(1==$period)? 'X':'';
-            $data['data'][$key]['period2']=(2==$period)? 'X':'';
-            $data['data'][$key]['period3']=(3==$period)? 'X':'';
+            $data['data'][$key]['period1']=$row->primerPeriodo;
+            $data['data'][$key]['period2']=$row->segundoPeriodo;
+            $data['data'][$key]['period3']=$row->tercerPeriodo;
             $data['data'][$key]['notas']='';
             ++$i;
         }
@@ -37,10 +43,10 @@ class CalificacionesController extends Controller
     public function generatedEnrollmentQualification($grade,$teacher,$period,$course){                  
         $aco=($period==3)? 2:1;                                  
         $alumnoGrade=DB::SELECT("SELECT B.id_matricula,A.nombre1,A.nombre2,A.apellido1,A.apellido2,C.grupo,
-                                    (SELECT  nota_definitiva from calificaciones as tb1 where tb1.id_periodo=1 AND tb1.id_matricula=B.id_matricula AND tb1.id_docente='$teacher' AND tb1.id_asignatura='$course') as primerPeriodo,
-                                    (SELECT  nota_definitiva from calificaciones as tb2 where tb2.id_periodo=2 AND tb2.id_matricula=B.id_matricula AND tb2.id_docente='$teacher' AND tb2.id_asignatura='$course') as segundoPeriodo,
-                                    (SELECT  nota_definitiva from calificaciones as tb3 where tb3.id_periodo=3 AND tb3.id_matricula=B.id_matricula AND tb3.id_docente='$teacher' AND tb3.id_asignatura='$course') as tercerPeriodo,
-                                    (SELECT  acumulativo from calificaciones as tb3 where tb3.id_periodo='$aco' AND tb3.id_matricula=B.id_matricula AND tb3.id_docente='$teacher' AND tb3.id_asignatura='$course') as acumulativo
+                                    (SELECT  nota_definitiva from calificaciones as tb1 where tb1.id_periodo=1 AND tb1.id_matricula=B.id_matricula AND tb1.id_docente='$teacher' AND tb1.id_asignatura='$course'  LIMIT 1) as primerPeriodo,
+                                    (SELECT  nota_definitiva from calificaciones as tb2 where tb2.id_periodo=2 AND tb2.id_matricula=B.id_matricula AND tb2.id_docente='$teacher' AND tb2.id_asignatura='$course'  LIMIT 1) as segundoPeriodo,
+                                    (SELECT  nota_definitiva from calificaciones as tb3 where tb3.id_periodo=3 AND tb3.id_matricula=B.id_matricula AND tb3.id_docente='$teacher' AND tb3.id_asignatura='$course'  LIMIT 1) as tercerPeriodo,
+                                    (SELECT  acumulativo from calificaciones as tb3 where tb3.id_periodo='$aco' AND tb3.id_matricula=B.id_matricula AND tb3.id_docente='$teacher' AND tb3.id_asignatura='$course'  LIMIT 1) as acumulativo
                             FROM alumno AS A
                             INNER JOIN matricula AS B ON A.id_alumno=B.id_alumno
                             INNER JOIN grado AS C ON  B.id_grado=C.id_grado

@@ -86,8 +86,10 @@ $(document).ready(function() {
       
         let idgrade=$("#sel_grades").val();  
         let sel_perid=$("#sel_perid").val(); 
-        if($("#sel_teacher").val()!=""  &&  idgrade!="" && $("#sel_course").val()!="" && sel_perid!=""){
-            dt_qualifications(idgrade,sel_perid);
+        let teacher=$("#sel_teacher").val();
+        let course=$("#sel_course").val();
+        if(teacher!=""  &&  idgrade!="" && course!="" && sel_perid!=""){
+            dt_qualifications(idgrade,sel_perid,teacher,course);
         }else{
             sweetMessage('\u00A1Atenci\u00f3n!', 'Por favor complete  los campos requeridos.', 'warning');
         }
@@ -131,7 +133,7 @@ $(document).ready(function() {
 } );
 
 
-var dt_qualifications=function(grade,perid){
+var dt_qualifications=function(grade,perid,teacher,course){
     $('#dt_qualifications').DataTable({        
         lengthChange: false,        
         responsive: true,
@@ -143,7 +145,7 @@ var dt_qualifications=function(grade,perid){
         ajax: {
             url: "/QualificationTable/",
             method: "GET", 
-            data:{grade:grade,perid:perid},
+            data:{grade:grade,perid:perid,teacher:teacher,course:course},
             dataSrc: function (json) {
                 if (!json.data) {
                     return [];
