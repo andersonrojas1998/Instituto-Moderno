@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 31-03-2021 a las 05:52:01
+-- Tiempo de generación: 07-04-2021 a las 01:44:26
 -- Versión del servidor: 5.7.26
 -- Versión de PHP: 7.2.18
 
@@ -2498,7 +2498,14 @@ CREATE TABLE IF NOT EXISTS `area` (
   `nombre` varchar(30) COLLATE utf8_spanish_ci DEFAULT NULL,
   `tag` varchar(30) COLLATE utf8_spanish_ci DEFAULT NULL,
   PRIMARY KEY (`id_categoria`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `area`
+--
+
+INSERT INTO `area` (`id_categoria`, `nombre`, `tag`) VALUES
+(1, 'Ciencias Basicas', NULL);
 
 -- --------------------------------------------------------
 
@@ -2515,7 +2522,15 @@ CREATE TABLE IF NOT EXISTS `asignatura` (
   `tag` varchar(30) COLLATE utf8_spanish_ci DEFAULT NULL,
   PRIMARY KEY (`id_asignatura`),
   KEY `fk_materia_categoria1_idx` (`id_area`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `asignatura`
+--
+
+INSERT INTO `asignatura` (`id_asignatura`, `nombre`, `id_area`, `orden_print`, `tag`) VALUES
+(1, 'Matematicas', 1, 1, NULL),
+(2, 'Español', 1, 2, NULL);
 
 -- --------------------------------------------------------
 
@@ -2637,10 +2652,10 @@ INSERT INTO `calendario` (`id_calendario`, `tag`, `descripcion`) VALUES
 DROP TABLE IF EXISTS `calificaciones`;
 CREATE TABLE IF NOT EXISTS `calificaciones` (
   `id_calificaciones` int(11) NOT NULL AUTO_INCREMENT,
-  `id_periodo` int(11) NOT NULL,
-  `id_matricula` int(11) NOT NULL,
-  `id_docente` int(11) NOT NULL,
-  `id_asignatura` int(11) NOT NULL,
+  `id_periodo` int(11) DEFAULT NULL,
+  `id_matricula` int(11) DEFAULT NULL,
+  `id_docente` int(11) DEFAULT NULL,
+  `id_asignatura` int(11) DEFAULT NULL,
   `nota_cog1` float DEFAULT NULL,
   `nota_cog2` float DEFAULT NULL,
   `nota_cog3` float DEFAULT NULL,
@@ -2661,12 +2676,12 @@ CREATE TABLE IF NOT EXISTS `calificaciones` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_calificaciones`),
-  KEY `fk_nota_periodo1_idx` (`id_periodo`),
   KEY `fk_nota_materia1_idx` (`id_asignatura`),
   KEY `fk_nota_profesor1_idx` (`id_docente`),
   KEY `fk_nota_matricula1_idx` (`id_matricula`),
-  KEY `fk_calificaciones_notas_adicionales1_idx` (`notas_adicionales_id_nota`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+  KEY `fk_calificaciones_notas_adicionales1_idx` (`notas_adicionales_id_nota`),
+  KEY `fk_perido_idx` (`id_periodo`)
+) ENGINE=InnoDB AUTO_INCREMENT=117 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 -- --------------------------------------------------------
 
@@ -2701,7 +2716,15 @@ CREATE TABLE IF NOT EXISTS `curso` (
   KEY `fk_grado_has_docente_docente1_idx` (`id_docente`),
   KEY `fk_grado_has_docente_grado1_idx` (`id_grado`),
   KEY `fk_grado_has_docente_materia_materia1_idx` (`id_materia`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `curso`
+--
+
+INSERT INTO `curso` (`id`, `id_grado`, `id_docente`, `id_materia`, `año`, `created_at`, `updated_at`, `intensidad_horaria`) VALUES
+(3, 11, 1, 2, 2021, '2021-04-02 18:34:57', '2021-04-02 18:34:57', 3),
+(4, 11, 1, 1, 2021, '2021-04-02 18:34:57', '2021-04-02 18:34:57', 4);
 
 -- --------------------------------------------------------
 
@@ -4477,7 +4500,6 @@ ALTER TABLE `calificaciones`
   ADD CONSTRAINT `fk_calificaciones_notas_adicionales1` FOREIGN KEY (`notas_adicionales_id_nota`) REFERENCES `notas_adicionales` (`id_nota`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_nota_materia1` FOREIGN KEY (`id_asignatura`) REFERENCES `asignatura` (`id_asignatura`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_nota_matricula1` FOREIGN KEY (`id_matricula`) REFERENCES `matricula` (`id_matricula`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_nota_periodo1` FOREIGN KEY (`id_periodo`) REFERENCES `periodo` (`id_periodo`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_nota_profesor1` FOREIGN KEY (`id_docente`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
