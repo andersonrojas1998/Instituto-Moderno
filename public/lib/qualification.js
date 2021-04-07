@@ -92,10 +92,7 @@ $(document).ready(function() {
             dt_qualifications(idgrade,sel_perid,teacher,course);
         }else{
             sweetMessage('\u00A1Atenci\u00f3n!', 'Por favor complete  los campos requeridos.', 'warning');
-        }
-          
-         
-       
+        }                          
     });
 
     $(document).on("click","#generateExcel",function(){        

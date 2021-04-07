@@ -15,6 +15,19 @@ class BoletinController extends Controller
     public function index(){
         return view('boletin.index_boletin');
     }
+
+    public function grades(){
+        $grade=grado::all();
+        return json_encode($grade);
+    }
+    public function studentsForGrades($grade){
+        $alumnoGrade=DB::SELECT("SELECT B.id_matricula,A.nombre1,A.nombre2,A.apellido1,A.apellido2
+                            FROM alumno AS A
+                            INNER JOIN matricula AS B ON A.id_alumno=B.id_alumno
+                            INNER JOIN grado AS C ON  B.id_grado=C.id_grado
+                            WHERE B.id_estado_matricula=1 AND B.id_grado='$grade' ");  
+        return json_encode($alumnoGrade);
+    }
     public function genetedBulletin(){
         /*$chart = '{
             "type": "bar",
