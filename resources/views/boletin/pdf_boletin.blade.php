@@ -3,24 +3,16 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>Boletin</title>
-        <meta name="description" content="Reporte de Cuidadores , Cuidarte en casa S.A.S">
-        <meta name="viewport" content="width=device-width, initial-scale=1">                
-        
-        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">       
-        
-        
-        <!-- <link  href="{{-- public_path('/css/chart.css') --}}" rel="stylesheet" type="text/css"/> -->
-        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-
-        
+        <meta name="description" content="Boletin Instituto Moderno">
+        <meta name="viewport" content="width=device-width, initial-scale=1">                        
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        <style type="text/css">
+        .padding-3{
+            padding:3px 3px !important;
+        }
+        </style>
 </head>
-
-
-
-
-
-
-<div class="w3-row w3-tiny w3-padding-16">
+<div class="w3-row w3-tiny w3-padding-1   w3-margin-0">
 
     <div class="w3-col">
         <img class="rounded" src="{{ asset('/icon.jpg') }}" height="85" width="85">
@@ -36,85 +28,76 @@
 </div>
     
 
-<table class="w3-table w3-tiny" border="1" >
-        <tr class="w3-tiny">
-            <th  style="width:20%;" class="w3-light-grey">ESTUDIANTE:</th>
-            <td>Anderson Rojas</td>
-            <th class="w3-light-grey">GRADO:</th>
-            <td>5-B</td>            
+
+<table class="w3-table w3-tiny" border="1"  >
+        <tr class="w3-tiny" >
+            <th  style="width:19%;" class="w3-light-grey padding-3">ESTUDIANTE:</th>
+            <td class="padding-3">{{ $head[0]->nombre1 .' ' .$head[0]->nombre2 .' '. $head[0]->apellido1 . ' '. $head[0]->apellido2 }}</td>
+            <th class="w3-light-grey padding-3">GRADO:</th>
+            <td class="padding-3">{{ $head[0]->grupo }}</td>            
         </tr>
         <tr>
-        <th class="w3-light-grey">DIRECTOR DE GRUPO: </th>            
-            <td>Jessica castro</td>
-            <th  style="width:20%;" class="w3-light-grey"> JORNADA:</th>
-            <td>TARDE</td>        
+        <th class="w3-light-grey padding-3">DIRECTOR DE GRUPO: </th>            
+            <td class="padding-3">{{ $head[0]->docente }}</td>
+            <th style="width:20%;" class="w3-light-grey padding-3"> JORNADA:</th>
+            <td class="padding-3">{{ $head[0]->jornada }}</td>        
         </tr>
         <tr>
-            <th class="w3-light-grey">ACUDIENTE: </th>
-            <td>Amparo Capera</td>
-            <th class="w3-light-grey">CALENDARIO:</th>
-            <td>CALENDARIO A</td>
+            <th class="w3-light-grey padding-3">ACUDIENTE: </th>
+            <td class="padding-3">{{ $head[0]->acudiente}}</td>
+            <th class="w3-light-grey padding-3">CALENDARIO:</th>
+            <td class="padding-3">CALENDARIO A</td>
         </tr>
         <tr>
-            <th class="w3-light-grey">MODALIDAD: </th>
-            <td>ACADEMICA</td>
-            <th class="w3-light-grey">FECHA EXPED:</th>
-            <td>{{ date('Y-m-d')}}</td>
+            <th class="w3-light-grey padding-3">MODALIDAD: </th>
+            <td class="padding-3">ACADEMICA</td>
+            <th class="w3-light-grey padding-3">FECHA EXPED:</th>
+            <td class="padding-3">{{  $expedition }}</td>
         </tr>                            
     </table>
-<div class="w3-row">
 
 
-</div>
-
-<p class="w3-tiny">CONVENCIONES: APA = Actividades pedagógicas de apoyo, NMP = Nota mínima para ganar el siguiente periodo, ACUM = Acumulado.</p>                 
+<p class="w3-tiny">CONVENCIONES: APA = Actividades pedagógicas de apoyo, NMP = Nota mínima para ganar el siguiente periodo, ACUM = Acumulado.</p>    
 <h6 class="w3-center w3-small">RESUMEN DE EVALUACIONES</h6>
-    <div class="w3-row">
-    <div class="w3-half w3-container w3-tiny">
+<div class="row">
 
-    <table class="w3-table" border="1" >
-        <thead >
-        <tr>
-            <td>ÁREAS O ASIGNATURAS</td>
-            <td class="w3-light-grey">IH</td>
-            <td class="w3-light-grey">1P 35%</td>
-            <td> AP1</td>
-            <td>ACUM</td>
+<div class="w3-col s6">
+
+<table class="w3-table w3-tiny" border="1" >
+        <thead>
+        <tr class="w3-light-grey">
+            <td class="padding-3 w3-center">ÁREAS O ASIGNATURAS</td>
+            <td class=" w3-center padding-3">IH</td>
+            <th class="w3-center padding-3">1P 35%</th>
+            <td class="w3-center padding-3">AP1</td>
+            <td class="w3-center padding-3">ACUM</td>
         </tr>
         </thead>
         <tbody>
+        @foreach($course as $all)
         <tr>
-            <td>1. MATEMATICAS</td>
-            <td class="text-center">6</td>
-            <td class="text-center">4.0</td>
-            <td></td>
-            <td class="text-center">3.9</td>
+            <td class="padding-3">{{ $all->nombre }}</td>
+            <td class="w3-center padding-3">{{ $all->intensidad_horaria }}</td>
+            <td class="w3-center padding-3">{{ $all->primerPeriodo }}</td>
+            <td class="w3-center padding-3"></td>
+            <td class="w3-center padding-3"></td>            
         </tr>
-        <tr>
-            <td>1. MATEMATICAS</td>
-            <td class="text-center">6</td>
-            <td class="text-center">4.0</td>
-            <td></td>
-            <td class="text-center">3.9</td>
-        </tr>
-        <tr>
-            <td>1. MATEMATICAS</td>
-            <td class="text-center">6</td>
-            <td class="text-center">4.0</td>
-            <td></td>
-            <td class="text-center">3.9</td>
-        </tr>
-        <tr>
-            <td>1. MATEMATICAS</td>
-            <td class="text-center">6</td>
-            <td class="text-center">4.0</td>
-            <td></td>
-            <td class="text-center">3.9</td>
-        </tr>        
+        @endforeach   
         </tbody>        
     </table>
-</div>        
-</div>        
+
+ </div>
+
+</div>
+
+    <!-- <div class="w3-row"> -->
+    <!-- <div class="w3-tiny"> -->
+
+    
+<!-- </div>         -->
+<!-- </div>    -->
+
+<!--
 <div class="w3-row w3-padding-16">
 <div class="w3-half w3-container w3-tiny">
     <b class="w3-center"> CIENCIAS SOCIALES</b>    
@@ -155,21 +138,30 @@
                 
             </table>
         </div>    
-    </div>
+    </div>-->
 
 
-
-    <div class="w3-row">
-    <!-- <img src="https://quickchart.io/chart?bkg=white&c={type:%27bar%27,data:{labels:[2012,2013,2014,2015,2016],datasets:[{label:%27Users%27,data:[120,60,50,180,120]}]}}"> -->
-<img src="{{ $url }}">
+    
+    <div class="w3-row w3-padding-5">
+    <table class="w3-table w3-striped w3-border">
+    <tr>
+    <td><h6 class="w3-center w3-small">CUADRO ESTADISTICO DE VALORACIONES</h6></td>
+    </tr>
+    <tr>
+    <td><img src="{{ $url }}"></td>
+    </tr>
+        
+        </table>
     </div>
     
 
     
 
-
+<br>
     <div class="w3-container w3-margin-left">
-            <p class="w3-small">ANDERSON ROJAS <br>
+            <!-- <img src="{{ asset('/icon.jpg') }}" width="30" height=25> -->
+            <p  class="w3-small">________________________</p> 
+            <p class="w3-small text-capitalize">ANDERSON ROJAS <br>
             Coordinador General
             </p>            
     </div>

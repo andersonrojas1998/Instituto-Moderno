@@ -28,7 +28,45 @@ class BoletinController extends Controller
                             WHERE B.id_estado_matricula=1 AND B.id_grado='$grade' ");  
         return json_encode($alumnoGrade);
     }
-    public function genetedBulletin(){
+    public function genetedBulletin($matricula,$expedition){
+
+        $course=DB::SELECT("SELECT A.id_asignatura,A.nombre,B.intensidad_horaria,
+        (SELECT  nota_definitiva from calificaciones as tb1 where tb1.id_periodo=1 AND tb1.id_matricula=C.id_matricula  AND tb1.id_asignatura=A.id_asignatura LIMIT 1) as primerPeriodo
+        from asignatura as A
+        inner join curso AS B ON A.id_asignatura=B.id_materia
+        inner join grado AS D ON D.id_grado=B.id_grado
+        inner join matricula as C ON D.id_grado=C.id_grado
+        where  C.id_matricula='$matricula' ");
+
+        $label=[]; $nota=[]; $col=[];
+        foreach($course as $key=> $all){
+            $label[]=$all->nombre;
+            $nota[]=$all->primerPeriodo;
+            switch(floatval($all->primerPeriodo)){
+               case (floatval($all->primerPeriodo)<='2.9' ):
+                    $color='rgba(235,3,3,1)';
+                break;
+                case (floatval($all->primerPeriodo)>='3.0' &&  '3.9'>=floatval($all->primerPeriodo)):
+                    $color='rgba(255,153,51,1)';
+                break;
+                case (floatval($all->primerPeriodo)>='4.0' &&  '4.5'>=floatval($all->primerPeriodo)):
+                    $color='rgba(255,243,51,1)';
+                break;
+                case (floatval($all->primerPeriodo)>'4.5'):
+                    $color='rgba(53,193,4,1)';
+                break;
+            }
+            $col[]=$color;
+        }
+        $head=DB::SELECT("SELECT B.id_matricula,A.nombre1,A.nombre2,A.apellido1,A.apellido2,C.grupo,D.nombre as jornada,users.name as docente,E.nombre as acudiente
+                        FROM alumno AS A
+                        INNER JOIN acudiente as E ON A.id_Acudiente=E.id_acudiente
+                        INNER JOIN matricula AS B ON A.id_alumno=B.id_alumno
+                        INNER JOIN grado AS C ON  B.id_grado=C.id_grado
+                        inner JOIN jornada as D ON C.id_jornada=D.id_jornada
+                        LEFT JOIN users  ON C.id_docente=users.id
+                        WHERE B.id_estado_matricula=1 AND B.id_matricula='$matricula' ");
+     //  dd(json_encode($col));
         /*$chart = '{
             "type": "bar",
             "data": {
@@ -49,55 +87,38 @@ class BoletinController extends Controller
           }';*/
           // https://www.chartjs.org/docs/latest/charts/bar.html#borderwidth
           $chart = new \QuickChart(array(
-            'width' => 720,
-            'height' => 200,
-            'bkg'=>'red'
-          ));
-          
+            'width' => 710,
+            'height' => 175,
+            
+          ));          
           $chart->setConfig('{            
             type: "bar",
             data: {
-              labels: ["Matematicas", "Españo","Ingles","Fisica","Catedra","Estadistica","Calculo"],
+              labels: '.json_encode($label).' , 
               datasets: [{
                 label: "Materias Cursadas",
-                data: [1, 2,3,4,5,4,3,2],
-                backgroundColor: [
-                    "rgba(255, 99, 132, 0.2)",
-                    "rgba(255, 159, 64, 0.2)",
-                    "rgba(255, 205, 86, 0.2)",
-                    "rgba(75, 192, 192, 0.2)",
-                    "rgba(54, 162, 235, 0.2)",
-                    "rgba(153, 102, 255, 0.2)",
-                    "rgba(201, 203, 207, 0.2)"
-                  ],
+                data: '.json_encode($nota).',
+                backgroundColor:'.json_encode($col).' ,
                 borderWidth:"5px", 
-                barThickness:"15" ,                
+                barThickness:"15"                          
               },
               {
                 type: "line",
-                label: "Line Dataset",
+                label: "Base para aprobar",
                 data: [3, 3, 3, 3],
                 fill: false,
-                borderColor: "rgb(54, 162, 235)"
+                borderColor: "rgb(54, 162, 235,0.1)"
             }
               ]
             },
-            options:{
-               
-
+            options:{               
             }
-          }');
-     
-          
-          
-         // $encoded = urlencode($chart);
-          //$imageUrl = "https://quickchart.io/chart?c=" . $encoded;
-         // $imageUrl='https://quickchart.io/chart?bkg=white&c={type:%27bar%27,data:{labels:[2012,2013,2014,2015,2016],datasets:[{label:%27Users%27,data:[120,60,50,180,120]}]}}';
-
+          }');     
         $url=$chart->getUrl();
-        
-        return $pdf = \PDF::loadView('boletin.pdf_boletin',compact('url'))->stream('archivo.pdf');       
-       //$pdf->setPaper('letter', 'landscape');
+        $pdf = \PDF::loadView('boletin.pdf_boletin',compact('url','course','expedition','head'))->stream("achivo.pdf");       
+        //$pdf->setPaper('letter', 'landscape');
+      //  $pdf->stream("achivo.pdf");
+        return $pdf;
        // return $pdf->download();       
     }
     public function loadUser(){
@@ -140,13 +161,9 @@ class BoletinController extends Controller
     \Excel::load('public\matriculas.xlsx', function($reader) {        
         $data=[];      
         $i=0;   
-        $reader->each(function($row){            
-
-            
+        $reader->each(function($row){                        
                 try {
-                    DB::transaction(function() use($row){
-
-                       
+                    DB::transaction(function() use($row){                       
                             if(!empty($row->tipo_docestu)){
                                 $modalidaId=3;
                                 if (!empty($row->modalidad_sena)) {
@@ -199,14 +216,10 @@ class BoletinController extends Controller
                                         $id_padre=$acudientePadre[0]->id;                                      
                                     }                                                                        
                                 }
-
                                 $id_madre='0';
-                                if( !empty($row->ccmadre)  && $row->nombremadre!="N/A"){
-                    
-                                    $acudienteMadre=DB::SELECT("select id_acudiente as id from acudiente  where identificacion='$row->ccmadre' ");
-                    
-                                    if(empty($acudienteMadre)){
-                    
+                                if( !empty($row->ccmadre)  && $row->nombremadre!="N/A"){                    
+                                    $acudienteMadre=DB::SELECT("select id_acudiente as id from acudiente  where identificacion='$row->ccmadre' ");                    
+                                    if(empty($acudienteMadre)){                    
                                         $madre=new acudiente();
                                         $madre->nombre=$row->nombremadre;
                                         $madre->identificacion= $row->ccmadre;
@@ -248,9 +261,7 @@ class BoletinController extends Controller
                                 $alum->nac_depto=1;//$row->NAC_DEPTO;
                     
                                 $alum->genero=($row->genero=="MASCULINO")? 'M':'F';
-                                $alum->save();
-                    
-    
+                                $alum->save();                        
                                 $mat=new matricula();
                                 $mat->simat=$row->simat;
                                 $mat->victima_conflicto=$row->poblacion_victima_del_conflicto;
@@ -275,38 +286,12 @@ class BoletinController extends Controller
                                 $mat->id_tipo_matricula=$id_tp_matricula;            
                                 $mat->inst_anterior=$row->institucion_anterior;
                                 $mat->ciudad_colegio_origen=$row->ciudad_colegio_origen;
-                                $mat->save();
-    
-    
-                                
-                                
-                                // validar si viene array o objeto
-                                //$id_acudiente='';
-                               
-                               
-                    
-                                
-                                
-                    
-                                
-                                
-                    
-                                
-                                
-                    
-    
-                           }
-                            
-
-                           
-
-                        
-                    });
-                            
+                                $mat->save();                            
+                           }                     
+                    });                            
                     } catch (Exception $th) {                
                         return response()->json(['message'=>'Error en la base de datos','error' => $th->getMessage()],400);              
                     }
-
         });                                 
     })->get();
 }
