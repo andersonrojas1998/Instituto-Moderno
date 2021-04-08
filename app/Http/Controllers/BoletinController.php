@@ -7,6 +7,7 @@ use App\Model\matricula;
 use App\Model\alumno;
 use App\Model\acudiente;
 use App\Model\grado;
+use App\Model\curso;
 use DB;
 
 class BoletinController extends Controller
@@ -15,7 +16,6 @@ class BoletinController extends Controller
     public function index(){
         return view('boletin.index_boletin');
     }
-
     public function grades(){
         $grade=grado::all();
         return json_encode($grade);
@@ -28,10 +28,11 @@ class BoletinController extends Controller
                             WHERE B.id_estado_matricula=1 AND B.id_grado='$grade' ");  
         return json_encode($alumnoGrade);
     }
-    public function genetedBulletin($matricula,$expedition){
-
-        $course=DB::SELECT("SELECT A.id_asignatura,A.nombre,B.intensidad_horaria,
-        (SELECT  nota_definitiva from calificaciones as tb1 where tb1.id_periodo=1 AND tb1.id_matricula=C.id_matricula  AND tb1.id_asignatura=A.id_asignatura LIMIT 1) as primerPeriodo
+    public function genetedBulletin($matricula,$expedition,$period){            
+        $periodtx=($period==1)?  'PRIMER':'SEGUNDO';
+        $secondPeriod=($period==2)? ' ,(SELECT  nota_definitiva from calificaciones as tb1 where tb1.id_periodo=2 AND tb1.id_matricula=C.id_matricula  AND tb1.id_asignatura=A.id_asignatura LIMIT 1) as segundoPeriodo' : '';
+        $course=DB::SELECT("SELECT A.id_asignatura,A.nombre,A.tag,B.intensidad_horaria,
+        (SELECT  nota_definitiva from calificaciones as tb1 where tb1.id_periodo=1 AND tb1.id_matricula=C.id_matricula  AND tb1.id_asignatura=A.id_asignatura LIMIT 1) as primerPeriodo  $secondPeriod
         from asignatura as A
         inner join curso AS B ON A.id_asignatura=B.id_materia
         inner join grado AS D ON D.id_grado=B.id_grado
@@ -40,19 +41,26 @@ class BoletinController extends Controller
 
         $label=[]; $nota=[]; $col=[];
         foreach($course as $key=> $all){
-            $label[]=$all->nombre;
-            $nota[]=$all->primerPeriodo;
-            switch(floatval($all->primerPeriodo)){
-               case (floatval($all->primerPeriodo)<='2.9' ):
+                       
+            if($period==1){
+                $notaPeriodo=$all->primerPeriodo;
+                $nota[]=$all->primerPeriodo;
+            }else{
+                $notaPeriodo=$all->segundoPeriodo;
+                $nota[]=$all->segundoPeriodo;            
+            }
+            $label[]=$all->tag;            
+            switch(floatval($notaPeriodo)){
+               case (floatval($notaPeriodo)<='2.9' ):
                     $color='rgba(235,3,3,1)';
                 break;
-                case (floatval($all->primerPeriodo)>='3.0' &&  '3.9'>=floatval($all->primerPeriodo)):
+                case (floatval($notaPeriodo)>='3.0' &&  '3.9'>=floatval($notaPeriodo)):
                     $color='rgba(255,153,51,1)';
                 break;
-                case (floatval($all->primerPeriodo)>='4.0' &&  '4.5'>=floatval($all->primerPeriodo)):
+                case (floatval($notaPeriodo)>='4.0' &&  '4.5'>=floatval($notaPeriodo)):
                     $color='rgba(255,243,51,1)';
                 break;
-                case (floatval($all->primerPeriodo)>'4.5'):
+                case (floatval($notaPeriodo)>'4.5'):
                     $color='rgba(53,193,4,1)';
                 break;
             }
@@ -65,61 +73,34 @@ class BoletinController extends Controller
                         INNER JOIN grado AS C ON  B.id_grado=C.id_grado
                         inner JOIN jornada as D ON C.id_jornada=D.id_jornada
                         LEFT JOIN users  ON C.id_docente=users.id
-                        WHERE B.id_estado_matricula=1 AND B.id_matricula='$matricula' ");
-     //  dd(json_encode($col));
-        /*$chart = '{
-            "type": "bar",
-            "data": {
-              "labels": [ "January", "February", "March", "April", "May", "June", "July"
-              ],
-              "datasets": [
-                {
-                  "label": "My data",
-                  "fillColor": "rgba(220,220,220,0.5)",
-                  "strokeColor": "rgba(220,220,220,1)",
-                  "pointColor": "rgba(220,220,220,1)",
-                  "pointStrokeColor": "#fff",
-                  "data": [ 65, 59, 90, 81, 56, 55, 40 ],
-                  "bezierCurve": false
-                }
-              ]
-            }
-          }';*/
-          // https://www.chartjs.org/docs/latest/charts/bar.html#borderwidth
-          $chart = new \QuickChart(array(
-            'width' => 710,
-            'height' => 175,
-            
-          ));          
+                        WHERE B.id_estado_matricula=1 AND B.id_matricula='$matricula' ");     
+          $chart = new \QuickChart(array('width' => 710,'height' => 176));          
           $chart->setConfig('{            
             type: "bar",
             data: {
               labels: '.json_encode($label).' , 
               datasets: [{
-                label: "Materias Cursadas",
+                label: "Materias Cursadas",                
                 data: '.json_encode($nota).',
                 backgroundColor:'.json_encode($col).' ,
                 borderWidth:"5px", 
-                barThickness:"15"                          
+                barThickness:"12",                     
               },
               {
                 type: "line",
-                label: "Base para aprobar",
-                data: [3, 3, 3, 3],
+                label: "Nota minima para aprobar",
+                data: [3, 3, 3, 3,3,3,3,3,3,3,3,3,3,3,3],
                 fill: false,
-                borderColor: "rgb(54, 162, 235,0.1)"
+                borderColor: "rgb(54, 162, 235,0.2)"
             }
               ]
             },
-            options:{               
+            options:{                                                                                                                   
             }
           }');     
         $url=$chart->getUrl();
-        $pdf = \PDF::loadView('boletin.pdf_boletin',compact('url','course','expedition','head'))->stream("achivo.pdf");       
-        //$pdf->setPaper('letter', 'landscape');
-      //  $pdf->stream("achivo.pdf");
+        $pdf = \PDF::loadView('boletin.pdf_boletin',compact('url','course','expedition','head','periodtx','period'))->stream("achivo.pdf");
         return $pdf;
-       // return $pdf->download();       
     }
     public function loadUser(){
         \Excel::load('public\Personal.xlsx', function($reader) {         
@@ -152,6 +133,22 @@ class BoletinController extends Controller
                     $grado->tag=$row->tag;                    
                     $grado->save();                
                 }                
+            });
+        });
+    }
+    public function loadCourseTeacher(){
+        \Excel::load('public\cargaDocente2.xlsx', function($reader) {         
+            $data=[];         
+            $reader->each(function($row){     
+               // if(!empty($row->id_grado)){
+                    $grado= new curso();                
+                    $grado->id_grado=$row->id_grado;
+                    $grado->id_docente=$row->id_docente;
+                    $grado->id_materia=$row->id_materia;
+                    $grado->año=date('Y');
+                    $grado->intensidad_horaria=$row->intensidad_horaria;
+                    $grado->save();                
+               // }                
             });
         });
     }

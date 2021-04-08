@@ -190,7 +190,7 @@ class CalificacionesController extends Controller
                         $nota9=floatval($row->p2);
                         $nota10=floatval($row->p3);
                         $nota11=floatval($row->au1);
-                        $nota12=floatval($row->au2);                                      
+                        $nota12=floatval($row->au2);
                      $year=date('Y');
                      $calificaciones=DB::SELECT("SELECT id_matricula FROM calificaciones WHERE  id_periodo='$perid' AND id_docente='$teacher' AND  id_asignatura='$course' AND id_matricula='$matricula' ");
                      if(!empty($calificaciones[0]->id_matricula)){

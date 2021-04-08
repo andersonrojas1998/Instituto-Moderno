@@ -39,20 +39,33 @@ $(document).ready(function() {
         let grade=$("#sel_gradeStudents").val(); 
         let students=$("#sel_studentsForGrade").val();
         let period=$("#sel_printPeriod").val();
+        let date_expedition=$("#date_expedition").val();
         if(grade!=""  &&  students!=""){
             
-            let url='';
+            let url='/genetedBulletin/'+students+'/'+date_expedition+'/'+period;
             var xhr = new XMLHttpRequest();
             xhr.open("GET",url);
             xhr.responseType = 'arraybuffer';           
             xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded"); 
-            xhr.send(null);
+            xhr.send(null);            
+            sweetMessageTimeOut('Procesando ...', '\u00A1  Su solicitud  se encuentra en ejecuci\u00F3n ! ',7000);
             xhr.onreadystatechange = function () {
+                
                 if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-                    var blob = new Blob([this.response], {type:'application/pdf'});
+                                        
+                    var blobURL = new Blob([this.response], {type:'application/pdf'});
                     var link = document.createElement('a');
-                    link.href = window.URL.createObjectURL(blob);
+                    link.href = window.URL.createObjectURL(blobURL);
                     window.open(link);
+
+                    /*var link = document.createElement('a');
+                    link.download =grade+'Md.pdf';
+                    link.href=blobURL;
+                    link.click();  */
+
+                    /*
+                     */
+                    sweetMessage('\u00A1Registro exitoso!', '\u00A1 Se ha realizado con \u00E9xito su solicitud!');
                 }
                 if (this.status === 500) { sweetMessage("ERROR!", "Error al generar el pdf !", "error", "#1976D2", false); }
             }

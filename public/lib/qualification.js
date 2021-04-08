@@ -32,9 +32,8 @@ $(document).ready(function() {
                     processData: false,                                                            
                     dataType: "JSON",
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                    success: function(data){
-                     console.log(data);
-                    sweetMessage('\u00A1Registro exitoso!', '\u00A1 Se ha realizado con \u00E9xito su solicitud!'); setTimeout(function () { location.reload() }, 2000);                    
+                    success: function(data){                     
+                        sweetMessage('\u00A1Registro exitoso!', '\u00A1 Se ha realizado con \u00E9xito su solicitud!'); setTimeout(function () { location.reload() }, 2000);                    
                  },error:function(res,tx,status){                    
                      if(res.status==500){
                         var data=JSON.parse(res.responseText);                    
