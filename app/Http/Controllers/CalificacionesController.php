@@ -24,12 +24,12 @@ class CalificacionesController extends Controller
                             FROM alumno AS A
                             INNER JOIN matricula AS B ON A.id_alumno=B.id_alumno
                             INNER JOIN grado AS C ON  B.id_grado=C.id_grado
-                            WHERE B.id_estado_matricula=1 AND B.id_grado='$grade' ");                            
+                            WHERE B.id_estado_matricula=1 AND B.id_grado='$grade' ORDER BY A.apellido1 ASC  ");                            
         $data=[]; $i=1;
         foreach($alumnoGrade as $key => $row){
             $data['data'][$key]['conc'] = $i;
             $data['data'][$key]['mat'] = $row->id_matricula;
-            $data['data'][$key]['alumn'] = $row->nombre1.' '.$row->nombre2.' '.$row->apellido1. ' '.$row->apellido1;
+            $data['data'][$key]['alumn'] =$row->apellido1. ' '.$row->apellido2.' ' . $row->nombre1.' '.$row->nombre2;
             $data['data'][$key]['grupo']=$row->grupo;
             $data['data'][$key]['period1']=$row->primerPeriodo;
             $data['data'][$key]['period2']=$row->segundoPeriodo;
@@ -50,7 +50,7 @@ class CalificacionesController extends Controller
                             FROM alumno AS A
                             INNER JOIN matricula AS B ON A.id_alumno=B.id_alumno
                             INNER JOIN grado AS C ON  B.id_grado=C.id_grado
-                            WHERE B.id_estado_matricula=1 AND B.id_grado='$grade' ");
+                            WHERE B.id_estado_matricula=1 AND B.id_grado='$grade' ORDER BY A.apellido1 ASC ");
 
         $users=DB::SELECT("SELECT name  from  users WHERE id='$teacher' ");
         $curso=DB::SELECT("SELECT nombre  from  asignatura WHERE id_asignatura='$course' ");
@@ -132,7 +132,7 @@ class CalificacionesController extends Controller
                 $alu=14;             
                 foreach($data['students'] as $key=> $alumno){                   
                     $sheet->setCellValueByColumnAndRow($row,$alu,$alumno->id_matricula);                   
-                    $name=$alumno->nombre1.'  '. $alumno->nombre2.'  '.$alumno->apellido1.'  '.$alumno->apellido2;
+                    $name=$alumno->apellido1.'  '.$alumno->apellido2.'  ' .$alumno->nombre1.'  '. $alumno->nombre2;
                     $sheet->setCellValueByColumnAndRow($row+1,$alu,$name);
                     $sheet->setCellValueByColumnAndRow($row+2,$alu,$alumno->primerPeriodo);
                     $sheet->setCellValueByColumnAndRow($row+3,$alu,$alumno->segundoPeriodo);

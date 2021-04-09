@@ -83,23 +83,24 @@ class BoletinController extends Controller
                 label: "Materias Cursadas",                
                 data: '.json_encode($nota).',
                 backgroundColor:'.json_encode($col).' ,
-                borderWidth:"5px", 
-                barThickness:"12",                     
-              },
+                borderColor: "rgba(4,4,4, 1)",                
+                borderWidth:1, 
+                barThickness:15,                                   
+              },             
               {
                 type: "line",
                 label: "Nota minima para aprobar",
                 data: [3, 3, 3, 3,3,3,3,3,3,3,3,3,3,3,3],
-                fill: false,
+                fill: false,                
                 borderColor: "rgb(54, 162, 235,0.2)"
             }
               ]
             },
-            options:{                                                                                                                   
+            options:{
             }
           }');     
         $url=$chart->getUrl();
-        $pdf = \PDF::loadView('boletin.pdf_boletin',compact('url','course','expedition','head','periodtx','period'))->stream("achivo.pdf");
+        $pdf = \PDF::loadView('boletin.pdf_boletin',compact('url','course','expedition','head','periodtx','period'))->setPaper('letter')->stream("achivo.pdf");
         return $pdf;
     }
     public function loadUser(){

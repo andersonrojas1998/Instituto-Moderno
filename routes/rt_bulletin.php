@@ -8,4 +8,4 @@ Route::get('/students/{grade}', 'BoletinController@studentsForGrades');
 // Route::get('/tsExcel', 'BoletinController@loadExcelMatricula');
 //Route::get('/loadUser', 'BoletinController@loadUser');
 // Route::get('/loadGroup', 'BoletinController@loadGroup');
-Route::get('/loadCourseTeacher', 'BoletinController@loadCourseTeacher');
+//Route::get('/loadCourseTeacher', 'BoletinController@loadCourseTeacher'); /** CARGA DE DOCENTES */
