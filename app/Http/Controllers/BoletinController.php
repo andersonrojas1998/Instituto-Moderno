@@ -29,36 +29,10 @@ class BoletinController extends Controller
         return json_encode($alumnoGrade);
     }
     public function genetedBulletin($matricula,$expedition,$period){            
-        $periodtx=($period==1)?  'PRIMER':'SEGUNDO';
-        $secondPeriod=($period==2)? ' ,(SELECT  nota_definitiva from calificaciones as tb1 where tb1.id_periodo=2 AND tb1.id_matricula=C.id_matricula  AND tb1.id_asignatura=A.id_asignatura LIMIT 1) as segundoPeriodo' : '';
-       
-       
-        //CALL students_course(453)
-
-        /*CREATE PROCEDURE `students_course`(IN matricula int)
-BEGIN
-
-SELECT B.id_matricula,A.nombre1,A.nombre2,A.apellido1,A.apellido2,C.grupo,D.nombre as jornada,users.name as docente,E.nombre as acudiente
-                        FROM alumno AS A
-                        INNER JOIN acudiente as E ON A.id_Acudiente=E.id_acudiente
-                        INNER JOIN matricula AS B ON A.id_alumno=B.id_alumno
-                        INNER JOIN grado AS C ON  B.id_grado=C.id_grado
-                        inner JOIN jornada as D ON C.id_jornada=D.id_jornada
-                        LEFT JOIN users  ON C.id_docente=users.id
-                        WHERE B.id_estado_matricula=1 AND B.id_matricula=matricula;
-END
-*/
-       $course=DB::SELECT("SELECT A.id_asignatura,A.nombre,A.tag,B.intensidad_horaria,
-        (SELECT  nota_definitiva from calificaciones as tb1 where tb1.id_periodo=1 AND tb1.id_matricula=C.id_matricula  AND tb1.id_asignatura=A.id_asignatura LIMIT 1) as primerPeriodo  $secondPeriod
-        from asignatura as A
-        inner join curso AS B ON A.id_asignatura=B.id_materia
-        inner join grado AS D ON D.id_grado=B.id_grado
-        inner join matricula as C ON D.id_grado=C.id_grado
-        where  C.id_matricula='$matricula' ");
-
+        $periodtx=($period==1)?  'PRIMER':'SEGUNDO';        
+        $course=DB::SELECT("CALL courseForAlumn('$matricula','$period')");
         $label=[]; $nota=[]; $col=[];
-        foreach($course as $key=> $all){
-                       
+        foreach($course as $key=> $all){                       
             if($period==1){
                 $notaPeriodo=$all->primerPeriodo;
                 $nota[]=$all->primerPeriodo;
@@ -83,14 +57,7 @@ END
             }
             $col[]=$color;
         }
-        $head=DB::SELECT("SELECT B.id_matricula,A.nombre1,A.nombre2,A.apellido1,A.apellido2,C.grupo,D.nombre as jornada,users.name as docente,E.nombre as acudiente
-                        FROM alumno AS A
-                        INNER JOIN acudiente as E ON A.id_Acudiente=E.id_acudiente
-                        INNER JOIN matricula AS B ON A.id_alumno=B.id_alumno
-                        INNER JOIN grado AS C ON  B.id_grado=C.id_grado
-                        inner JOIN jornada as D ON C.id_jornada=D.id_jornada
-                        LEFT JOIN users  ON C.id_docente=users.id
-                        WHERE B.id_estado_matricula=1 AND B.id_matricula='$matricula' ");     
+          $head=DB::SELECT("CALL studentsCourse('$matricula') ");                            
           $chart = new \QuickChart(array('width' => 710,'height' => 176));          
           $chart->setConfig('{            
             type: "bar",
