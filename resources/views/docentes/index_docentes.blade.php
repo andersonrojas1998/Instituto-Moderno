@@ -21,9 +21,8 @@
 </div>
 
 
-    <div class="card-body">
-    <div class="row">
-    <div class="col-lg-12">
+    <div class="card-body">    
+    <div class="table-responsive">
                 <table id="dt_teacher" class="table table-bordered table-hover" style="width:100%;" >
                     <thead>
                     <tr class="bg-secondary">
@@ -42,22 +41,20 @@
                      <tfoot>
                     <tr>
                                 <td><i class="mdi mdi-account-check"></i></td>
+                                <td><i class="mdi mdi-account-key"></i></td>
                                 <td><i class="mdi mdi-account-check"></i></td>
-                                <td><i class="mdi mdi-account-check"></i></td>
-                                <td><i class="mdi mdi-account-check"></i></td>
-                                <td><i class="mdi mdi-account-check"></i></td>
-                                <td><i class="mdi mdi-account-check"></i></td>
+                                <td><i class="mdi mdi-cellphone-iphone"></i></td>
+                                <td><i class="mdi mdi-gender-female"></i></td>
+                                <td><i class="mdi mdi-houzz"></i></td>
                                 <td><i class="mdi mdi-account-check"></i></td>
                                 <td><i class="mdi mdi-account-check"></i></td>
                             </tr>
                     </tfoot>
                     </table>  
     </div>
-    </div>
+    
     </div>  
-    </div>
-  
-  
+    </div>    
 @endsection
 
 @push('custom-scripts')    

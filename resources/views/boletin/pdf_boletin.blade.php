@@ -225,7 +225,7 @@
 
 <h6 class="w3-center w3-tiny"><b>OBSERVACIONES ACAD&Eacute;MICAS O COMPORTAMENTALES</b></h6>
 
-<p class="w3-sans-serif   w3-tiny">Norway has a total area of 385,252 square kilometers and a population of 5,438,657 (December 2020). Norway is bordered by Sweden, Finland and Russia to the north-east, and the Skagerrak to the south, with Denmark on the other side.</p>
+<p class="w3-sans-serif   w3-tiny">{{  $observation[0]->descripcion }}.</p>
 
             
          

@@ -1,6 +1,41 @@
 $(document).ready(function() {
-    $('#example').DataTable();
+  dt_alumn();
 } );
+
+
+var dt_alumn=function(){
+  $('#dt_alumn').DataTable({ 
+      responsive: true,
+      ajax: {
+          url: "/dt_alumn",
+          method: "GET", 
+          dataSrc: function (json) {
+              if (!json.data) {
+                  return [];
+              } else {
+                  return json.data;
+              }
+            }               
+          },      
+      columnDefs: [{"className": "text-center", "targets": "_all"},],
+      columns: 
+      [
+              { "data": "con" , render(data){return '<b>'+data+'</b>';}},
+              { "data": "dni" },
+              { "data": "apellido1",render(data,type,row){ return '<div class="text-info">'+  data +'</div>'; }},
+              { "data": "apellido2",render(data,type,row){ return '<div class="text-info">'+  data +'</div>'; }},
+              { "data": "nombre1",render(data,type,row){ return '<div class="text-info">'+  data +'</div>'; }},
+              { "data": "nombre2",render(data,type,row){ return '<div class="text-info">'+  data +'</div>'; }},
+              { "data": "genero"},
+              {"data": "eps"}, 
+              { "data": "direccion"},
+              {"data": "telefono"},                             
+              {"data": "acudiente"},
+              {"data": "telAcudiente"},
+              {"data": "estado", render(data){ let st=(data)? 'Activo':'Inactivo'; let color=(data)? 'success':'danger'; return  '<label class="badge text-white badge-'+color+' ">'+ st  +'</label>'; }}
+      ]
+  });
+}
 
 
 /**

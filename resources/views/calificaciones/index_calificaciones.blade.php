@@ -52,11 +52,7 @@
             <a id="generateExcel" class="dropdown-item"><i class="mdi mdi-file-excel text-success"></i> Excel  </a>
             </div></div></div>            
         </div>
-<!-- <div class="row">  -->
-
-
-
-<div class="col-lg-12">
+<div class="table-responsive">
 <table class="table table-bordered table-hover table-striped" id="dt_qualifications" style="width:100%;">
         <thead>
             <tr class="text-center">
@@ -91,27 +87,10 @@
         </tr>        
     </thead>
 </table>
-
 </div>
-
-
-
-
-
-
-<!--</div>-->
-
-
     </div>  
-    </div>
-
-    
-    
-
-  
-  
+    </div>      
 @endsection
-
 @push('custom-scripts')    
     <script src="{{ asset('/lib/qualification.js') }}"></script>    
 @endpush

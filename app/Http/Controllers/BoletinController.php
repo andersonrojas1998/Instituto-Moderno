@@ -8,6 +8,7 @@ use App\Model\alumno;
 use App\Model\acudiente;
 use App\Model\grado;
 use App\Model\curso;
+use App\Model\notas_adicionales;
 use DB;
 
 class BoletinController extends Controller
@@ -20,7 +21,7 @@ class BoletinController extends Controller
         $grade=grado::all();
         return json_encode($grade);
     }
-    public function studentsForGrades($grade){
+    public  static function studentsForGrades($grade){
         $alumnoGrade=DB::SELECT("SELECT B.id_matricula,A.nombre1,A.nombre2,A.apellido1,A.apellido2
                             FROM alumno AS A
                             INNER JOIN matricula AS B ON A.id_alumno=B.id_alumno
@@ -28,7 +29,9 @@ class BoletinController extends Controller
                             WHERE B.id_estado_matricula=1 AND B.id_grado='$grade' ");  
         return json_encode($alumnoGrade);
     }
-    public function genetedBulletin($matricula,$expedition,$period){            
+    public function genetedBulletin($matricula,$expedition,$period,$obs){ 
+        
+        $observation=notas_adicionales::where('id_nota',$obs)->get();        
         $periodtx=($period==1)?  'PRIMER':'SEGUNDO';        
         $course=DB::SELECT("CALL courseForAlumn('$matricula','$period')");
         $label=[]; $nota=[]; $col=[];
@@ -84,8 +87,17 @@ class BoletinController extends Controller
             }
           }');     
         $url=$chart->getUrl();
-        $pdf = \PDF::loadView('boletin.pdf_boletin',compact('url','course','expedition','head','periodtx','period'))->setPaper('letter')->stream("achivo.pdf");
+        $pdf = \PDF::loadView('boletin.pdf_boletin',compact('url','course','expedition','head','periodtx','period','observation'))->setPaper('letter')->stream("achivo.pdf");
         return $pdf;
+    }
+    public function  genetedBulletinForGrades($idGrade,$expedition,$period){
+
+        $students=self::studentsForGrades($idGrade);
+        //dd($students);
+        foreach(json_decode($students) as $st){
+            self::genetedBulletin($st->id_matricula,$expedition,$period);
+    }
+
     }
     public function loadUser(){
         \Excel::load('public\Personal.xlsx', function($reader) {         

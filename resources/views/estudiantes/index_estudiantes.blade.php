@@ -14,48 +14,36 @@
             <div class="dropdown-divider"></div>
             <a href="#" class="dropdown-item">Excel</a>
             </div></div></div>            
-        </div>
-
-    
-
+        </div>    
 </div>
-
-
     <div class="card-body">
     <div class="row">
-    <div class="col-lg-12">
-                <table id="example" class="table table-bordered" style="width:100%">
+    <div class="table-responsive">
+                <table id="dt_alumn" class="table table-striped table-bordered" style="width:100%">
                     <thead>
-                    <tr class="bg-secondary">
-                    <th>#</th>
-                    <th>Identificacion</th>
-                    <th>Nombre</th>
-                    <th>Direccion</th>
-                    <th>Barrio</th>
-                    <th>Telefono</th>
-                    <th>Estado</th>
-                    </tr>
+                        <tr class="bg-secondary">
+                        <th>#</th>
+                        <th>Identificacion</th>                        
+                        <th>Primer Apellido </th>
+                        <th>Segundo Apellido</th>
+                        <th>Primer Nombre</th>
+                        <th>Segundo Nombre</th>
+                        <th>Genero</th>
+                        <th>Eps</th>
+                        <th>Direcci&oacute;n</th>
+                        <th>Telefono</th>                                                
+                        <th>Acudiente</th>  
+                        <th>Tel. Acudiente</th>                        
+                        <th>Estado</th>
+                        </tr>
                     </thead>
-                    <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>1</td>
-                                <td>1</td>
-                                <td>1</td>
-                                <td>1</td>
-                                <td>1</td>
-                                <td>1</td>
-
-                            </tr>
-
+                    <tbody>                            
                     </tbody>
                     </table>  
     </div>
     </div>
     </div>  
-    </div>
-  
-  
+    </div>  
 @endsection
 
 @push('custom-scripts')    

@@ -5,12 +5,7 @@ $(document).ready(function() {
 
 
 var dt_teacher=function(){
-    $('#dt_teacher').DataTable({        
-        lengthChange: false,
-        "dom": 'lrtip',
-//        buttons: [ 'copy', 'excel', 'pdf' ],
-        buttons: ['print', 'copyHtml5', 'excelHtml5', 'csvHtml5', 'pdfHtml5'],
-        responsive: true,
+    $('#dt_teacher').DataTable({
         destroy: true,
         searching:true,            
         ajax: {
@@ -34,8 +29,8 @@ var dt_teacher=function(){
                 { "data": "celular"},
                 { "data": "genero", render(data){ return '<div class="text-info">'+ (data=='M')? 'Masculino':'Femenino'  +'</div>'; }},
                 { "data": "sede"},
-                {"data": "cargo"}, 
-                {"data": "estado", render(data){ return '<div class="text-info">'+ (data)? 'Activo':'Inactivo'  +'</div>'; }},
+                {"data": "cargo"},                 
+                {"data": "estado", render(data){ let st=(data)? 'Activo':'Inactivo'; let color=(data)? 'success':'danger'; return  '<label class="badge text-white badge-'+color+' ">'+ st  +'</label>'; }},
         ]
     });
 }

@@ -15,19 +15,17 @@
   {!! Html::style('assets/plugins/@mdi/font/css/materialdesignicons.min.css') !!}
   {!! Html::style('assets/plugins/perfect-scrollbar/perfect-scrollbar.css') !!}
   <!-- end plugin css -->
+
+      {!! Html::style('https://cdn.datatables.net/1.10.24/css/dataTables.bootstrap4.min.css') !!}      
+      {!! Html::style('https://cdn.datatables.net/buttons/1.7.0/css/buttons.bootstrap4.min.css') !!}
   
   @stack('plugin-styles')
 
   <!-- common css -->
   {!! Html::style('css/app.css') !!}
-  <!-- end common css -->
-
-      {!! Html::style('https://cdn.datatables.net/1.10.24/css/dataTables.bootstrap4.min.css') !!}
-      {!! Html::style('https://cdn.datatables.net/buttons/1.7.0/css/buttons.bootstrap4.min.css') !!}
-
+  <!-- end common css -->    
       {!! Html::style('https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css') !!}
-
-      <!-- <link rel="stylesheet" href="{{url('https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap.min.css')}}"> -->
+      
 
   
 
@@ -40,8 +38,8 @@
     <div class="container-fluid page-body-wrapper">
       @include('layout.sidebar')
       <div class="main-panel">
-        <div class="content-wrapper">
-          @yield('content')
+        <div class="content-wrapper">       
+        @yield('content')               
         </div>
         @include('layout.footer')
       </div>

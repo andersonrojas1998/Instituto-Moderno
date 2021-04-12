@@ -43,6 +43,13 @@
                             <strong class="col-lg-12">Fecha expedici&oacute;n :</strong>
                             <input type="date" class="form-control" id="date_expedition" value="{{ date('Y-m-d') }}">
                             </li>
+                            <li class="list-group-item">
+                            <strong class="col-lg-12">Observaci&oacute;n :</strong>
+                            <select class="form-control select2" id="sel_observations">
+                                <option value="0"></option>
+                                <option value="1">Felicitaciones sigues asi no cambies el colegio te felicita por obtener un gran rendimiento diciplinario , att coordinacion academica</option>
+                            </select>
+                            </li>
                         </ul>
                         </div>
                         </div>                                                    

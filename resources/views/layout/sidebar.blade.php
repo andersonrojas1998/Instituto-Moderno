@@ -10,7 +10,7 @@
             <p class="profile-name">{{Auth::user()->name }}</p>
             <div class="dropdown" data-display="static">
               <a href="#" class="nav-link d-flex user-switch-dropdown-toggler" id="UsersettingsDropdown" href="#" data-toggle="dropdown" aria-expanded="false">
-                <small class="designation text-muted">Bienvenido</small>
+                <small class="designation text-muted">online</small>
                 <span class="status-indicator online"></span>
               </a>
               <!--<div class="dropdown-menu" aria-labelledby="UsersettingsDropdown">
@@ -49,7 +49,7 @@
       <div class="collapse {{ show_class(['basic-ui/*']) }}" id="mod-students">
         <ul class="nav flex-column sub-menu">
           <li class="nav-item {{ active_class(['icons/material']) }}">            
-            <a class="nav-link" href="{{ url('/Estudiantes/inicio') }}"><i class="menu-icon  mdi mdi-bullseye"></i> Inicio</a>
+            <a class="nav-link" href="{{ url('/Estudiantes/inicio') }}"><i class="menu-icon  mdi mdi-chevron-double-right"></i> Inicio</a>
           </li>          
         </ul>
       </div>
@@ -65,7 +65,7 @@
       <div class="collapse {{ show_class(['basic-ui/*']) }}" id="mod-teacher">
         <ul class="nav flex-column sub-menu">
           <li class="nav-item {{ active_class(['icons/material']) }}">            
-            <a class="nav-link" href="{{ url('/Boletin/inicio') }}"><i class="menu-icon mdi mdi-bullseye"></i> Inicio</a>
+            <a class="nav-link" href="{{ url('/docentes/inicio') }}"><i class="menu-icon mdi mdi-chevron-double-right"></i> Inicio</a>
           </li>          
         </ul>
       </div>
@@ -79,7 +79,7 @@
       <div class="collapse {{ show_class(['basic-ui/*']) }}" id="mod-boletin">
         <ul class="nav flex-column sub-menu">
           <li class="nav-item {{ active_class(['icons/material']) }}">            
-            <a class="nav-link" href="{{ url('/Boletin/inicio') }}"><i class="menu-icon mdi mdi-bullseye"></i> Inicio</a>
+            <a class="nav-link" href="{{ url('/Boletin/inicio') }}"><i class="menu-icon mdi mdi-chevron-double-right"></i> Inicio</a>
           </li>          
         </ul>
       </div>
@@ -93,10 +93,10 @@
       <div class="collapse {{ show_class(['basic-ui/*']) }}" id="mod-calificacion">
         <ul class="nav flex-column sub-menu">
           <li class="nav-item {{ active_class(['icons/material']) }}">            
-            <a class="nav-link" href="{{ url('/Calificaciones/inicio') }}"><i class="menu-icon mdi mdi-television"></i> Inicio</a>
+            <a class="nav-link" href="{{ url('/Calificaciones/inicio') }}"><i class="menu-icon mdi mdi-chevron-double-right"></i> Inicio</a>
           </li>                    
           <li class="nav-item {{ active_class(['icons/material']) }}">            
-            <a class="nav-link" href="{{ url('/Calificaciones/formato-excel') }}"><i class="menu-icon mdi mdi-television"></i> Importar Excel</a>
+            <a class="nav-link" href="{{ url('/Calificaciones/formato-excel') }}"><i class="menu-icon mdi mdi-chevron-double-right"></i> Importar Excel</a>
           </li>
         </ul>
       </div>
@@ -111,10 +111,10 @@
       <div class="collapse {{ show_class(['basic-ui/*']) }}" id="mod-categoria">
         <ul class="nav flex-column sub-menu">
           <li class="nav-item {{ active_class(['icons/material']) }}">            
-            <a class="nav-link" href="{{ url('/Boletin/inicio') }}"><i class="menu-icon mdi mdi-numeric"></i> Grados</a>
+            <a class="nav-link" href="{{ url('/grados/inicio') }}"><i class="menu-icon mdi mdi-numeric"></i> Grados</a>
           </li>          
           <li class="nav-item {{ active_class(['icons/material']) }}">            
-            <a class="nav-link" href="{{ url('/Boletin/inicio') }}"><i class="menu-icon mdi mdi-television"></i>Materias</a>
+            <a class="nav-link" href="{{ url('/materias/inicio') }}"><i class="menu-icon  mdi mdi-puzzle"></i>Materias</a>
           </li>          
         </ul>
       </div>
@@ -122,7 +122,7 @@
 
     <!--<li class="nav-item {{ active_class(['/']) }}">
       <a class="nav-link" href="{{ url('/') }}">
-        <i class="menu-icon mdi mdi-television"></i>
+        <i class="menu-icon mdi mdi-chevron-double-right"></i>
         <span class="menu-title">Dashboard</span>
       </a>
     </li>-->

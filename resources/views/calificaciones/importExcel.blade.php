@@ -12,7 +12,7 @@
 
 
 <div class="row">
-<div class="col-lg-4">
+<div class="col-lg-6">
                         <form enctype="multipart/form-data" id="formExcelLoad"  method="post" >
                         <meta name="csrf-token" content="{{ csrf_token() }}">                          
                                 <label>Plantilla: </label>
@@ -21,23 +21,13 @@
                                 </div>                                                                         
                         </form>
 </div>
-<div class="col-lg-1">
-<button type="button" id="loadExcel" class="btn btn-success btn-fw">Cargar</button>
+<div class="col-lg-2">
+<button type="button" id="loadExcel" class="btn btn-success btn-fw">Cargar <i class="mdi mdi-file-excel"></i></button>
 </div>
                     </div>
 </div>  
 </div>
-
-    
-    
-
-  
-  
 @endsection
-@push('style')    
-    <!-- <link href="{{-- asset('/lib/fileInput/css/fileinput.css') --}}" media="all" rel="stylesheet"> -->
-@endpush
-@push('custom-scripts')    
-    <!-- <script src="{{-- asset('/lib/fileInput/js/fileinput.js') --}}"></script>  -->
+@push('custom-scripts')        
     <script src="{{ asset('/lib/qualification.js') }}"></script>       
 @endpush

@@ -40,9 +40,10 @@ $(document).ready(function() {
         let students=$("#sel_studentsForGrade").val();
         let period=$("#sel_printPeriod").val();
         let date_expedition=$("#date_expedition").val();
+        let obs=$("#sel_observations").val();
         if(grade!=""  &&  students!=""){
             
-            let url='/genetedBulletin/'+students+'/'+date_expedition+'/'+period;
+            let url='/genetedBulletin/'+students+'/'+date_expedition+'/'+period+'/'+obs;
             var xhr = new XMLHttpRequest();
             xhr.open("GET",url);
             xhr.responseType = 'arraybuffer';           
