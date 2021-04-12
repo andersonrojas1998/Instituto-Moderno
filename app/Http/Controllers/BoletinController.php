@@ -82,22 +82,83 @@ class BoletinController extends Controller
                 borderColor: "rgb(54, 162, 235,0.2)"
             }
               ]
-            },
-            options:{
-            }
-          }');     
+            }}');     
         $url=$chart->getUrl();
         $pdf = \PDF::loadView('boletin.pdf_boletin',compact('url','course','expedition','head','periodtx','period','observation'))->setPaper('letter')->stream("achivo.pdf");
         return $pdf;
     }
-    public function  genetedBulletinForGrades($idGrade,$expedition,$period){
+    public function  genetedBulletinForGrades($idGrade,$expedition,$period){ /** All for grades */
 
-        $students=self::studentsForGrades($idGrade);
-        //dd($students);
-        foreach(json_decode($students) as $st){
-            self::genetedBulletin($st->id_matricula,$expedition,$period);
-    }
 
+        $pdfMerger  = \PDFMerger::init();                        
+        $students=self::studentsForGrades($idGrade);        
+        $observation=[];
+        $periodtx=($period==1)?  'PRIMER':'SEGUNDO';
+
+        
+        foreach(json_decode($students) as $st){            
+            $course=DB::SELECT("CALL courseForAlumn('$st->id_matricula','$period')");
+            $label=[]; $nota=[]; $col=[];
+            foreach($course as $key=> $all){                       
+                if($period==1){
+                    $notaPeriodo=$all->primerPeriodo;
+                    $nota[]=$all->primerPeriodo;
+                }else{
+                    $notaPeriodo=$all->segundoPeriodo;
+                    $nota[]=$all->segundoPeriodo;            
+                }
+                $label[]=$all->tag;            
+                switch(floatval($notaPeriodo)){
+                   case (floatval($notaPeriodo)<='2.9' ):
+                        $color='rgba(235,3,3,1)';
+                    break;
+                    case (floatval($notaPeriodo)>='3.0' &&  '3.9'>=floatval($notaPeriodo)):
+                        $color='rgba(255,153,51,1)';
+                    break;
+                    case (floatval($notaPeriodo)>='4.0' &&  '4.5'>=floatval($notaPeriodo)):
+                        $color='rgba(255,243,51,1)';
+                    break;
+                    case (floatval($notaPeriodo)>'4.5'):
+                        $color='rgba(53,193,4,1)';
+                    break;
+                }
+                $col[]=$color;
+            }
+              $head=DB::SELECT("CALL studentsCourse('$st->id_matricula') ");                            
+              $chart = new \QuickChart(array('width' => 710,'height' => 176));          
+              $chart->setConfig('{            
+                type: "bar",
+                data: {
+                  labels: '.json_encode($label).' , 
+                  datasets: [{
+                    label: "Materias Cursadas",                
+                    data: '.json_encode($nota).',
+                    backgroundColor:'.json_encode($col).' ,
+                    borderColor: "rgba(4,4,4, 1)",                
+                    borderWidth:1, 
+                    barThickness:15,                                   
+                  },             
+                  {
+                    type: "line",
+                    label: "Nota minima para aprobar",
+                    data: [3, 3, 3, 3,3,3,3,3,3,3,3,3,3,3,3],
+                    fill: false,                
+                    borderColor: "rgb(54, 162, 235,0.2)"
+                }
+                  ]
+                }}');     
+            $url=$chart->getUrl();
+            $pdf = \PDF::loadView('boletin.pdf_boletin',compact('url','course','expedition','head','periodtx','period','observation'))->setPaper('letter')->save( public_path('tmp/').$st->id_matricula.'.pdf');           
+            $pdfMerger->addPathToPDF(public_path('tmp/').$st->id_matricula.'.pdf');
+    } 
+    $pdfMerger->merge();
+    $pdfMerger->download();
+  
+   /* $pdfMerger  = \PDFMerger::init();
+    $pdfMerger->addPDFString(file_get_contents(public_path('tmp')),'all');
+    $pdfMerger->download();
+*/
+   // Storage::cleanDirectory(public_path('tmp/'));
     }
     public function loadUser(){
         \Excel::load('public\Personal.xlsx', function($reader) {         

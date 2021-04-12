@@ -236,16 +236,4 @@ class CalificacionesController extends Controller
         $drawing->setWidth($widt);
         return $drawing;
     }
-
-          /*      -- COLOCAR MODULA ESTUDIANTES CALIFICADOS POR PERIODO 
-                SELECT  B.id_matricula,CONCAT(A.nombre1,'-',A.nombre2,'-',A.apellido1,'-',A.apellido2) AS estudiante ,D.nombre,C.nota_cog1,C.nota_cog2,C.nota_cog3,C.nota_cog4 from calificaciones as C
-                RIGHT JOIN matricula AS B ON C.id_matricula=B.id_matricula
-                INNER JOIN alumno as A ON  B.id_alumno=A.id_alumno
-                INNER JOIN grado AS D ON  B.id_grado=D.id_grado
-                WHERE B.id_estado_matricula=1 AND B.id_grado=11 
-                AND C.id_periodo=1 AND id_asignatura=1
-                */
-
-    
-
 }

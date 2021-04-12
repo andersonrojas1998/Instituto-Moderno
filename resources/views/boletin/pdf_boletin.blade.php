@@ -225,7 +225,7 @@
 
 <h6 class="w3-center w3-tiny"><b>OBSERVACIONES ACAD&Eacute;MICAS O COMPORTAMENTALES</b></h6>
 
-<p class="w3-sans-serif   w3-tiny">{{  $observation[0]->descripcion }}.</p>
+<p class="w3-sans-serif   w3-tiny">@if(!empty($observation[0]))  {{  $observation[0]->descripcion }} @endif.</p>
 
             
          
