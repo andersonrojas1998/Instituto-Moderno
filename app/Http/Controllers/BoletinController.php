@@ -9,7 +9,8 @@ use App\Model\acudiente;
 use App\Model\grado;
 use App\Model\curso;
 use App\Model\notas_adicionales;
-use DB;
+use DB;use PDFMerger;
+
 
 class BoletinController extends Controller
 {
@@ -89,7 +90,29 @@ class BoletinController extends Controller
     }
     public function  genetedBulletinForGrades($idGrade,$expedition,$period){ /** All for grades */
 
+//dd(response()->file(public_path('tmp/').'117.pdf'));
+        $pdf = new PDFMerger();
+        $pdf->addPDF(public_path('tmp/').'117.pdf', 'all');
+        $pdf->addPDF(public_path('tmp/').'118.pdf', 'all');
+        $pdf->merge('download', "mergedpdf.pdf");
 
+
+       // $pdfMerger->addPathToPDF( \Storage::response(''), 'all', 'P');
+      // $pdfMerger->addPathToPDF(\Storage::Directories('/public/tmp/'), 'all', 'L');
+
+
+
+   // $pdfMerger->addPathToPDF(public_path('tmp/').'117.pdf');
+   // Storage::Directories('/public/tmp/'.$id_figura)
+   // $pdfMerger->addPathToPDF(public_path('tmp/').'118.pdf');
+    //$id_figura='117.pdf';
+    //$directory = public_path();
+    //$files = Storage::Directories('/public/tmp/'.$id_figura);
+  //dd($files);
+   $pdfMerger->merge();
+    $pdfMerger->download();
+    return;
+    
         $pdfMerger  = \PDFMerger::init();                        
         $students=self::studentsForGrades($idGrade);        
         $observation=[];
