@@ -1,5 +1,4 @@
 $(document).ready(function() {
-    "use strict";
     dt_teacher();
 } );
 
@@ -7,7 +6,7 @@ $(document).ready(function() {
 var dt_teacher=function(){
     $('#dt_teacher').DataTable({
         destroy: true,
-        searching:true,            
+        searching:true,
         ajax: {
             url: "/dt_user",
             method: "GET", 

@@ -52,10 +52,10 @@ class BoletinController extends Controller
                 case (floatval($notaPeriodo)>='3.0' &&  '3.9'>=floatval($notaPeriodo)):
                     $color='rgba(255,153,51,1)';
                 break;
-                case (floatval($notaPeriodo)>='4.0' &&  '4.5'>=floatval($notaPeriodo)):
+                case (floatval($notaPeriodo)>='4.0' &&  '4.6'>=floatval($notaPeriodo)):
                     $color='rgba(255,243,51,1)';
                 break;
-                case (floatval($notaPeriodo)>'4.5'):
+                case (floatval($notaPeriodo)>'4.6'):
                     $color='rgba(53,193,4,1)';
                 break;
             }

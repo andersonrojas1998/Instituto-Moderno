@@ -87,22 +87,30 @@ class CalificacionesController extends Controller
                 $sheet->mergeCells('C11:F12');
                 $sheet->getStyle('C11')->applyFromArray($styleTitle);
 
-                $sheet->setCellValue('G11','Cognitivo');
+
+                $sheet->setCellValue('G11','Interpretativa');
                 $sheet->mergeCells('G11:J12');
                 $sheet->getStyle('G11')->applyFromArray($styleTitle);
                             
-                $sheet->setCellValue('K11','Social');
+                $sheet->setCellValue('K11','Argum');
                 $sheet->mergeCells('K11:M12');
                 $sheet->getStyle('K11')->applyFromArray($styleTitle);
                 
-                $sheet->setCellValue('N11','Personal');
+                $sheet->setCellValue('N11','Propo');
                 $sheet->mergeCells('N11:P12');
                 $sheet->getStyle('N11')->applyFromArray($styleTitle);
 
-                $sheet->setCellValue('Q11','AutoE');
-                $sheet->mergeCells('Q11:R12');
+
+                $sheet->setCellValue('Q11','Social');
+                $sheet->mergeCells('Q11:S12');
                 $sheet->getStyle('Q11')->applyFromArray($styleTitle);
-             $title=['Matricula','Estudiante','1','2','3','4','c1','c2','c3','c4','s1','s2','s3','p1','p2','p3','Au1','Au2','Def'];
+
+
+                $sheet->setCellValue('T11','AutoE');
+                $sheet->mergeCells('T11:U12');
+                $sheet->getStyle('T11')->applyFromArray($styleTitle);
+
+             $title=['Matricula','Estudiante','1','2','3','4','i1','i2','i3','i4','a1','a2','a3','p1','p2','p3','s1','s2','s3', 'Au1','Au2','Def'];
              
                 for($x=0;$x<count($title);$x++){                                                           
                     $sheet->getStyle($acb[$letter].'13')->applyFromArray($styleArray);
@@ -110,7 +118,7 @@ class CalificacionesController extends Controller
                     $sheet->setCellValueByColumnAndRow($x,1,$title[$x]);                      
                     ++$letter;
                 }
-                $sheet->getStyle('A1:S1')->applyFromArray( [
+                $sheet->getStyle('A1:V1')->applyFromArray( [
                     'font' => [
                         'color' => ['rgb' => 'FFFFFF'],
                  ]
@@ -140,9 +148,9 @@ class CalificacionesController extends Controller
                     
                     ++$alu;
                 }
-                $sheet->setBorder('A13:T'.($alu-1), 'thin');
+                $sheet->setBorder('A13:W'.($alu-1), 'thin');
 
-                $sheet->cells('A11:S13', function ($cells) {
+                $sheet->cells('A11:V13', function ($cells) {
                     $cells->setBackground('#E1D9D9');
                     $cells->setAlignment('center');
                     $cells->setBorder('thin','thin','thin','thin');
