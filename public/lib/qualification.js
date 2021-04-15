@@ -35,8 +35,8 @@ $(document).ready(function() {
                         sweetMessage('\u00A1Registro exitoso!', '\u00A1 Se ha realizado con \u00E9xito su solicitud!'); setTimeout(function () { location.reload() }, 2000);                    
                  },error:function(res,tx,status){                    
                      if(res.status==500){
-                        var data=JSON.parse(res.responseText);                    
-                        sweetMessage('\u00A1Atenci\u00f3n!',JSON.parse(data.message).message, 'error');
+                        //var data=JSON.parse(res.responseText);                    
+                        sweetMessage('\u00A1Atenci\u00f3n!',"ERROR AL CARGAR ARCHIVO", 'error');
                      }                    
                  }
                 });

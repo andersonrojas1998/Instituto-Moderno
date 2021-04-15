@@ -157,7 +157,7 @@ class CalificacionesController extends Controller
                 });
                 $sheet->setFreeze('A14');
                 $sheet->protect('123456');
-                $sheet->getStyle('G14:R100')->getProtection()->setLocked(\PHPExcel_Style_Protection::PROTECTION_UNPROTECTED);                                
+                $sheet->getStyle('G14:U100')->getProtection()->setLocked(\PHPExcel_Style_Protection::PROTECTION_UNPROTECTED);                                
             });
 
         })->download('xls');    
@@ -187,28 +187,46 @@ class CalificacionesController extends Controller
                         $matricula=intval($row->matricula); 
                         $teacher=$data['teacher'];
                         $course=$data['course'];
-                        $nota1=floatval($row->c1); 
-                        $nota2=floatval($row->c2);
-                        $nota3=floatval($row->c3);
-                        $nota4=floatval($row->c4);
-                        $nota5=floatval($row->s1);
-                        $nota6=floatval($row->s2);
-                        $nota7=floatval($row->s3);
+
+
+                        /** Interpretativa 34% */
+                        $nota1=floatval($row->i1); 
+                        $nota2=floatval($row->i2);
+                        $nota3=floatval($row->i3);
+                        $nota4=floatval($row->i4);
+                        /** Argumentativa  34% */
+                        $nota5=floatval($row->a1);
+                        $nota6=floatval($row->a2);
+                        $nota7=floatval($row->a3);
+                        /** Propositiva   30%  */
                         $nota8=floatval($row->p1);
                         $nota9=floatval($row->p2);
                         $nota10=floatval($row->p3);
-                        $nota11=floatval($row->au1);
-                        $nota12=floatval($row->au2);
+                        /**Social 1% */
+                        $nota11=floatval($row->s1);
+                        $nota12=floatval($row->s2);
+                        $nota13=floatval($row->s3);                        
+                        /**Autoe  1%  */
+                        $nota14=floatval($row->au1);
+                        $nota15=floatval($row->au2);
+                        
+
                      $year=date('Y');
                      $calificaciones=DB::SELECT("SELECT id_matricula FROM calificaciones WHERE  id_periodo='$perid' AND id_docente='$teacher' AND  id_asignatura='$course' AND id_matricula='$matricula' ");
                      if(!empty($calificaciones[0]->id_matricula)){
                          throw new \Exception(json_encode(['error'=>1,'message'=>'El alumno con matricula '. $calificaciones[0]->id_matricula .' ya cuenta con calificacion para el periodo '.$perid,'colum'=>$matricula ]));
                      }
                                           
-                     if($nota1 >5.0 ||  $nota2 >5.0 || $nota3 >5.0  || $nota4>5.0 ||  $nota5 >5.0 || $nota6 >5.0  || $nota7 >5.0 || $nota8>5.0 || $nota9>5.0 || $nota10>5.0 ||  $nota11>5.0 ||  $nota12>5.0 ){
+                     if($nota1 >5.0 ||  $nota2 >5.0 || $nota3 >5.0  || $nota4>5.0 ||  $nota5 >5.0 || $nota6 >5.0  || $nota7 >5.0 || $nota8>5.0 || $nota9>5.0 || $nota10>5.0 ||  $nota11>5.0 ||  $nota12>5.0 ||  $nota13>5.0  ||  $nota14>5.0  ||  $nota15>5.0  ){
                          throw new \Exception(json_encode(['error'=>1,'message'=>'Por favor valida todos los campos , revisa que  La nota no supere  a 5.0 ','colum'=>$matricula ]));
                      }
-                        $notafinal=round(($nota1+$nota2+$nota3+$nota4+$nota5+$nota6+$nota7+$nota8+$nota9+$nota10+$nota11+$nota12)/12,1);
+                     $inter=(($nota1+$nota2+$nota3+$nota4)*34)/100;
+                     $argum=(($nota5+$nota6+$nota7)*34)/100;
+                     $propo=(($nota8+$nota9+$nota10)*30)/100;
+                     $social=(($nota11+$nota12+$nota13)*1)/100;
+                     $autoe=(($nota14+$nota15)*1)/100;
+                     
+                     $notafinal=round(($inter+$argum+$propo+$social+$autoe),1);
      
      
                         /// validar lo del 2 perido acomulativo                   
@@ -218,9 +236,10 @@ class CalificacionesController extends Controller
      
                         $aprobo=($notafinal > 3.0)? 1:0;
                          
-                       DB::insert("INSERT INTO `calificaciones`(`id_periodo`, `id_matricula`, `id_docente`, `id_asignatura`, `nota_cog1`, `nota_cog2`, `nota_cog3`, `nota_cog4`, `nota_soc1`, 
-                                     `nota_soc2`, `nota_soc3`, `nota_per1`, `nota_per2`, `nota_per3`, `nota_auto`, `nota_coe`, `nota_recuperacion`, `nota_definitiva`, `aprobo`, `acumulativo`)
-                                    VALUES ($perid,$matricula,$teacher,$course,$nota1,$nota2,$nota3,$nota4,$nota5,$nota6,$nota7,$nota8,$nota9,$nota10,$nota11,$nota12,null,$notafinal,$aprobo,$acomulativo)");     // Do your SQL here                   
+                       DB::insert("INSERT INTO `calificaciones`(`id_periodo`, `id_matricula`, `id_docente`, `id_asignatura`,`nota_inter1`, `nota_inter2`, `nota_inter3`, `nota_inter4`,
+                                                             `nota_arg1`, `nota_arg2`, `nota_arg3`, `nota_prop1`, `nota_prop2`, `nota_prop3`, `nota_soc1`, `nota_soc2`, `nota_soc3`, 
+                                                             `nota_auto`, `nota_coe`, `nota_recuperacion`, `nota_definitiva`, `aprobo`, `acumulativo`)
+                                    VALUES ($perid,$matricula,$teacher,$course,$nota1,$nota2,$nota3,$nota4,$nota5,$nota6,$nota7,$nota8,$nota9,$nota10,$nota11,$nota12,$nota13,$nota14,$nota15,null,$notafinal,$aprobo,$acomulativo)");
                     }
                     });
 
