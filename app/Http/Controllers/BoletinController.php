@@ -90,35 +90,14 @@ class BoletinController extends Controller
     }
     public function  genetedBulletinForGrades($idGrade,$expedition,$period){ /** All for grades */
 
-//dd(response()->file(public_path('tmp/').'117.pdf'));
-        $pdf = new PDFMerger();
-        $pdf->addPDF(public_path('tmp/').'117.pdf', 'all');
-        $pdf->addPDF(public_path('tmp/').'118.pdf', 'all');
-        $pdf->merge('download', "mergedpdf.pdf");
 
-
-       // $pdfMerger->addPathToPDF( \Storage::response(''), 'all', 'P');
-      // $pdfMerger->addPathToPDF(\Storage::Directories('/public/tmp/'), 'all', 'L');
-
-
-
-   // $pdfMerger->addPathToPDF(public_path('tmp/').'117.pdf');
-   // Storage::Directories('/public/tmp/'.$id_figura)
-   // $pdfMerger->addPathToPDF(public_path('tmp/').'118.pdf');
-    //$id_figura='117.pdf';
-    //$directory = public_path();
-    //$files = Storage::Directories('/public/tmp/'.$id_figura);
-  //dd($files);
-   $pdfMerger->merge();
-    $pdfMerger->download();
-    return;
-    
-        $pdfMerger  = \PDFMerger::init();                        
+        
+                      
         $students=self::studentsForGrades($idGrade);        
         $observation=[];
         $periodtx=($period==1)?  'PRIMER':'SEGUNDO';
-
         
+        $pdfM = new PDFMerger();
         foreach(json_decode($students) as $st){            
             $course=DB::SELECT("CALL courseForAlumn('$st->id_matricula','$period')");
             $label=[]; $nota=[]; $col=[];
@@ -171,17 +150,16 @@ class BoletinController extends Controller
                   ]
                 }}');     
             $url=$chart->getUrl();
-            $pdf = \PDF::loadView('boletin.pdf_boletin',compact('url','course','expedition','head','periodtx','period','observation'))->setPaper('letter')->save( public_path('tmp/').$st->id_matricula.'.pdf');           
-            $pdfMerger->addPathToPDF(public_path('tmp/').$st->id_matricula.'.pdf');
-    } 
-    $pdfMerger->merge();
-    $pdfMerger->download();
-  
-   /* $pdfMerger  = \PDFMerger::init();
-    $pdfMerger->addPDFString(file_get_contents(public_path('tmp')),'all');
-    $pdfMerger->download();
-*/
-   // Storage::cleanDirectory(public_path('tmp/'));
+            $pdf = \PDF::loadView('boletin.pdf_boletin',compact('url','course','expedition','head','periodtx','period','observation'))->setPaper('letter')->save( public_path('tmp/').$st->id_matricula.'.pdf');                                 
+            $pdfM->addPDF(public_path('tmp/').$st->id_matricula.'.pdf', 'all');
+        }            
+        $pdfM->merge('download', "mergedAllpdf.pdf");
+
+        /** Eliminar files */        
+        /*for ($l = 0; $l <= count($data); $l++) {
+        unlink(public_path('Temp/' . Auth::id() . $i . 'epicisis.pdf')); // Elimina todos los archivos del Temp
+        }*/
+
     }
     public function loadUser(){
         \Excel::load('public\Personal.xlsx', function($reader) {         
