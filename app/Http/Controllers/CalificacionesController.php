@@ -190,26 +190,27 @@ class CalificacionesController extends Controller
 
 
                         /** Interpretativa 34% */
-                        $nota1=floatval($row->i1); 
-                        $nota2=floatval($row->i2);
-                        $nota3=floatval($row->i3);
-                        $nota4=floatval($row->i4);
+                        $nota1=number_format ($row->i1,1); //floatval(); 
+                        $nota2=number_format ($row->i2,1);
+                        $nota3=number_format ($row->i3,1);
+                        $nota4=number_format ($row->i4,1);
                         /** Argumentativa  34% */
-                        $nota5=floatval($row->a1);
-                        $nota6=floatval($row->a2);
-                        $nota7=floatval($row->a3);
+                        $nota5=number_format($row->a1,1);
+                        $nota6=number_format($row->a2,1);
+                        $nota7=number_format($row->a3,1);
                         /** Propositiva   30%  */
-                        $nota8=floatval($row->p1);
-                        $nota9=floatval($row->p2);
-                        $nota10=floatval($row->p3);
+                        $nota8=number_format($row->p1,1);
+                        $nota9=number_format($row->p2,1);
+                        $nota10=number_format($row->p3,1);
                         /**Social 1% */
-                        $nota11=floatval($row->s1);
-                        $nota12=floatval($row->s2);
-                        $nota13=floatval($row->s3);                        
+                        $nota11=number_format($row->s1,1);
+                        $nota12=number_format($row->s2,1);
+                        $nota13=number_format($row->s3,1);                        
                         /**Autoe  1%  */
-                        $nota14=floatval($row->au1);
-                        $nota15=floatval($row->au2);
+                        $nota14=number_format($row->au1,1);
+                        $nota15=number_format($row->au2,1);
                         
+                       
 
                      $year=date('Y');
                      $calificaciones=DB::SELECT("SELECT id_matricula FROM calificaciones WHERE  id_periodo='$perid' AND id_docente='$teacher' AND  id_asignatura='$course' AND id_matricula='$matricula' ");
@@ -220,18 +221,19 @@ class CalificacionesController extends Controller
                      if($nota1 >5.0 ||  $nota2 >5.0 || $nota3 >5.0  || $nota4>5.0 ||  $nota5 >5.0 || $nota6 >5.0  || $nota7 >5.0 || $nota8>5.0 || $nota9>5.0 || $nota10>5.0 ||  $nota11>5.0 ||  $nota12>5.0 ||  $nota13>5.0  ||  $nota14>5.0  ||  $nota15>5.0  ){
                          throw new \Exception(json_encode(['error'=>1,'message'=>'Por favor valida todos los campos , revisa que  La nota no supere  a 5.0 ','colum'=>$matricula ]));
                      }
-                     $inter=(($nota1+$nota2+$nota3+$nota4)*34)/100;
-                     $argum=(($nota5+$nota6+$nota7)*34)/100;
-                     $propo=(($nota8+$nota9+$nota10)*30)/100;
-                     $social=(($nota11+$nota12+$nota13)*1)/100;
-                     $autoe=(($nota14+$nota15)*1)/100;
+                     $inter=number_format(($nota1+$nota2+$nota3+$nota4)*34/ 100,1);
+                     $argum=number_format(($nota5+$nota6+$nota7)*34/100, 1);
+                     $propo=number_format(($nota8+$nota9+$nota10)*30/100,1);
+                     $social=number_format(($nota11+$nota12+$nota13)*1/100,1);
+                     $autoe=number_format(($nota14+$nota15)*1/100,1);
                      
-                     $notafinal=round(($inter+$argum+$propo+$social+$autoe),1);
-     
+                     $notafinal=$inter+$argum+$propo+$social+$autoe;
+
+                    dd($notafinal);
      
                         /// validar lo del 2 perido acomulativo                   
                         $percentage=DB::SELECT("SELECT porcentaje from periodo where codigo='$perid' ");
-                        $acomulativo=round(($notafinal*$percentage[0]->porcentaje/100),1);
+                        $acomulativo=number_format(($notafinal*$percentage[0]->porcentaje/100),1);
                         ($row->def!=null)? $acomulativo+floatval($row->def):'';
      
                         $aprobo=($notafinal > 3.0)? 1:0;

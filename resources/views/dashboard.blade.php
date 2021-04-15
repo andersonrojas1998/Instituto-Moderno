@@ -83,6 +83,21 @@
     </div>
   </div>
 </div>
+
+
+
+<div class="row">
+  <div class="col-md-12 grid-margin">
+    <div class="card">
+      <div class="card-body">
+        <h3>BIENVENIDOS </h3>
+        <p>Instruye al niño en su camino que aún aunque fuera viejo no se apartará de él. Proverbio 22:6</p>
+      </div>
+      </div>
+      </div>
+      </div>
+
+<!--
 <div class="row">
   <div class="col-md-12 grid-margin">
     <div class="card">
@@ -548,7 +563,7 @@
       </div>
     </div>
   </div>
-</div>
+</div>-->
 @endsection
 
 @push('plugin-scripts')

@@ -201,6 +201,33 @@ class BoletinController extends Controller
             });
         });
     }
+
+    public function loadDirectorGrade(){
+        \Excel::load('public\file.xlsx', function($reader) {         
+            $data=[];         
+
+            $exception = DB::transaction(function() use ($data,$reader) {
+                try{
+                    $reader->each(function($row){                
+                        if(!empty($row->documento)){        
+                            /*** update teacher */
+                            $users=DB::SELECT("SELECT id FROM users where identificacion='$row->dni_docente' ");  
+                            $idUser=$users[0]->id;
+                            DB::SELECT("UPDATE grado SET id_docente='$idUser' WHERE grupo='$row->grado'  ");  
+                
+                            /** update grado alumno */
+                            $grado=DB::SELECT("SELECT * grado where grupo='$row->grado' ");
+                            $idgrado=$grado[0]->id_grado;
+                           DB::SELECT("UPDATE matricula INNER JOIN alumno ON matricula.id_alumno=alumno.id_alumno   SET  matricula.id_grado ='$idgrado'  WHERE alumno.identificacion='$row->documento'  ");        
+                        }                
+                    });
+                }catch(\PDOException $e) {                        
+                    throw new \Exception(json_encode(['error'=>2,'message'=>$e->getMessage()]));
+                }
+            });
+            
+        });
+    }
     public function loadGroup(){
         \Excel::load('public\grados.xlsx', function($reader) {         
             $data=[];         
