@@ -10,7 +10,7 @@ class DocenteController extends Controller
         return view('docentes.index_docentes');
     }
     public function showTeacher($status=1){
-        $dataUs=DB::select("SELECT tb1.id,tb1.name FROM users as tb1  WHERE tb1.estado='$status' ");        
+        $dataUs=DB::select("SELECT tb1.id,tb1.name FROM users as tb1  WHERE tb1.estado='$status' AND  cargo='Docente' ");        
         return json_encode($dataUs);
     }
 

@@ -110,7 +110,7 @@ class CalificacionesController extends Controller
                 $sheet->mergeCells('T11:U12');
                 $sheet->getStyle('T11')->applyFromArray($styleTitle);
 
-             $title=['Matricula','Estudiante','1','2','3','4','i1','i2','i3','i4','a1','a2','a3','p1','p2','p3','s1','s2','s3', 'Au1','Au2','Def'];
+             $title=['Matricula','Estudiante','1','2','3','4','i1','i2','i3','i4','a1','a2','a3','p1','p2','p3','s1','s2','s3', 'au1','au2','def'];
              
                 for($x=0;$x<count($title);$x++){                                                           
                     $sheet->getStyle($acb[$letter].'13')->applyFromArray($styleArray);
@@ -144,7 +144,7 @@ class CalificacionesController extends Controller
                     $sheet->setCellValueByColumnAndRow($row+1,$alu,$name);
                     $sheet->setCellValueByColumnAndRow($row+2,$alu,$alumno->primerPeriodo);
                     $sheet->setCellValueByColumnAndRow($row+3,$alu,$alumno->segundoPeriodo);
-                    $sheet->setCellValueByColumnAndRow($row+18,$alu,$alumno->acumulativo);
+                    $sheet->setCellValueByColumnAndRow($row+21,$alu,$alumno->acumulativo);
                     
                     ++$alu;
                 }
@@ -171,7 +171,7 @@ class CalificacionesController extends Controller
         $perid=intval(substr($sheet->getCell('A5')->getValue(),9,strlen($sheet->getCell('A5')->getValue()))); 
         $teacher=substr($sheet->getCell('A6')->getValue(),10,strlen($sheet->getCell('A6')->getValue()));
         $reader->ignoreEmpty();
-        $reader->takeColumns(19);        
+        $reader->takeColumns(22);        
         $singleRow =$reader->skipRows(12)->get(); 
         
         $users=DB::SELECT("SELECT id  from  users WHERE name='$teacher' ");
@@ -221,20 +221,74 @@ class CalificacionesController extends Controller
                      if($nota1 >5.0 ||  $nota2 >5.0 || $nota3 >5.0  || $nota4>5.0 ||  $nota5 >5.0 || $nota6 >5.0  || $nota7 >5.0 || $nota8>5.0 || $nota9>5.0 || $nota10>5.0 ||  $nota11>5.0 ||  $nota12>5.0 ||  $nota13>5.0  ||  $nota14>5.0  ||  $nota15>5.0  ){
                          throw new \Exception(json_encode(['error'=>1,'message'=>'Por favor valida todos los campos , revisa que  La nota no supere  a 5.0 ','colum'=>$matricula ]));
                      }
-                     $inter=number_format(($nota1+$nota2+$nota3+$nota4)*34/ 100,1);
-                     $argum=number_format(($nota5+$nota6+$nota7)*34/100, 1);
-                     $propo=number_format(($nota8+$nota9+$nota10)*30/100,1);
-                     $social=number_format(($nota11+$nota12+$nota13)*1/100,1);
-                     $autoe=number_format(($nota14+$nota15)*1/100,1);
                      
-                     $notafinal=$inter+$argum+$propo+$social+$autoe;
+       
+                $i=0;
+                if($nota1 >0.0){
+                    ++$i;
+                }if ($nota2 > 0.0) {
+                    ++$i;
+                }if ($nota3 > 0.0) {
+                    ++$i;
+                }if ($nota4 > 0.0) {
+                    ++$i;
+                }
+                $interPro=($nota1+$nota2+$nota3+$nota4)/$i;
 
-                    dd($notafinal);
-     
+                $a=0;
+                if($nota5 >0.0){
+                    $a++;
+                }if ($nota6 > 0.0) {
+                    ++$a;
+                }if($nota7 > 0.0) {
+                    ++$a;
+                }        
+                $argPro=($nota5+$nota6+$nota7)/$a;
+
+                $p=0;
+                if($nota8 >0.0){
+                    ++$p;
+                }if($nota9 > 0.0) {
+                    ++$p;
+                }if($nota10 > 0.0) {
+                    ++$p;
+                }        
+                $proPro=($nota8+$nota9+$nota10)/$p;
+
+                $s=0;
+                if($nota11 >0.0){
+                    ++$s;
+                }if($nota12 > 0.0) {
+                    ++$s;
+                }if ($nota13 > 0.0) {
+                    ++$s;
+                }        
+                $socPro=($nota11+$nota12+$nota13)/$s;
+
+                $aut=0;
+                if($nota14 >0.0){
+                    ++$aut;
+                }if($nota15 > 0.0) {
+                    ++$aut;
+                }
+        
+                $autoPro=($nota14+$nota15)/$aut;
+                
+                $inter=round(($interPro)*34/ 100,2);
+                $argum=round(($argPro)*34/ 100, 2);
+
+                $propo=round(($proPro)*30/100,2);
+                $social=round(($socPro)*1/100,2);
+                $autoe=round(($autoPro)*1/100,2);
+                            
+                $notafinal=number_format($inter+$argum+$propo+$social+$autoe,1);
+            
+                $i=0;$a=0;$p=0;$s=0;$aut=0;
+
                         /// validar lo del 2 perido acomulativo                   
                         $percentage=DB::SELECT("SELECT porcentaje from periodo where codigo='$perid' ");
                         $acomulativo=number_format(($notafinal*$percentage[0]->porcentaje/100),1);
-                        ($row->def!=null)? $acomulativo+floatval($row->def):'';
+                        ($row->def!=null)? $acomulativo+number_format($row->def,1):'';
      
                         $aprobo=($notafinal > 3.0)? 1:0;
                          

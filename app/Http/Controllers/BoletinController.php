@@ -181,7 +181,7 @@ class BoletinController extends Controller
     }
 
     public function loadDirectorGrade(){
-        \Excel::load('public\file.xlsx', function($reader) {         
+        \Excel::load('public\grados_docentes.xlsx', function($reader) {         
             $data=[];         
 
             $exception = DB::transaction(function() use ($data,$reader) {
@@ -194,9 +194,12 @@ class BoletinController extends Controller
                             DB::SELECT("UPDATE grado SET id_docente='$idUser' WHERE grupo='$row->grado'  ");  
                 
                             /** update grado alumno */
-                            $grado=DB::SELECT("SELECT * grado where grupo='$row->grado' ");
-                            $idgrado=$grado[0]->id_grado;
-                           DB::SELECT("UPDATE matricula INNER JOIN alumno ON matricula.id_alumno=alumno.id_alumno   SET  matricula.id_grado ='$idgrado'  WHERE alumno.identificacion='$row->documento'  ");        
+                            $grado=DB::SELECT("SELECT id_grado,nombre,grupo FROM  grado where grupo='$row->grado' ");
+                            if(!empty($grado[0])){
+                                $idgrado=$grado[0]->id_grado;
+                                DB::SELECT("UPDATE matricula INNER JOIN alumno ON matricula.id_alumno=alumno.id_alumno   SET  matricula.id_grado ='$idgrado'  WHERE alumno.identificacion='$row->documento'  ");        
+                            }
+                            
                         }                
                     });
                 }catch(\PDOException $e) {                        
