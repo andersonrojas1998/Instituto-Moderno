@@ -31,7 +31,7 @@ class DocenteController extends Controller
     }
     public function gradeAssignments(){        
         $idTeacher = \Request::input('idTeacher');
-        $gradesAll=DB::SELECT("SELECT distinct A.id_grado, concat(A.grupo,' * ',c.nombre) as grupo FROM  grado as A
+        $gradesAll=DB::SELECT("SELECT distinct A.id_grado, concat(A.grupo,' * ',C.nombre) as grupo FROM  grado as A
                     inner join curso AS B ON A.id_grado=B.id_grado
                     inner join jornada as C ON A.id_jornada=C.id_jornada         
                     where B.id_docente='$idTeacher' ");
