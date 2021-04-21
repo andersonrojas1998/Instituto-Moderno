@@ -31,9 +31,9 @@ class CalificacionesController extends Controller
             $data['data'][$key]['mat'] = $row->id_matricula;
             $data['data'][$key]['alumn'] =$row->apellido1. ' '.$row->apellido2.' ' . $row->nombre1.' '.$row->nombre2;
             $data['data'][$key]['grupo']=$row->grupo;
-            $data['data'][$key]['period1']=$row->primerPeriodo;
-            $data['data'][$key]['period2']=$row->segundoPeriodo;
-            $data['data'][$key]['period3']=$row->tercerPeriodo;
+            $data['data'][$key]['period1']=(empty($row->primerPeriodo))? '':number_format($row->primerPeriodo,1);
+            $data['data'][$key]['period2']=(empty($row->segundoPeriodo))? '' :number_format($row->segundoPeriodo,1);
+            $data['data'][$key]['period3']=(empty($row->tercerPeriodo))?  '':number_format($row->tercerPeriodo,1);
             $data['data'][$key]['notas']='';
             ++$i;
         }
@@ -44,8 +44,7 @@ class CalificacionesController extends Controller
         $aco=($period==3)? 2:1;                                  
         $alumnoGrade=DB::SELECT("SELECT B.id_matricula,A.nombre1,A.nombre2,A.apellido1,A.apellido2,C.grupo,
                                     (SELECT  nota_definitiva from calificaciones as tb1 where tb1.id_periodo=1 AND tb1.id_matricula=B.id_matricula AND tb1.id_docente='$teacher' AND tb1.id_asignatura='$course'  LIMIT 1) as primerPeriodo,
-                                    (SELECT  nota_definitiva from calificaciones as tb2 where tb2.id_periodo=2 AND tb2.id_matricula=B.id_matricula AND tb2.id_docente='$teacher' AND tb2.id_asignatura='$course'  LIMIT 1) as segundoPeriodo,
-                                    (SELECT  nota_definitiva from calificaciones as tb3 where tb3.id_periodo=3 AND tb3.id_matricula=B.id_matricula AND tb3.id_docente='$teacher' AND tb3.id_asignatura='$course'  LIMIT 1) as tercerPeriodo,
+                                    (SELECT  nota_definitiva from calificaciones as tb2 where tb2.id_periodo=2 AND tb2.id_matricula=B.id_matricula AND tb2.id_docente='$teacher' AND tb2.id_asignatura='$course'  LIMIT 1) as segundoPeriodo,                                    
                                     (SELECT  acumulativo from calificaciones as tb3 where tb3.id_periodo='$aco' AND tb3.id_matricula=B.id_matricula AND tb3.id_docente='$teacher' AND tb3.id_asignatura='$course'  LIMIT 1) as acumulativo
                             FROM alumno AS A
                             INNER JOIN matricula AS B ON A.id_alumno=B.id_alumno
@@ -142,9 +141,9 @@ class CalificacionesController extends Controller
                     $sheet->setCellValueByColumnAndRow($row,$alu,$alumno->id_matricula);                   
                     $name=$alumno->apellido1.'  '.$alumno->apellido2.'  ' .$alumno->nombre1.'  '. $alumno->nombre2;
                     $sheet->setCellValueByColumnAndRow($row+1,$alu,$name);
-                    $sheet->setCellValueByColumnAndRow($row+2,$alu,$alumno->primerPeriodo);
-                    $sheet->setCellValueByColumnAndRow($row+3,$alu,$alumno->segundoPeriodo);
-                    $sheet->setCellValueByColumnAndRow($row+21,$alu,$alumno->acumulativo);
+                    $sheet->setCellValueByColumnAndRow($row+2,$alu,(empty($alumno->primerPeriodo))? '':number_format($alumno->primerPeriodo,1));
+                    $sheet->setCellValueByColumnAndRow($row+3,$alu,(empty($alumno->segundoPeriodo))? '':number_format($alumno->segundoPeriodo,1));
+                    $sheet->setCellValueByColumnAndRow($row+21,$alu,(empty($alumno->acumulativo))? '':number_format($alumno->acumulativo,1));
                     
                     ++$alu;
                 }

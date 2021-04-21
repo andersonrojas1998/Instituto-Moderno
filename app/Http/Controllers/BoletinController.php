@@ -30,19 +30,19 @@ class BoletinController extends Controller
                             WHERE B.id_estado_matricula=1 AND B.id_grado='$grade' ");  
         return json_encode($alumnoGrade);
     }
-    public function genetedBulletin($matricula,$expedition,$period,$obs){ 
+    public function genetedBulletin($matricula,$expedition,$period,$obs,$grade){ 
         
-        $observation=notas_adicionales::where('id_nota',$obs)->get();        
+        $observation=notas_adicionales::where('id_nota',$obs)->get();
         $periodtx=($period==1)?  'PRIMER':'SEGUNDO';        
         $course=DB::SELECT("CALL courseForAlumn('$matricula','$period')");
         $label=[]; $nota=[]; $col=[];
         foreach($course as $key=> $all){                       
             if($period==1){
-                $notaPeriodo=$all->primerPeriodo;
-                $nota[]=$all->primerPeriodo;
+                $notaPeriodo=number_format($all->primerPeriodo,1);
+                $nota[]=number_format($all->primerPeriodo,1);
             }else{
-                $notaPeriodo=$all->segundoPeriodo;
-                $nota[]=$all->segundoPeriodo;            
+                $notaPeriodo=number_format($all->segundoPeriodo,1);
+                $nota[]=number_format($all->segundoPeriodo,1);
             }
             $label[]=$all->tag;            
             switch(floatval($notaPeriodo)){
@@ -60,8 +60,7 @@ class BoletinController extends Controller
                 break;
             }
             $col[]=$color;
-        }
-          $head=DB::SELECT("CALL studentsCourse('$matricula') ");                            
+        }          
           $chart = new \QuickChart(array('width' => 710,'height' => 176));          
           $chart->setConfig('{            
             type: "bar",
@@ -85,29 +84,31 @@ class BoletinController extends Controller
               ]
             }}');     
         $url=$chart->getUrl();
-        $pdf = \PDF::loadView('boletin.pdf_boletin',compact('url','course','expedition','head','periodtx','period','observation'))->setPaper('letter')->stream("achivo.pdf");
+        $head=DB::SELECT("CALL studentsCourse('$matricula') ");
+        $q=DB::SELECT("CALL numberStudentGrade('$grade')");
+        $nmStudents=$q[0]->cantidad;
+        $pdf = \PDF::loadView('boletin.pdf_boletin',compact('url','course','expedition','head','periodtx','period','observation','nmStudents'))->setPaper('letter')->stream("achivo.pdf");
         return $pdf;
     }
-    public function  genetedBulletinForGrades($idGrade,$expedition,$period){ /** All for grades */
+    public function  genetedBulletinForGrades($idGrade,$expedition,$period,$obs){ /** All for grades */
 
 
-        
-                      
-        $students=self::studentsForGrades($idGrade);        
-        $observation=[];
+        $observation=notas_adicionales::where('id_nota',$obs)->get();
+        $students=self::studentsForGrades($idGrade);                
         $periodtx=($period==1)?  'PRIMER':'SEGUNDO';
-        
         $pdfM = new PDFMerger();
-        foreach(json_decode($students) as $st){            
+        $arrMat=[];
+        $nmStudents= count(json_decode($students));
+        foreach(json_decode($students) as $xy=> $st){            
             $course=DB::SELECT("CALL courseForAlumn('$st->id_matricula','$period')");
             $label=[]; $nota=[]; $col=[];
             foreach($course as $key=> $all){                       
                 if($period==1){
-                    $notaPeriodo=$all->primerPeriodo;
-                    $nota[]=$all->primerPeriodo;
+                    $notaPeriodo=number_format($all->primerPeriodo,1);
+                    $nota[]=number_format($all->primerPeriodo,1);
                 }else{
-                    $notaPeriodo=$all->segundoPeriodo;
-                    $nota[]=$all->segundoPeriodo;            
+                    $notaPeriodo=number_format($all->segundoPeriodo,1);
+                    $nota[]=number_format($all->segundoPeriodo,1);
                 }
                 $label[]=$all->tag;            
                 switch(floatval($notaPeriodo)){
@@ -125,8 +126,7 @@ class BoletinController extends Controller
                     break;
                 }
                 $col[]=$color;
-            }
-              $head=DB::SELECT("CALL studentsCourse('$st->id_matricula') ");                            
+            }              
               $chart = new \QuickChart(array('width' => 710,'height' => 176));          
               $chart->setConfig('{            
                 type: "bar",
@@ -150,15 +150,15 @@ class BoletinController extends Controller
                   ]
                 }}');     
             $url=$chart->getUrl();
-            $pdf = \PDF::loadView('boletin.pdf_boletin',compact('url','course','expedition','head','periodtx','period','observation'))->setPaper('letter')->save( public_path('tmp/').$st->id_matricula.'.pdf');                                 
+            $head=DB::SELECT("CALL studentsCourse('$st->id_matricula') ");
+            $pdf = \PDF::loadView('boletin.pdf_boletin',compact('url','course','expedition','head','periodtx','period','observation','nmStudents'))->setPaper('letter')->save( public_path('tmp/').$st->id_matricula.'.pdf');                                 
             $pdfM->addPDF(public_path('tmp/').$st->id_matricula.'.pdf', 'all');
+            $arrMat[$xy]=$st->id_matricula;
         }            
         $pdfM->merge('download', "mergedAllpdf.pdf");
-
-        /** Eliminar files */        
-        /*for ($l = 0; $l <= count($data); $l++) {
-        unlink(public_path('Temp/' . Auth::id() . $i . 'epicisis.pdf')); // Elimina todos los archivos del Temp
-        }*/
+        foreach($arrMat as $value){
+            unlink(public_path('tmp/').$value.'.pdf');
+        }
 
     }
     public function loadUser(){
