@@ -31,12 +31,16 @@ $(document).ready(function() {
                     processData: false,                                                            
                     dataType: "JSON",
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                    success: function(data){                     
-                        sweetMessage('\u00A1Registro exitoso!', '\u00A1 Se ha realizado con \u00E9xito su solicitud!'); setTimeout(function () { location.reload() }, 2000);                    
+                    success: function(data){  
+                        let p=data.period;
+                        let t=data.teacher;
+                        let cour=data.course;
+                        let gd=data.gradeId;
+                        sweetMessage('\u00A1Registro exitoso!', '\u00A1 Se ha realizado con \u00E9xito su solicitud!');
+                        dt_qualificationsPeriod(gd,p,t,cour);
                  },error:function(res,tx,status){                    
-                     if(res.status==500){
-                        //var data=JSON.parse(res.responseText);                    
-                        sweetMessage('\u00A1Atenci\u00f3n!',"ERROR AL CARGAR ARCHIVO", 'error');
+                     if(res.status==500){                        
+                        sweetMessage('\u00A1Atenci\u00f3n!',"ERROR AL CARGAR ARCHIVO  "+ JSON.parse(res.responseText).message, 'error');
                      }                    
                  }
                 });
@@ -171,6 +175,48 @@ var dt_qualifications=function(grade,perid,teacher,course){
                 { "data": "notas"},
                 { "data": "notas"},               
         ]
+    });
+}
+
+var dt_qualificationsPeriod=function(grade,perid,teacher,course){
+    $('#dt_qualificationsPeriod').DataTable({        
+        lengthChange: false,        
+        responsive: true,
+        destroy: true,   
+        searching:false, 
+        "ordering": false,
+        lengthMenu:false,
+        paginate:false,
+        ajax: {
+            url: "/QualificationTable/",
+            method: "GET", 
+            data:{grade:grade,perid:perid,teacher:teacher,course:course},
+            dataSrc: function (json) {
+                if (!json.data) {
+                    return [];
+                } else {
+                    return json.data;
+                }
+              }               
+            },
+        deferRender: true,            
+        columnDefs: [{"className": "text-center", "targets": "_all"},],
+        columns: 
+        [
+                { "data": "conc" , render(data){return '<b>'+data+'</b>';}},
+                { "data": "mat" },                
+                { "data": "alumn"},
+                { "data": "grupo"},                                
+                { "data": "period1"},
+                { "data": "period2"},
+                { "data": "period3"},                
+        ],
+        rowCallback:function(row,data,index){
+            if(data.period1<'3.0' || data.period2<'3.0' || data.period3<'3.0'){
+                $('td', row).css('background-color', 'rgba(255, 0, 0, 0.25)');
+            }
+            
+        }
     });
 }
 /**

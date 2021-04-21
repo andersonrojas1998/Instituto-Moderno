@@ -86,36 +86,21 @@
         </thead>
         <tbody>
         @foreach($course as $all)
+        @php  $dataP1=explode('-',$all->primerPeriodo); $dataP2=explode('-',$all->segundoPeriodo);
+         $rango1=isset($dataP1[1])? $dataP1[1]:'';
+         $rango2=isset($dataP2[1])? $dataP2[1]:'';
+        $number=($period==1)? $rango1:$rango2; @endphp
         <tr>            
             <td class="padding-1">{{ $all->nombre }}</td>
             <td class="w3-center padding-1">{{ $all->intensidad_horaria }}</td>
-            <td class="w3-center padding-1 w3-light-grey">{{ $all->primerPeriodo }}</td>
-            <td class="w3-center padding-1"></td>
+            <td class="w3-center padding-1 w3-light-grey">{{ isset($dataP1[0])? $dataP1[0]:'' }} </td>
+            <td class="w3-center padding-1"></td>            
             @if($period==2)
-            <td class="w3-center padding-1 w3-light-grey">{{ $all->segundoPeriodo }}</td>
+            <td class="w3-center padding-1 w3-light-grey">{{ isset($dataP2[0])? $dataP2[0]:'' }}</td>
             <td class="w3-center padding-1"></td>
             @endif            
-            <td class="w3-center padding-1">{{ $all->acumulativo }}</td>
-            @php $number=($period==2)? number_format($all->segundoPeriodo,1):number_format($all->primerPeriodo,1);  @endphp
-            @switch($number)
-                    @case($number<='0.0')
-                    <td class="w3-center padding-1"></td>
-                    @break                
-                    @case($number <= '2.9')
-                    <td class="w3-center padding-1">BAJO</td>
-                    @break
-                    @case($number >= '3.0' &&  '3.9'>=$number)
-                    <td class="w3-center padding-1">MEDIO</td>
-                    @break
-                    @case($number >='4.0' &&  '4.5'>=$number)
-                    <td class="w3-center padding-1">ALTO</td>
-                    @break
-                    @case($number > '4.5')
-                    <td class="w3-center padding-1">SUPERIOR</td>
-                    @break
-                    @default
-                    <td class="w3-center padding-1"></td>
-            @endswitch
+            <td class="w3-center padding-1">{{ number_format($all->acumulativo,1) }}</td>
+            <td class="w3-center padding-1">{{ $number }}</td>
         </tr>
         @endforeach   
         </tbody>        
@@ -136,7 +121,7 @@
                   
                     <tr>
                                 <td class="padding-1">Número de estudiantes en el curso:</td>
-                                <td class="padding-1">{{ $nmStudents }}</td>    
+                                <td class="padding-1 w3-center">{{ $nmStudents }}</td>    
                             </tr>
                             <tr>
                                 <td class="padding-1">Número de faltas:</td>
