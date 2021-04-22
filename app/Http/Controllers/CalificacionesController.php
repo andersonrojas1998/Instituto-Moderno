@@ -322,18 +322,18 @@ class CalificacionesController extends Controller
                              break;
                              case (floatval($notafinal)>='3.0' &&  '3.9'>=floatval($notafinal)):
                                  $color="rgba(255,153,51,1)";
-                                 $rangoT="MEDIO";
-                                 $letra="MD";
+                                 $rangoT="BASICO";
+                                 $letra="B";
                              break;
                              case (floatval($notafinal)>='4.0' &&  '4.6'>=floatval($notafinal)):
                                  $color="rgba(255,243,51,1)";
                                  $rangoT="ALTO";
-                                 $letra="AT";
+                                 $letra="A";
                              break;
                              case (floatval($notafinal)>'4.6'):
                                  $color="rgba(53,193,4,1)";
                                  $rangoT="SUPERIOR";
-                                 $letra="SP";
+                                 $letra="S";
                              break;
                          }
                        

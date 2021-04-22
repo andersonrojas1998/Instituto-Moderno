@@ -212,7 +212,19 @@ var dt_qualificationsPeriod=function(grade,perid,teacher,course){
                 { "data": "period3"},                
         ],
         rowCallback:function(row,data,index){
-            if(data.period1<'3.0' || data.period2<'3.0' || data.period3<'3.0'){
+            var periodo;
+            switch (perid) {
+                case 1:
+                    periodo=data.period1;
+                    break;
+                    case 2:
+                    periodo=data.period2;
+                    break;
+                    case 3:
+                    periodo=data.period3;
+                    break;
+            }
+            if(periodo<'3.0'){
                 $('td', row).css('background-color', 'rgba(255, 0, 0, 0.25)');
             }
             
