@@ -19,9 +19,10 @@ $(document).ready(function() {
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Si !'
+            confirmButtonText: 'Si, Calificar '
           }).then((result) => {
             if (result.isConfirmed) {
+                sweetMessageTimeOut('Procesando ...', '\u00A1  Su solicitud  se encuentra en ejecuci\u00F3n ! ',6000);
                 $.ajax({
                     url: '/readEnrollmentQualification',
                     data: formData,
@@ -212,20 +213,31 @@ var dt_qualificationsPeriod=function(grade,perid,teacher,course){
                 { "data": "period3"},                
         ],
         rowCallback:function(row,data,index){
-            var periodo;
+            var p;
             switch (perid) {
                 case 1:
-                    periodo=data.period1;
+                    p=data.period1;
                     break;
                     case 2:
-                    periodo=data.period2;
+                    p=data.period2;
                     break;
                     case 3:
-                    periodo=data.period3;
+                    p=data.period3;
                     break;
-            }
-            if(periodo<'3.0'){
-                $('td', row).css('background-color', 'rgba(255, 0, 0, 0.25)');
+            }            
+            switch(true){                
+                case (parseFloat(p)>'0.0' && parseFloat(p)<='2.9') :
+                    $('td', row).css('background-color', 'rgba(255, 0, 0, 0.43)');
+                break;
+                case (parseFloat(p)>='3.0' && '3.9'>=parseFloat(p)):
+                    $('td', row).css('background-color', 'rgba(255,153,51,0.43)');
+                break;
+                case (parseFloat(p)>='4.0' && '4.6'>=parseFloat(p)):
+                    $('td', row).css('background-color', 'rgba(255,243,51,0.43)');
+                break;
+                case ('4.6' < parseFloat(p)):
+                    $('td', row).css('background-color', 'rgba(53,193,4,0.43)');
+                break;                
             }
             
         }

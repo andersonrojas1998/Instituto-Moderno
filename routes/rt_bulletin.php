@@ -4,6 +4,7 @@ Route::get('/genetedBulletinForGrades/{grade}/{exp}/{period}/{obs}', 'BoletinCon
 Route::get('/Boletin/inicio', 'BoletinController@index');
 Route::get('/grades', 'BoletinController@grades');
 Route::get('/students/{grade}', 'BoletinController@studentsForGrades');
+Route::get('/obsBulletin', 'BoletinController@obsBulletin');
 
 /** lOAD FILES */
 // Route::get('/tsExcel', 'BoletinController@loadExcelMatricula');

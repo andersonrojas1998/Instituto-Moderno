@@ -22,6 +22,10 @@ class BoletinController extends Controller
         $grade=grado::all();
         return json_encode($grade);
     }
+    public function obsBulletin(){
+        $nt=notas_adicionales::all();
+        return json_encode($nt);
+    }
     public  static function studentsForGrades($grade){
         $alumnoGrade=DB::SELECT("SELECT B.id_matricula,A.nombre1,A.nombre2,A.apellido1,A.apellido2
                             FROM alumno AS A

@@ -13,6 +13,17 @@ $(document).ready(function() {
     }
     });
 
+    $.ajax({ url:"/obsBulletin",type:"GET",success:function(data){
+        let arr=JSON.parse(data);
+        for(let i=0;i<arr.length;i++){                    
+            $('#sel_observations').append('<option   value="'+arr[i].id_nota+'" >'+ firstLetter(arr[i].descripcion.toLowerCase())  +'</option>');
+            $('#sel_observationsAll').append('<option   value="'+arr[i].id_nota+'" >'+ firstLetter(arr[i].descripcion.toLowerCase())  +'</option>');
+        }
+        $('#sel_observations').select2();
+        $('#sel_observationsAll').select2();        
+    }
+    });
+
     
     $(document).on("change","#sel_gradeStudents",function(){
         let idGrade=$(this).val();
@@ -49,7 +60,8 @@ $(document).ready(function() {
             xhr.responseType = 'arraybuffer';           
             xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded"); 
             xhr.send(null);            
-            sweetMessageTimeOut('Procesando ...', '\u00A1  Su solicitud  se encuentra en ejecuci\u00F3n ! ',7000);
+            $(this).attr('disabled',true);
+            sweetMessageTimeOut('Procesando ...', '\u00A1  Su solicitud  se encuentra en ejecuci\u00F3n ! ',8000);
             xhr.onreadystatechange = function () {
                 if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {                                        
                     var blobURL = new Blob([this.response], {type:'application/pdf'});
@@ -79,8 +91,9 @@ $(document).ready(function() {
             xhr.open("GET",url);
             xhr.responseType = 'arraybuffer';           
             xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded"); 
-            xhr.send(null);            
-            sweetMessageTimeOut('Procesando ...', '\u00A1  Su solicitud  se encuentra en ejecuci\u00F3n ! ',7000);
+            xhr.send(null);  
+            $(this).attr('disabled',true);
+            sweetMessageTimeOut('Procesando ...', '\u00A1  Su solicitud  se encuentra en ejecuci\u00F3n ! ',9000);
             xhr.onreadystatechange = function () {
                 
                 if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
