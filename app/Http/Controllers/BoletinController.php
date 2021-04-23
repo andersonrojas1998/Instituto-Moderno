@@ -34,8 +34,7 @@ class BoletinController extends Controller
                             WHERE B.id_estado_matricula=1 AND B.id_grado='$grade' ");  
         return json_encode($alumnoGrade);
     }
-    public function genetedBulletin($matricula,$expedition,$period,$obs,$grade){ 
-        
+    public function genetedBulletin($matricula,$expedition,$period,$obs,$grade,$letter=0){       
         $observation=notas_adicionales::where('id_nota',$obs)->get();
         $periodtx=($period==1)?  'PRIMER':'SEGUNDO';        
         $course=DB::SELECT("CALL courseForAlumn('$matricula','$period')");        
@@ -58,7 +57,7 @@ class BoletinController extends Controller
         $head=DB::SELECT("CALL studentsCourse('$matricula') ");
         $q=DB::SELECT("CALL numberStudentGrade('$grade')");
         $nmStudents=$q[0]->cantidad;
-        $pdf = \PDF::loadView('boletin.pdf_boletin',compact('url','course','expedition','head','periodtx','period','observation','nmStudents'))->setPaper('letter')->stream("achivo.pdf");
+        $pdf = \PDF::loadView('boletin.pdf_boletin',compact('url','course','expedition','head','periodtx','period','observation','nmStudents','letter'))->setPaper('letter')->stream("achivo.pdf");
         return $pdf;
     }
 
@@ -79,7 +78,7 @@ class BoletinController extends Controller
               {
                 type: "line",
                 label: "Nota minima para aprobar",
-                data: [3, 3, 3, 3,3,3,3,3,3,3,3,3,3,3,3],
+                data: [3,3,3,3,3,3,3,3,3,3,3,3,3,3,3],
                 fill: false,                
                 borderColor: "rgb(54, 162, 235,0.2)"
             }
@@ -88,9 +87,7 @@ class BoletinController extends Controller
         $url=$chart->getUrl();
         return $url;
     }
-    public function  genetedBulletinForGrades($idGrade,$expedition,$period,$obs){ /** All for grades */
-
-
+    public function  genetedBulletinForGrades($idGrade,$expedition,$period,$obs,$letter=0){ /** All for grades */      
         $observation=notas_adicionales::where('id_nota',$obs)->get();
         $students=self::studentsForGrades($idGrade);                
         $periodtx=($period==1)?  'PRIMER':'SEGUNDO';
@@ -115,8 +112,8 @@ class BoletinController extends Controller
                 $label[]=$all->tag;                            
             }
             $url=self::QuickChartURL($label,$nota,$col);
-            $head=DB::SELECT("CALL studentsCourse('$st->id_matricula') ");
-            $pdf = \PDF::loadView('boletin.pdf_boletin',compact('url','course','expedition','head','periodtx','period','observation','nmStudents'))->setPaper('letter')->save( public_path('tmp/').$st->id_matricula.'.pdf');                                 
+            $head=DB::SELECT("CALL studentsCourse('$st->id_matricula') ");            
+            $pdf = \PDF::loadView('boletin.pdf_boletin',compact('url','course','expedition','head','periodtx','period','observation','nmStudents','letter'))->setPaper('letter')->save( public_path('tmp/').$st->id_matricula.'.pdf');                                 
             $pdfM->addPDF(public_path('tmp/').$st->id_matricula.'.pdf', 'all');
             $arrMat[$xy]=$st->id_matricula;
         }            

@@ -1,6 +1,6 @@
 <?php
-Route::get('/genetedBulletin/{matricula}/{date}/{period}/{obs}/{grade}', 'BoletinController@genetedBulletin'); /** generar boletin */
-Route::get('/genetedBulletinForGrades/{grade}/{exp}/{period}/{obs}', 'BoletinController@genetedBulletinForGrades'); /** generar boletin Masivo */
+Route::get('/genetedBulletin/{matricula}/{date}/{period}/{obs}/{grade}/{letter}', 'BoletinController@genetedBulletin'); /** generar boletin */
+Route::get('/genetedBulletinForGrades/{grade}/{exp}/{period}/{obs}/{letter}', 'BoletinController@genetedBulletinForGrades'); /** generar boletin Masivo */
 Route::get('/Boletin/inicio', 'BoletinController@index');
 Route::get('/grades', 'BoletinController@grades');
 Route::get('/students/{grade}', 'BoletinController@studentsForGrades');

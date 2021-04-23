@@ -48,9 +48,9 @@
                             </li>
                             <li class="list-group-item">
                             <strong class="col-lg-12">Calificaci&oacute;n  en:</strong>
-                            <select class="form-control select2" id="">
-                                <option value="0">Numeros</option>
-                                <option value="1">Letras</option>
+                            <select class="form-control select2" id="sel_numberOrLetterSt">
+                                <option value="0">Numero</option>
+                                <option value="1">Letra</option>
                             </select>
                             </li>
                             <li class="list-group-item">
@@ -109,9 +109,9 @@
 
                             <li class="list-group-item">
                             <strong class="col-lg-12">Calificaci&oacute;n  en:</strong>
-                            <select class="form-control select2" id="">
-                                <option value="0">Numeros</option>
-                                <option value="1">Letras</option>
+                            <select class="form-control select2" id="sel_numberOrLetterAll">
+                                <option value="0">Numero</option>
+                                <option value="1">Letra</option>
                             </select>
                             </li>
 
