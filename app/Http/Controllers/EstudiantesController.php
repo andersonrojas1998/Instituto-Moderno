@@ -23,9 +23,9 @@ class EstudiantesController extends Controller
              $data['data'][$key]['con']=$key;   
              $data['data'][$key]['dni']=$us->identificacion;
              $data['data'][$key]['apellido1']=$us->apellido1;   
-             $data['data'][$key]['apellido2']=$us->apellido2;
+             $data['data'][$key]['apellido2']=empty($us->apellido2)? '': $us->apellido2 ;
              $data['data'][$key]['nombre1']=$us->nombre1;
-             $data['data'][$key]['nombre2']=$us->nombre2;
+             $data['data'][$key]['nombre2']=empty($us->nombre2)? '':$us->nombre2;
              $data['data'][$key]['genero']=$us->genero;
              $data['data'][$key]['direccion']=$us->direccion;
              $data['data'][$key]['telefono']=$us->telefono;
