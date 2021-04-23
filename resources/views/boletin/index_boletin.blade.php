@@ -10,9 +10,9 @@
 </div>
     <div class="card-body">
     <div class="row">
-    <div class="col-lg-2"></div>
+    <!-- <div class="col-lg-1"></div> -->
 
-            <div class="col-lg-4">
+            <div class="col-lg-5 ml-5">
                  <div class="card card-border-outset mb-3" >
                  <img class="card-img-top img-circle" src="/images/print.png" height="60"  alt="Imprimir" style="width:100px;align-self:center;margin:12px;">                        
                         <div class="card-body">
@@ -40,14 +40,27 @@
                             </select>                                                                                     
                             </li>
                             <li class="list-group-item">
+                            <strong class="col-lg-12">Modalidad :</strong>
+                            <select class="form-control select2 " id="">
+                                <option value="0">ACADEMICA</option>
+                                <option value="1">PRESENCIAL</option>
+                            </select>
+                            </li>
+                            <li class="list-group-item">
+                            <strong class="col-lg-12">Calificaci&oacute;n  en:</strong>
+                            <select class="form-control select2" id="">
+                                <option value="0">Numeros</option>
+                                <option value="1">Letras</option>
+                            </select>
+                            </li>
+                            <li class="list-group-item">
                             <strong class="col-lg-12">Fecha expedici&oacute;n :</strong>
                             <input type="date" class="form-control" id="date_expedition" value="{{ date('Y-m-d') }}">
                             </li>
                             <li class="list-group-item">
                             <strong class="col-lg-12">Observaci&oacute;n :</strong>
-                            <select class="form-control select2" id="sel_observations">
-                                <option value="0"></option>
-                                <option value="1">Felicitaciones sigues asi no cambies el colegio te felicita por obtener un gran rendimiento diciplinario , att coordinacion academica</option>
+                            <select class="form-control" id="sel_observations">
+                                <option value="0"></option>                                
                             </select>
                             </li>
                         </ul>
@@ -57,13 +70,13 @@
                         <div class="card-footer">
                         <div class="row">
                                 <div class="col-lg-12">        
-                                            <button type="button" class="btn btn-info btn-block btn-rounded" id="prt_bulletinStudent" data-toggle="tooltip" data-placement="top" title="Genera el boletin en formato PDF">Generar</button>
+                                            <button type="button" class="btn btn-info btn-block btn-rounded" id="prt_bulletinStudent" data-toggle="tooltip" data-placement="top" title="Genera el boletin en formato PDF">Generar  <i class="mdi mdi-printer"></i></button>
                                     </div>
                         </div>
                         </div>
                         </div>
             </div> 
-            <div class="col-lg-4">
+            <div class="col-lg-5 ml-2">
                  <div class="card card-border-outset">
                  <img class="card-img-top" src="/images/print.png" height="60"  alt="Imprimir" style="width:100px;align-self:center;margin:12px;">
                         <div class="card-body">
@@ -85,15 +98,31 @@
                                 <option value="3">3</option>
                             </select>                                                                                     
                             </li>
+
+                            <li class="list-group-item">
+                            <strong class="col-lg-12">Modalidad :</strong>
+                            <select class="form-control select2 " id="">
+                                <option value="0">ACADEMICA</option>
+                                <option value="1">PRESENCIAL</option>
+                            </select>
+                            </li>
+
+                            <li class="list-group-item">
+                            <strong class="col-lg-12">Calificaci&oacute;n  en:</strong>
+                            <select class="form-control select2" id="">
+                                <option value="0">Numeros</option>
+                                <option value="1">Letras</option>
+                            </select>
+                            </li>
+
                             <li class="list-group-item">
                             <strong class="col-lg-12">Fecha expedici&oacute;n :</strong>
                             <input type="date" class="form-control" id="date_expeditionAll" value="{{ date('Y-m-d') }}">
                             </li>
                             <li class="list-group-item">
                             <strong class="col-lg-12">Observaci&oacute;n :</strong>
-                            <select class="form-control select2" id="sel_observationsAll">
-                                <option value="0"></option>
-                                <option value="1">Felicitaciones sigues asi no cambies el colegio te felicita por obtener un gran rendimiento diciplinario , att coordinacion academica</option>
+                            <select class="form-control" id="sel_observationsAll">
+                                <option value="0"></option>                                
                             </select>
                             </li>
                         </ul>
@@ -103,7 +132,7 @@
                         <div class="card-footer">
                         <div class="row">
                                 <div class="col-lg-12">        
-                                            <button type="button" class="btn btn-info btn-block btn-rounded "  id="prt_bulletinStudentAllGrades"  data-toggle="tooltip" data-placement="top" title="Genera el boletin en formato PDF">Generar</button>
+                                            <button type="button" class="btn btn-info btn-block btn-rounded"  id="prt_bulletinStudentAllGrades"  data-toggle="tooltip" data-placement="top" title="Genera el boletin en formato PDF">Generar  <i class="mdi mdi-printer"></i></button>
                                     </div>
                         </div>
                         </div>
