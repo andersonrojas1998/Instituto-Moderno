@@ -30,39 +30,36 @@ class BoletinController extends Controller
                             WHERE B.id_estado_matricula=1 AND B.id_grado='$grade' ");  
         return json_encode($alumnoGrade);
     }
-    public function genetedBulletin($matricula,$expedition,$period,$obs){ 
+    public function genetedBulletin($matricula,$expedition,$period,$obs,$grade){ 
         
-        $observation=notas_adicionales::where('id_nota',$obs)->get();        
+        $observation=notas_adicionales::where('id_nota',$obs)->get();
         $periodtx=($period==1)?  'PRIMER':'SEGUNDO';        
-        $course=DB::SELECT("CALL courseForAlumn('$matricula','$period')");
+        $course=DB::SELECT("CALL courseForAlumn('$matricula','$period')");        
         $label=[]; $nota=[]; $col=[];
         foreach($course as $key=> $all){                       
             if($period==1){
-                $notaPeriodo=$all->primerPeriodo;
-                $nota[]=$all->primerPeriodo;
+                $dataP1=explode('-',$all->primerPeriodo);
+                $notaPeriodo=number_format(floatval($dataP1[0]),1);
+                $nota[]=number_format(floatval($dataP1[0]),1);
+                $col[]=isset($dataP1[3])? $dataP1[3]:'';
             }else{
-                $notaPeriodo=$all->segundoPeriodo;
-                $nota[]=$all->segundoPeriodo;            
+                $dataP2=explode('-',$all->segundoPeriodo);
+                $notaPeriodo=number_format(floatval($dataP2[0]),1);
+                $nota[]=number_format(floatval($dataP2[0]),1);
+                $col[]= isset($dataP2[3])? $dataP2[3]:'';
             }
-            $label[]=$all->tag;            
-            switch(floatval($notaPeriodo)){
-               case (floatval($notaPeriodo)<='2.9' ):
-                    $color='rgba(235,3,3,1)';
-                break;
-                case (floatval($notaPeriodo)>='3.0' &&  '3.9'>=floatval($notaPeriodo)):
-                    $color='rgba(255,153,51,1)';
-                break;
-                case (floatval($notaPeriodo)>='4.0' &&  '4.6'>=floatval($notaPeriodo)):
-                    $color='rgba(255,243,51,1)';
-                break;
-                case (floatval($notaPeriodo)>'4.6'):
-                    $color='rgba(53,193,4,1)';
-                break;
-            }
-            $col[]=$color;
+            $label[]=$all->tag;
         }
-          $head=DB::SELECT("CALL studentsCourse('$matricula') ");                            
-          $chart = new \QuickChart(array('width' => 710,'height' => 176));          
+        $url=self::QuickChartURL($label,$nota,$col);          
+        $head=DB::SELECT("CALL studentsCourse('$matricula') ");
+        $q=DB::SELECT("CALL numberStudentGrade('$grade')");
+        $nmStudents=$q[0]->cantidad;
+        $pdf = \PDF::loadView('boletin.pdf_boletin',compact('url','course','expedition','head','periodtx','period','observation','nmStudents'))->setPaper('letter')->stream("achivo.pdf");
+        return $pdf;
+    }
+
+    public function QuickChartURL($label,$nota,$col){
+        $chart = new \QuickChart(array('width' => 710,'height' => 176));          
           $chart->setConfig('{            
             type: "bar",
             data: {
@@ -85,80 +82,44 @@ class BoletinController extends Controller
               ]
             }}');     
         $url=$chart->getUrl();
-        $pdf = \PDF::loadView('boletin.pdf_boletin',compact('url','course','expedition','head','periodtx','period','observation'))->setPaper('letter')->stream("achivo.pdf");
-        return $pdf;
+        return $url;
     }
-    public function  genetedBulletinForGrades($idGrade,$expedition,$period){ /** All for grades */
+    public function  genetedBulletinForGrades($idGrade,$expedition,$period,$obs){ /** All for grades */
 
 
-        
-                      
-        $students=self::studentsForGrades($idGrade);        
-        $observation=[];
+        $observation=notas_adicionales::where('id_nota',$obs)->get();
+        $students=self::studentsForGrades($idGrade);                
         $periodtx=($period==1)?  'PRIMER':'SEGUNDO';
-        
         $pdfM = new PDFMerger();
-        foreach(json_decode($students) as $st){            
+        $arrMat=[];
+        $nmStudents= count(json_decode($students));
+        foreach(json_decode($students) as $xy=> $st){            
             $course=DB::SELECT("CALL courseForAlumn('$st->id_matricula','$period')");
             $label=[]; $nota=[]; $col=[];
             foreach($course as $key=> $all){                       
                 if($period==1){
-                    $notaPeriodo=$all->primerPeriodo;
-                    $nota[]=$all->primerPeriodo;
-                }else{
-                    $notaPeriodo=$all->segundoPeriodo;
-                    $nota[]=$all->segundoPeriodo;            
+                    $dataP1=explode('-',$all->primerPeriodo);
+                    $notaPeriodo=number_format(floatval($dataP1[0]),1);
+                    $nota[]=number_format(floatval($dataP1[0]),1);
+                    $col[]=isset($dataP1[3])? $dataP1[3]:'';                    
+                }else{                     
+                    $dataP2=explode('-',$all->segundoPeriodo);
+                    $notaPeriodo=number_format(floatval($dataP2[0]),1);
+                    $nota[]=number_format(floatval($dataP2[0]),1);
+                    $col[]= isset($dataP2[3])? $dataP2[3]:'';
                 }
-                $label[]=$all->tag;            
-                switch(floatval($notaPeriodo)){
-                   case (floatval($notaPeriodo)<='2.9' ):
-                        $color='rgba(235,3,3,1)';
-                    break;
-                    case (floatval($notaPeriodo)>='3.0' &&  '3.9'>=floatval($notaPeriodo)):
-                        $color='rgba(255,153,51,1)';
-                    break;
-                    case (floatval($notaPeriodo)>='4.0' &&  '4.5'>=floatval($notaPeriodo)):
-                        $color='rgba(255,243,51,1)';
-                    break;
-                    case (floatval($notaPeriodo)>'4.5'):
-                        $color='rgba(53,193,4,1)';
-                    break;
-                }
-                $col[]=$color;
+                $label[]=$all->tag;                            
             }
-              $head=DB::SELECT("CALL studentsCourse('$st->id_matricula') ");                            
-              $chart = new \QuickChart(array('width' => 710,'height' => 176));          
-              $chart->setConfig('{            
-                type: "bar",
-                data: {
-                  labels: '.json_encode($label).' , 
-                  datasets: [{
-                    label: "Materias Cursadas",                
-                    data: '.json_encode($nota).',
-                    backgroundColor:'.json_encode($col).' ,
-                    borderColor: "rgba(4,4,4, 1)",                
-                    borderWidth:1, 
-                    barThickness:15,                                   
-                  },             
-                  {
-                    type: "line",
-                    label: "Nota minima para aprobar",
-                    data: [3, 3, 3, 3,3,3,3,3,3,3,3,3,3,3,3],
-                    fill: false,                
-                    borderColor: "rgb(54, 162, 235,0.2)"
-                }
-                  ]
-                }}');     
-            $url=$chart->getUrl();
-            $pdf = \PDF::loadView('boletin.pdf_boletin',compact('url','course','expedition','head','periodtx','period','observation'))->setPaper('letter')->save( public_path('tmp/').$st->id_matricula.'.pdf');                                 
+            $url=self::QuickChartURL($label,$nota,$col);
+            $head=DB::SELECT("CALL studentsCourse('$st->id_matricula') ");
+            $pdf = \PDF::loadView('boletin.pdf_boletin',compact('url','course','expedition','head','periodtx','period','observation','nmStudents'))->setPaper('letter')->save( public_path('tmp/').$st->id_matricula.'.pdf');                                 
             $pdfM->addPDF(public_path('tmp/').$st->id_matricula.'.pdf', 'all');
+            $arrMat[$xy]=$st->id_matricula;
         }            
         $pdfM->merge('download', "mergedAllpdf.pdf");
-
-        /** Eliminar files */        
-        /*for ($l = 0; $l <= count($data); $l++) {
-        unlink(public_path('Temp/' . Auth::id() . $i . 'epicisis.pdf')); // Elimina todos los archivos del Temp
-        }*/
+        foreach($arrMat as $value){
+            unlink(public_path('tmp/').$value.'.pdf');
+        }
 
     }
     public function loadUser(){

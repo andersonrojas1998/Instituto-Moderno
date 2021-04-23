@@ -73,141 +73,55 @@
         <tr class="w3-light-grey">            
             <td class="padding-1 w3-center">ÁREAS O ASIGNATURAS</td>
             <td class=" w3-center padding-1">IH</td>
-            <th class="w3-center padding-1">1P 35%</th>
+            <th class="w3-center padding-1">1P 40%</th>
             <td class="w3-center padding-1">AP1</td>
 
             @if($period==2)
-            <th class="w3-center padding-1">2P 35%</th>
+            <th class="w3-center padding-1">2P 30%</th>
             <td class="w3-center padding-1">AP2</td>
-            @endif            
+            @endif              
             <td class="w3-center padding-1">ACUM</td>
+            <td class="w3-center padding-1">RANGO</td>
         </tr>
         </thead>
         <tbody>
         @foreach($course as $all)
+        @php  $dataP1=explode('-',$all->primerPeriodo); $dataP2=explode('-',$all->segundoPeriodo);
+         $rango1=isset($dataP1[1])? $dataP1[1]:'';
+         $rango2=isset($dataP2[1])? $dataP2[1]:'';
+        $number=($period==1)? $rango1:$rango2; @endphp
         <tr>            
             <td class="padding-1">{{ $all->nombre }}</td>
             <td class="w3-center padding-1">{{ $all->intensidad_horaria }}</td>
-            <td class="w3-center padding-1 w3-light-grey">{{ $all->primerPeriodo }}</td>
-            <td class="w3-center padding-1"></td>
-            @if($period==2)
-            <td class="w3-center padding-1 w3-light-grey">{{ $all->segundoPeriodo }}</td>
-            <td class="w3-center padding-1"></td>
-            @endif
+            <td class="w3-center padding-1 w3-light-grey">{{ isset($dataP1[0])? $dataP1[0]:'' }} </td>
             <td class="w3-center padding-1"></td>            
+            @if($period==2)
+            <td class="w3-center padding-1 w3-light-grey">{{ isset($dataP2[0])? $dataP2[0]:'' }}</td>
+            <td class="w3-center padding-1"></td>
+            @endif            
+            <td class="w3-center padding-1">{{ number_format($all->acumulativo,1) }}</td>
+            <td class="w3-center padding-1">{{ $number }}</td>
         </tr>
         @endforeach   
         </tbody>        
     </table>
 
  </div>
-</div>
-
-    <!-- <div class="w3-row"> -->
-    <!-- <div class="w3-tiny"> -->
-
-    
-<!-- </div>         -->
-<!-- </div>    -->
-
-<!--
-<div class="w3-row w3-padding-16">
-<div class="w3-half w3-container w3-tiny">
-    <b class="w3-center"> CIENCIAS SOCIALES</b>    
-<table class="w3-table" border="1">    
-            <tbody>
-            <tr>
-                <td>CIENCIAS SOCIALES</td>
-                <td>4.0</td>
-                <td>4.0</td>
-                <td>4.0</td>
-                <td>4.0</td>
-            </tr>
-            <tr>
-                <td>10. CÁTEDRA DE PAZ</td>
-                <td>4.0</td>
-                <td>4.0</td>
-                <td>4.0</td>
-                <td>4.0</td>
-            </tr>            
-            </tbody>            
-        </table>
 </div>    
-</div>
-
-    <div class="w3-row w3-padding-16">    
-        <div class="w3-half w3-container w3-tiny">
-        <b class="w3-center ">ÉTICA Y VALORES</b>    
-        <table class="w3-table" border="1">        
-                <tbody>
-                <tr>
-                    <td>CIENCIAS SOCIALES</td>
-                    <td>4.0</td>
-                    <td>4.0</td>
-                    <td>4.0</td
-                    <td>4.0</td>
-                </tr>
-                </tbody>
-                
-            </table>
-        </div>    
-    </div>-->
-
-
-   
-    <!--<div class="w3-row w3-padding-12">
-    <table class="w3-table w3-striped w3-border">
-    <tr>
-    <td class="padding-1"><h6 class="w3-center w3-small">CUADRO ESTADISTICO DE VALORACIONES</h6></td>
-    </tr>
-    <tr>
-    <td><img src="{{-- $url --}}"></td>
-    </tr>
-        
-        </table>
-    </div> 
-    -->
     <div class="w3-row">
-    <h6 class="w3-center w3-tiny"><b>CUADRO ESTADISTICO DE VALORACIONES</b></h6>
-    <div class="w3-col">
-        <img src="{{ $url }}">    
-    </div>    
+        <h6 class="w3-center w3-tiny"><b>CUADRO ESTADISTICO DE VALORACIONES</b></h6>
+        <div class="w3-col">
+            <img src="{{ $url }}">    
+        </div>    
     </div>        
     <div class="w3-row" >
-    <h6 class="w3-center w3-tiny"><b>RENDIMIENTO ACADÉMICO DEL ESTUDIANTE</b></h6>       
-      <!--  <div class="w3-col m4">
-        <table class="w3-table w3-striped  w3-tiny"  style="width:80%"  >
-                <thead>
-                    <tr>
-                        <td  colspan="2" class="w3-center" >ESCALA DE RANGOS</td>            
-                    </tr>
-                </thead>    
-                <tbody>
-                <tr>
-                    <td class="padding-1">Superior</td>
-                    <td class="padding-1">4.6 - 5.0</td>    
-                </tr>
-                <tr>
-                    <td class="padding-1">Alto</td>
-                    <td class="padding-1">4.0 - 4.5</td>    
-                </tr>
-                <tr>
-                    <td class="padding-1">Básico</td>
-                    <td class="padding-1">3.0 - 3.9</td>    
-                </tr>
-                <tr>
-                    <td class="padding-1">Bajo</td>
-                    <td class="padding-1">1.0 - 2.9</td>    
-                </tr>
-                </tbody>            
-                </table>   
-  </div>-->        
-  <div class="w3-col m6">
+        <h6 class="w3-center w3-tiny"><b>RENDIMIENTO ACADÉMICO DEL ESTUDIANTE</b></h6>         
+                <div class="w3-col m6">
                     <table class="w3-table w3-striped w3-tiny" style="width:70%" border="1" >
                   
                     <tr>
                                 <td class="padding-1">Número de estudiantes en el curso:</td>
-                                <td ></td>    
+                                <td class="padding-1 w3-center">{{ $nmStudents }}</td>    
                             </tr>
                             <tr>
                                 <td class="padding-1">Número de faltas:</td>

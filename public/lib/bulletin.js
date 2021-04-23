@@ -35,7 +35,7 @@ $(document).ready(function() {
 
     $(document).on("click","#prt_bulletinStudent",function(){
       
-        let paper=$("#paperPrint1").val();  
+       
         let grade=$("#sel_gradeStudents").val(); 
         let students=$("#sel_studentsForGrade").val();
         let period=$("#sel_printPeriod").val();
@@ -43,7 +43,38 @@ $(document).ready(function() {
         let obs=$("#sel_observations").val();
         if(grade!=""  &&  students!=""){
             
-            let url='/genetedBulletin/'+students+'/'+date_expedition+'/'+period+'/'+obs;
+            let url='/genetedBulletin/'+students+'/'+date_expedition+'/'+period+'/'+obs+'/'+grade;
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET",url);
+            xhr.responseType = 'arraybuffer';           
+            xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded"); 
+            xhr.send(null);            
+            sweetMessageTimeOut('Procesando ...', '\u00A1  Su solicitud  se encuentra en ejecuci\u00F3n ! ',7000);
+            xhr.onreadystatechange = function () {
+                if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {                                        
+                    var blobURL = new Blob([this.response], {type:'application/pdf'});
+                    var link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blobURL);
+                    window.open(link);
+                    sweetMessage('\u00A1Registro exitoso!', '\u00A1 Se ha realizado con \u00E9xito su solicitud!');
+                }
+                if (this.status === 500) { sweetMessage("ERROR!", "Error al generar el pdf !", "error", "#1976D2", false); }
+            }
+        }else{
+            sweetMessage('\u00A1Atenci\u00f3n!', 'Por favor complete  los campos requeridos.', 'warning');
+        }                          
+    });
+
+    $(document).on("click","#prt_bulletinStudentAllGrades",function(){
+      
+       
+        let grade=$("#sel_gradesPrint").val();
+        let period=$("#sel_periodAll").val();
+        let date_expedition=$("#date_expeditionAll").val();
+        let obs=$("#sel_observationsAll").val();
+        if(grade!=""){
+            
+            let url='/genetedBulletinForGrades/'+grade+'/'+date_expedition+'/'+period+'/'+obs;            
             var xhr = new XMLHttpRequest();
             xhr.open("GET",url);
             xhr.responseType = 'arraybuffer';           
@@ -58,24 +89,17 @@ $(document).ready(function() {
                     var link = document.createElement('a');
                     link.href = window.URL.createObjectURL(blobURL);
                     window.open(link);
-
-                    /*var link = document.createElement('a');
-                    link.download =grade+'Md.pdf';
-                    link.href=blobURL;
-                    link.click();  */
-
-                    /*
-                     */
                     sweetMessage('\u00A1Registro exitoso!', '\u00A1 Se ha realizado con \u00E9xito su solicitud!');
                 }
                 if (this.status === 500) { sweetMessage("ERROR!", "Error al generar el pdf !", "error", "#1976D2", false); }
             }
-
-
-            
         }else{
             sweetMessage('\u00A1Atenci\u00f3n!', 'Por favor complete  los campos requeridos.', 'warning');
         }                          
     });
     
 });
+/*var link = document.createElement('a');
+link.download =grade+'Md.pdf';
+link.href=blobURL;
+link.click();  */
