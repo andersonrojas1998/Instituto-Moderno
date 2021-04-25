@@ -41,9 +41,7 @@
                             </li>
                             <li class="list-group-item">
                             <strong class="col-lg-12">Modalidad :</strong>
-                            <select class="form-control select2 " id="">
-                                <option value="0">ACADEMICA</option>
-                                <option value="1">PRESENCIAL</option>
+                            <select class="form-control " id="sel_modalidad">
                             </select>
                             </li>
                             <li class="list-group-item">
@@ -101,9 +99,7 @@
 
                             <li class="list-group-item">
                             <strong class="col-lg-12">Modalidad :</strong>
-                            <select class="form-control select2 " id="">
-                                <option value="0">ACADEMICA</option>
-                                <option value="1">PRESENCIAL</option>
+                            <select class="form-control " id="sel_modalidadAll">                               
                             </select>
                             </li>
 
@@ -137,17 +133,10 @@
                         </div>
                         </div>
                         </div>
-            </div>
-
-            
-               
-    </div>
-    
-    
+            </div>                           
+    </div>        
     </div>  
-    </div>
-  
-  
+    </div>  
 @endsection
 
 @push('custom-scripts')    

@@ -56,7 +56,7 @@
         </tr>
         <tr>
             <th class="w3-light-grey padding-1">MODALIDAD: </th>
-            <td class="padding-1">ACADEMICA</td>
+            <td class="padding-1">{{ $modalidad->nombre  }}</td>
             <th class="w3-light-grey padding-1">FECHA EXPED:</th>
             <td class="padding-1">{{  $expedition }}</td>
         </tr>                            
@@ -92,15 +92,24 @@
          $rango1=isset($dataP1[1])? $dataP1[1]:'';
          $rango2=isset($dataP2[1])? $dataP2[1]:'';
         $number=($period==1)?  $rango1:$rango2;
+
+        if($letter=='1'){
+            $period1=!empty($dataP1[2])? $dataP1[2]:'';
+            $period2=!empty($dataP2[2])? $dataP2[2]:'';
+        }else{
+            $period1=!empty($dataP1[0])? number_format(floatval($dataP1[0]),1):'';
+            $period2=!empty($dataP2[0])? number_format(floatval($dataP2[0]),1):'';
+        }
+
         
         @endphp
         <tr>            
             <td class="padding-1">{{ $all->nombre }}</td>
             <td class="w3-center padding-1">{{ $all->intensidad_horaria }}</td>
-            <td class="w3-center padding-1 w3-light-grey">{{ !empty($dataP1[0])? number_format(floatval($dataP1[0]),1):'' }} </td>
+            <td class="w3-center padding-1 w3-light-grey">{{ $period1 }} </td>
             <td class="w3-center padding-1"></td>            
             @if($period==2)
-            <td class="w3-center padding-1 w3-light-grey">{{ !empty($dataP2[0])? number_format(floatval($dataP2[0]),1):'' }}</td>
+            <td class="w3-center padding-1 w3-light-grey">{{ $period2 }}</td>
             <td class="w3-center padding-1"></td>
             @endif  
             @if($letter=='0')

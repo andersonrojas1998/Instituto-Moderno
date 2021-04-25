@@ -13,6 +13,17 @@ $(document).ready(function() {
     }
     });
 
+    $.ajax({ url:"/modalidad",type:"GET",success:function(data){
+        let arr=JSON.parse(data);
+        for(let i=0;i<arr.length;i++){                    
+            $('#sel_modalidad').append('<option   value="'+arr[i].id+'" >'+ arr[i].nombre  +'</option>');
+            $('#sel_modalidadAll').append('<option   value="'+arr[i].id+'" >'+ arr[i].nombre  +'</option>');
+        }
+        $('#sel_modalidad').select2();
+        $('#sel_modalidadAll').select2();        
+    }
+    });
+
     $.ajax({ url:"/obsBulletin",type:"GET",success:function(data){
         let arr=JSON.parse(data);
         for(let i=0;i<arr.length;i++){                    
@@ -53,9 +64,10 @@ $(document).ready(function() {
         let date_expedition=$("#date_expedition").val();
         let obs=$("#sel_observations").val();
         let letter=$("#sel_numberOrLetterSt").val();
+        let modalidad=$("#sel_modalidad").val();
         if(grade!=""  &&  students!=""){
             
-            let url='/genetedBulletin/'+students+'/'+date_expedition+'/'+period+'/'+obs+'/'+grade+'/'+letter;
+            let url='/genetedBulletin/'+students+'/'+date_expedition+'/'+period+'/'+obs+'/'+grade+'/'+letter+'/'+modalidad;
             var xhr = new XMLHttpRequest();
             xhr.open("GET",url);
             xhr.responseType = 'arraybuffer';           
@@ -85,9 +97,10 @@ $(document).ready(function() {
         let date_expedition=$("#date_expeditionAll").val();
         let obs=$("#sel_observationsAll").val();
         let letter=$("#sel_numberOrLetterAll").val();
+        let modalidad=$("#sel_modalidadAll").val();
         if(grade!=""){
             
-            let url='/genetedBulletinForGrades/'+grade+'/'+date_expedition+'/'+period+'/'+obs+'/'+letter;            
+            let url='/genetedBulletinForGrades/'+grade+'/'+date_expedition+'/'+period+'/'+obs+'/'+letter+'/'+modalidad;            
             var xhr = new XMLHttpRequest();
             xhr.open("GET",url);
             xhr.responseType = 'arraybuffer';           

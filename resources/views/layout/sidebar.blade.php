@@ -98,6 +98,10 @@
           <li class="nav-item {{ active_class(['icons/material']) }}">            
             <a class="nav-link" href="{{ url('/Calificaciones/formato-excel') }}"><i class="menu-icon mdi mdi-chevron-double-right"></i> Importar Excel</a>
           </li>
+          <li class="nav-item {{ active_class(['icons/material']) }}">            
+            <a class="nav-link" href="{{ url('/Calificaciones/resumen') }}"><i class="menu-icon mdi mdi-chevron-double-right"></i>Resumen por grados</a>
+          </li>
+          
         </ul>
       </div>
     </li>
