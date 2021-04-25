@@ -109,7 +109,8 @@ $(document).ready(function() {
             var xhr = new XMLHttpRequest();
             xhr.open("GET",url);
             xhr.responseType = 'arraybuffer';        
-            xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");        
+            xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");   
+            sweetMessageTimeOut('Procesando ...', '\u00A1  Su solicitud  se encuentra en ejecuci\u00F3n ! ',4000);     
             xhr.onload = function () {
                 if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
                     var blob = new Blob([this.response], {type:"application/octetstream"});                
@@ -176,71 +177,6 @@ var dt_qualifications=function(grade,perid,teacher,course){
                 { "data": "notas"},
                 { "data": "notas"},               
         ]
-    });
-}
-
-var dt_qualificationsPeriod=function(grade,perid,teacher,course){
-    $('#dt_qualificationsPeriod').DataTable({        
-        lengthChange: false,        
-        responsive: true,
-        destroy: true,   
-        searching:false, 
-        "ordering": false,
-        lengthMenu:false,
-        paginate:false,
-        ajax: {
-            url: "/QualificationTable/",
-            method: "GET", 
-            data:{grade:grade,perid:perid,teacher:teacher,course:course},
-            dataSrc: function (json) {
-                if (!json.data) {
-                    return [];
-                } else {
-                    return json.data;
-                }
-              }               
-            },
-        deferRender: true,            
-        columnDefs: [{"className": "text-center", "targets": "_all"},],
-        columns: 
-        [
-                { "data": "conc" , render(data){return '<b>'+data+'</b>';}},
-                { "data": "mat" },                
-                { "data": "alumn"},
-                { "data": "grupo"},                                
-                { "data": "period1"},
-                { "data": "period2"},
-                { "data": "period3"},                
-        ],
-        rowCallback:function(row,data,index){
-            var p;
-            switch (perid) {
-                case 1:
-                    p=data.period1;
-                    break;
-                    case 2:
-                    p=data.period2;
-                    break;
-                    case 3:
-                    p=data.period3;
-                    break;
-            }            
-            switch(true){                
-                case (parseFloat(p)>'0.0' && parseFloat(p)<='2.9') :
-                    $('td', row).css('background-color', 'rgba(255, 0, 0, 0.43)');
-                break;
-                case (parseFloat(p)>='3.0' && '3.9'>=parseFloat(p)):
-                    $('td', row).css('background-color', 'rgba(255,153,51,0.43)');
-                break;
-                case (parseFloat(p)>='4.0' && '4.6'>=parseFloat(p)):
-                    $('td', row).css('background-color', 'rgba(255,243,51,0.43)');
-                break;
-                case ('4.6' < parseFloat(p)):
-                    $('td', row).css('background-color', 'rgba(53,193,4,0.43)');
-                break;                
-            }
-            
-        }
     });
 }
 /**

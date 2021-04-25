@@ -9,6 +9,7 @@ use App\Model\acudiente;
 use App\Model\grado;
 use App\Model\curso;
 use App\Model\notas_adicionales;
+use App\Model\modalidad_inst;
 use DB;use PDFMerger;
 
 
@@ -26,6 +27,10 @@ class BoletinController extends Controller
         $nt=notas_adicionales::all();
         return json_encode($nt);
     }
+    public function modalidad(){
+        $md=modalidad_inst::all();
+        return json_encode($md);
+    }
     public  static function studentsForGrades($grade){
         $alumnoGrade=DB::SELECT("SELECT B.id_matricula,A.nombre1,A.nombre2,A.apellido1,A.apellido2
                             FROM alumno AS A
@@ -34,9 +39,9 @@ class BoletinController extends Controller
                             WHERE B.id_estado_matricula=1 AND B.id_grado='$grade' ");  
         return json_encode($alumnoGrade);
     }
-    public function genetedBulletin($matricula,$expedition,$period,$obs,$grade){ 
-        
+    public function genetedBulletin($matricula,$expedition,$period,$obs,$grade,$letter=0,$idModalidad){       
         $observation=notas_adicionales::where('id_nota',$obs)->get();
+        $modalidad=modalidad_inst::find($idModalidad);
         $periodtx=($period==1)?  'PRIMER':'SEGUNDO';        
         $course=DB::SELECT("CALL courseForAlumn('$matricula','$period')");        
         $label=[]; $nota=[]; $col=[];
@@ -58,7 +63,7 @@ class BoletinController extends Controller
         $head=DB::SELECT("CALL studentsCourse('$matricula') ");
         $q=DB::SELECT("CALL numberStudentGrade('$grade')");
         $nmStudents=$q[0]->cantidad;
-        $pdf = \PDF::loadView('boletin.pdf_boletin',compact('url','course','expedition','head','periodtx','period','observation','nmStudents'))->setPaper('letter')->stream("achivo.pdf");
+        $pdf = \PDF::loadView('boletin.pdf_boletin',compact('url','course','expedition','head','periodtx','period','observation','nmStudents','letter','modalidad'))->setPaper('letter')->stream("achivo.pdf");
         return $pdf;
     }
 
@@ -79,7 +84,7 @@ class BoletinController extends Controller
               {
                 type: "line",
                 label: "Nota minima para aprobar",
-                data: [3, 3, 3, 3,3,3,3,3,3,3,3,3,3,3,3],
+                data: [3,3,3,3,3,3,3,3,3,3,3,3,3,3,3],
                 fill: false,                
                 borderColor: "rgb(54, 162, 235,0.2)"
             }
@@ -88,10 +93,9 @@ class BoletinController extends Controller
         $url=$chart->getUrl();
         return $url;
     }
-    public function  genetedBulletinForGrades($idGrade,$expedition,$period,$obs){ /** All for grades */
-
-
+    public function  genetedBulletinForGrades($idGrade,$expedition,$period,$obs,$letter=0,$idModalidad){ /** All for grades */      
         $observation=notas_adicionales::where('id_nota',$obs)->get();
+        $modalidad=modalidad_inst::find($idModalidad);
         $students=self::studentsForGrades($idGrade);                
         $periodtx=($period==1)?  'PRIMER':'SEGUNDO';
         $pdfM = new PDFMerger();
@@ -115,8 +119,8 @@ class BoletinController extends Controller
                 $label[]=$all->tag;                            
             }
             $url=self::QuickChartURL($label,$nota,$col);
-            $head=DB::SELECT("CALL studentsCourse('$st->id_matricula') ");
-            $pdf = \PDF::loadView('boletin.pdf_boletin',compact('url','course','expedition','head','periodtx','period','observation','nmStudents'))->setPaper('letter')->save( public_path('tmp/').$st->id_matricula.'.pdf');                                 
+            $head=DB::SELECT("CALL studentsCourse('$st->id_matricula') ");            
+            $pdf = \PDF::loadView('boletin.pdf_boletin',compact('url','course','expedition','head','periodtx','period','observation','nmStudents','letter','modalidad'))->setPaper('letter')->save( public_path('tmp/').$st->id_matricula.'.pdf');                                 
             $pdfM->addPDF(public_path('tmp/').$st->id_matricula.'.pdf', 'all');
             $arrMat[$xy]=$st->id_matricula;
         }            

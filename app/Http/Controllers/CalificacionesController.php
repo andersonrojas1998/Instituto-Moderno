@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use DB;
+use Auth;
 class CalificacionesController extends Controller
 {
     public function index(){        
@@ -9,6 +10,9 @@ class CalificacionesController extends Controller
     }
     public function indexLoadExcelFormat(){        
         return view('calificaciones.importExcel');
+    }
+    public function indexSummaryRating(){        
+        return view('calificaciones.summaryRating');
     }
     public function alumnCourse(){
 
@@ -39,6 +43,28 @@ class CalificacionesController extends Controller
         }
         return $data;
     }
+    public function summaryRating($period){    
+        $id_user=Auth::user()->id;
+        $grades=DB::SELECT("SELECT distinct(tb3.id_asignatura),tb1.id_grado,tb1.nombre,tb1.grupo,tb3.created_at,tb4.nombre as asignatura,tb4.id_asignatura FROM grado as tb1
+                            inner join matricula as tb2 on tb1.id_grado=tb2.id_grado
+                            inner join calificaciones as tb3 on tb2.id_matricula=tb3.id_matricula
+                            inner join asignatura as tb4 on tb3.id_asignatura=tb4.id_asignatura
+                            where tb2.id_estado_matricula=1 AND tb3.id_docente='$id_user' AND tb3.id_periodo='$period' ");
+            $data=[]; $i=1;
+            foreach($grades as $key => $row){
+                $data['data'][$key]['conc'] = $i;
+                $data['data'][$key]['id_grado'] = $row->id_grado;
+                $data['data'][$key]['nombre'] = $row->nombre;
+                $data['data'][$key]['grupo']=$row->grupo;
+                $data['data'][$key]['asignatura']=$row->asignatura;
+                $data['data'][$key]['id_asignatura']=$row->id_asignatura;
+                $data['data'][$key]['created']=date('Y-m-d',strtotime($row->created_at));
+                $data['data'][$key]['status']=1;
+                $data['data'][$key]['actions']=$id_user;
+                ++$i;
+            }
+            return $data;
+        }
 
     public function generatedEnrollmentQualification($grade,$teacher,$period,$course){                  
         $aco=($period==3)? 2:1;                                  
