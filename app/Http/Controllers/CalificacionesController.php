@@ -49,7 +49,7 @@ class CalificacionesController extends Controller
                             inner join matricula as tb2 on tb1.id_grado=tb2.id_grado
                             inner join calificaciones as tb3 on tb2.id_matricula=tb3.id_matricula
                             inner join asignatura as tb4 on tb3.id_asignatura=tb4.id_asignatura
-                            where tb2.id_estado_matricula=1 AND tb3.id_docente='$id_user' AND tb3.id_periodo='$period'  GROUP BY tb1.id_grado,tb3.id_asignatura,created_at ");
+                            where tb2.id_estado_matricula=1 AND tb3.id_docente='$id_user' AND tb3.id_periodo='$period'  GROUP BY tb1.id_grado,tb3.id_asignatura,created_at,tb1.nombre,tb1.grupo ");
             $data=[]; $i=1;
             foreach($grades as $key => $row){
                 $data['data'][$key]['conc'] = $i;
