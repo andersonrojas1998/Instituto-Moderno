@@ -1,4 +1,11 @@
 $(document).ready(function() {
+  $.extend($.fn.dataTable.defaults, {
+		autoWidth : false,
+		dom : '<"datatable-header"fl><"datatable-scroll"t><"datatable-footer"ip>',
+		language : {
+			url : '/assets/js/spanish.json'
+		},
+	});
     $('.select2').select2();
 
     $('[data-toggle="tooltip"]').tooltip();

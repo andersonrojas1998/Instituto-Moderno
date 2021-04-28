@@ -4,8 +4,17 @@ $(document).ready(function() {
 
 
 var dt_alumn=function(){
-  $('#dt_alumn').DataTable({ 
-      responsive: true,
+  var table=$('#dt_alumn').DataTable({ 
+     lengthChange: false,
+    // buttons: [ 'copy', 'excel', 'pdf'],     
+      
+      "initComplete": function() {
+        table.buttons().container().appendTo('#dt_alumn_wrapper .col-md-6:eq(0)');
+        $("#dt_alumn").show();
+    },
+    "buttons": ['copy', 'csv', 'excel', 'pdf', 'print', 'colvis'],
+
+
       ajax: {
           url: "/dt_alumn",
           method: "GET", 
@@ -35,6 +44,9 @@ var dt_alumn=function(){
               {"data": "estado", render(data){ let st=(data)? 'Activo':'Inactivo'; let color=(data)? 'success':'danger'; return  '<label class="badge text-white badge-'+color+' ">'+ st  +'</label>'; }}
       ]
   });
+  table.buttons().container()
+  .appendTo( '#dt_alumn_wrapper .col-md-6:eq(0)' );
+
 }
 
 

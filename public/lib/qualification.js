@@ -1,11 +1,14 @@
 $(document).ready(function() {
-
-    
-    $.ajax({ url:"/showTeacher",type:"GET",dataType:"JSON",success:function(data){
-        for(let i=0;i<data.length;i++){                    
-            $('#sel_teacher').append('<option   value="'+data[i].id+'" >'+ firstLetter(data[i].name.toLowerCase())  +'</option>');
+   
+    $.ajax({ url:"/showGradesAssign",type:"GET",success:function(data){
+        let arr=JSON.parse(data);
+        $('#sel_grades').select2().empty();
+        $('#sel_course').select2().empty(); 
+        $('#sel_grades').append('<option value="">Seleccione</option>');
+        for(let i=0;i<arr.length;i++){                                    
+            $('#sel_grades').append('<option   value="'+arr[i].id_grado+'" >'+ firstLetter(arr[i].grupo.toLowerCase())  +'</option>');
         }
-        $('#sel_teacher').select2();
+        $('#sel_grades').select2();
     }
     });
     
@@ -48,31 +51,10 @@ $(document).ready(function() {
               
 
             }
-          })
-
-
-
-        
-
+          });
     });
-
-    $(document).on("change","#sel_teacher",function(){
-        let idUser=$(this).val();
-        $.ajax({ url:"/showGradesAssign",type:"GET",data:{idTeacher:idUser},success:function(data){
-            let arr=JSON.parse(data);
-            $('#sel_grades').select2().empty();
-            $('#sel_course').select2().empty(); 
-            $('#sel_grades').append('<option value="">Seleccione</option>');
-            for(let i=0;i<arr.length;i++){                                    
-                $('#sel_grades').append('<option   value="'+arr[i].id_grado+'" >'+ firstLetter(arr[i].grupo.toLowerCase())  +'</option>');
-            }
-            $('#sel_grades').select2();
-        }
-        });
-    });
-
     $(document).on("change","#sel_grades",function(){
-        let idUser=$("#sel_teacher").val();  
+        let idUser=$("#idUser").val();  
         let idgrade=$(this).val();  
         $.ajax({ url:"/assignmentCourseTeacher",type:"GET",data:{idTeacher:idUser,idgrade:idgrade},success:function(data){
             let arr=JSON.parse(data);          
@@ -89,9 +71,9 @@ $(document).ready(function() {
       
         let idgrade=$("#sel_grades").val();  
         let sel_perid=$("#sel_perid").val(); 
-        let teacher=$("#sel_teacher").val();
+        let teacher=$("#idUser").val();
         let course=$("#sel_course").val();
-        if(teacher!=""  &&  idgrade!="" && course!="" && sel_perid!=""){
+        if(idgrade!="" && course!="" && sel_perid!=""){
             dt_qualifications(idgrade,sel_perid,teacher,course);
         }else{
             sweetMessage('\u00A1Atenci\u00f3n!', 'Por favor complete  los campos requeridos.', 'warning');
@@ -101,10 +83,10 @@ $(document).ready(function() {
     $(document).on("click","#generateExcel",function(){        
         let grade=$("#sel_grades").val();  
         let gradeText=$("#sel_grades option:selected").text();  
-        let idTeacher=$("#sel_teacher").val();                 
+        let idTeacher=$("#idUser").val();                 
         let period=$("#sel_perid").val();
         let course=$("#sel_course").val();
-        if(idTeacher!=""  &&  grade!="" && course!="" && period!=""){
+        if(grade!="" && course!="" && period!=""){
             let url='/QualificationExcel/'+grade+'/'+idTeacher+'/'+period+'/'+course;
             var xhr = new XMLHttpRequest();
             xhr.open("GET",url);
@@ -127,13 +109,7 @@ $(document).ready(function() {
             sweetMessage('\u00A1Atenci\u00f3n!', 'Por favor complete  los campos requeridos.', 'warning');
         }        
     });
-    
-
-
-
-} );
-
-
+});
 var dt_qualifications=function(grade,perid,teacher,course){
     $('#dt_qualifications').DataTable({        
         lengthChange: false,        
