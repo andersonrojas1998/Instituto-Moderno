@@ -142,10 +142,10 @@
                                 <td class="padding-1">Número de faltas:</td>
                                 <td ></td>    
                             </tr>
-                            <tr>
+                            <!--<tr>
                                 <td class="padding-1">Puesto ocupado en el curso:</td>
                                 <td></td>    
-                            </tr>   
+                            </tr> -->  
                  
                                      
                         </table>                                

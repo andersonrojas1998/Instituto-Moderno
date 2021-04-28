@@ -46,7 +46,7 @@
           <div class="dropdown-divider"></div>
           <a class="dropdown-item preview-item">
             <div class="preview-thumbnail">
-              <img src="{{ url('assets/images/faces/face10.jpg') }}" alt="image" class="img-sm profile-pic"> </div>
+              <img src="{{-- url('assets/images/faces/face10.jpg') --}}" alt="image" class="img-sm profile-pic"> </div>
             <div class="preview-item-content flex-grow py-2">
               <p class="preview-subject ellipsis font-weight-medium text-dark">Marian Garner </p>
               <p class="font-weight-light small-text"> The meeting is cancelled </p>
@@ -54,7 +54,7 @@
           </a>
           <a class="dropdown-item preview-item">
             <div class="preview-thumbnail">
-              <img src="{{ url('assets/images/faces/face12.jpg') }}" alt="image" class="img-sm profile-pic"> </div>
+              <img src="{{-- url('assets/images/faces/face12.jpg') --}}" alt="image" class="img-sm profile-pic"> </div>
             <div class="preview-item-content flex-grow py-2">
               <p class="preview-subject ellipsis font-weight-medium text-dark">David Grey </p>
               <p class="font-weight-light small-text"> The meeting is cancelled </p>
@@ -62,7 +62,7 @@
           </a>
           <a class="dropdown-item preview-item">
             <div class="preview-thumbnail">
-              <img src="{{ url('assets/images/faces/face3.jpg') }}" alt="image" class="img-sm profile-pic"> </div>
+              <img src="{{-- url('assets/images/faces/face3.jpg') --}}" alt="image" class="img-sm profile-pic"> </div>
             <div class="preview-item-content flex-grow py-2">
               <p class="preview-subject ellipsis font-weight-medium text-dark">Travis Jenkins </p>
               <p class="font-weight-light small-text"> The meeting is cancelled </p>
@@ -126,10 +126,8 @@
                 <i class="mdi mdi-alarm-check mr-0 text-gray"></i>
               </div>
             </div>
-          </a>
-          <a class="dropdown-item mt-2"> Manage Accounts </a>
-          <a class="dropdown-item"> Change Password </a>
-          <a class="dropdown-item"> Check Inbox </a>          
+          </a>          
+          <a class="dropdown-item">Cambio Contraseña</a>
           <a class="dropdown-item">
               <form id="logout-form" action="{{ url('/logout') }}" method="POST" >
 			        {{ csrf_field() }}
