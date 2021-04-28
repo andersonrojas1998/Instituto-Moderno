@@ -7,10 +7,9 @@
     <div class="card-body">
     <div class="row">
             <div class="col-lg-3">
-            <strong>Docentes : <span class="text-danger">*</span></strong>
-                <select class="form-control " name="sel_teacher" id="sel_teacher" style="width:100%" >
-                <option value=""></option>
-                </select>                  
+            <strong>Docente : </strong>
+                <input type="text" class="form-control" readonly value="{{ Auth::user()->name }}">
+                <input type="hidden" id="idUser" value="{{ Auth::user()->id }}">               
             </div>
 
             <div class="col-lg-2">

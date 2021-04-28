@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use DB;
+use Auth;
 class DocenteController extends Controller
 {
     public function index(){
@@ -30,8 +31,8 @@ class DocenteController extends Controller
         return json_encode($data);          
     }
     public function gradeAssignments(){        
-        $idTeacher = \Request::input('idTeacher');
-        $gradesAll=DB::SELECT("SELECT distinct A.id_grado, concat(A.grupo,' * ',C.nombre) as grupo FROM  grado as A
+        $idTeacher = Auth::user()->id;
+        $gradesAll=DB::SELECT("SELECT distinct A.id_grado, concat(A.grupo,'  ',C.nombre) as grupo FROM  grado as A
                     inner join curso AS B ON A.id_grado=B.id_grado
                     inner join jornada as C ON A.id_jornada=C.id_jornada         
                     where B.id_docente='$idTeacher' ");
