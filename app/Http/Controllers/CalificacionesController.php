@@ -14,6 +14,9 @@ class CalificacionesController extends Controller
     public function indexSummaryRating(){        
         return view('calificaciones.summaryRating');
     }
+    public function indexScoreStudents(){        
+        return view('calificaciones.index_scoreStudents');
+    }
     public function alumnCourse(){
 
     $grade = \Request::input('grade');
@@ -391,4 +394,26 @@ class CalificacionesController extends Controller
         $drawing->setWidth($widt);
         return $drawing;
     }
+    public function delQualifications($period,$asig,$grade){
+        $user=Auth::user()->id;
+    return  DB::SELECT("DELETE calificaciones FROM calificaciones 
+                INNER JOIN matricula AS B ON calificaciones.id_matricula=B.id_matricula
+                INNER JOIN grado AS C ON  B.id_grado=C.id_grado
+                WHERE B.id_estado_matricula=1 AND calificaciones.id_periodo='$period' AND calificaciones.id_docente='$user' AND calificaciones.id_asignatura='$asig'
+                AND B.id_grado='$grade'  ");
+    }
+    public function scoreStudents($grade,$period){
+
+        $write=DB::SELECT("CALL sp_averageAndRank('$period','$grade')  ");
+        $readTmp=DB::SELECT("SELECT * FROM temp_ranking");
+
+        $data=[];
+        foreach($readTmp as $key=> $row){
+            $data['data'][$key]['puesto']=$row->puesto;
+            $data['data'][$key]['promedio']=number_format($row->promedio,1);
+            $data['data'][$key]['alumno'] =$row->apellido1. ' '.$row->apellido2.' ' . $row->nombre1.' '.$row->nombre2;
+        }
+        return json_encode($data);
+    }
+
 }
