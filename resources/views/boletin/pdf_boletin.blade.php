@@ -20,6 +20,7 @@
         </style> 
 </head>
 <header >
+<body>
 <div class="w3-row w3-tiny">
     <div class="w3-col">
         <img class="rounded"  src="{{ asset('/icon.jpg') }}" height="80" width="80">
@@ -139,15 +140,13 @@
                                 <td class="padding-1 w3-center">{{ $nmStudents }}</td>    
                             </tr>
                             <tr>
-                                <td class="padding-1">Número de faltas:</td>
-                                <td ></td>    
+                                <td class="padding-1">Promedio:</td>
+                                <td class="padding-1 w3-center">{{ $promedio }}</td>    
                             </tr>
-                            <!--<tr>
+                            <tr>
                                 <td class="padding-1">Puesto ocupado en el curso:</td>
-                                <td></td>    
-                            </tr> -->  
-                 
-                                     
+                                <th class="padding-1 text-primary w3-center">{{ $puesto }}</td>    
+                            </tr>                                                                                  
                         </table>                                
                 </div>
 </div>

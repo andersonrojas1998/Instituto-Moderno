@@ -62,34 +62,50 @@ class BoletinController extends Controller
         $url=self::QuickChartURL($label,$nota,$col);          
         $head=DB::SELECT("CALL studentsCourse('$matricula') ");
         $q=DB::SELECT("CALL numberStudentGrade('$grade')");
+        $write=DB::SELECT("CALL sp_averageAndRank('$period','$grade')  ");
+        $readTmp=DB::SELECT("SELECT puesto,promedio FROM temp_ranking WHERE id_matricula='$matricula' ");
+        $puesto=$readTmp[0]->puesto;
+        $promedio=number_format($readTmp[0]->promedio,1);
         $nmStudents=$q[0]->cantidad;
-        $pdf = \PDF::loadView('boletin.pdf_boletin',compact('url','course','expedition','head','periodtx','period','observation','nmStudents','letter','modalidad'))->setPaper('letter')->stream("achivo.pdf");
+        $pdf = \PDF::loadView('boletin.pdf_boletin',compact('url','course','expedition','head','periodtx','period','observation','nmStudents','letter','modalidad','puesto','promedio'))->setPaper('letter')->stream("achivo.pdf");
         return $pdf;
     }
 
     public function QuickChartURL($label,$nota,$col){
         $chart = new \QuickChart(array('width' => 710,'height' => 176));          
-          $chart->setConfig('{            
-            type: "bar",
-            data: {
-              labels: '.json_encode($label).' , 
-              datasets: [{
-                label: "Materias Cursadas",                
-                data: '.json_encode($nota).',
-                backgroundColor:'.json_encode($col).' ,
-                borderColor: "rgba(4,4,4, 1)",                
-                borderWidth:1, 
-                barThickness:15,                                   
-              },             
-              {
-                type: "line",
-                label: "Nota minima para aprobar",
-                data: [3,3,3,3,3,3,3,3,3,3,3,3,3,3,3],
-                fill: false,                
-                borderColor: "rgb(54, 162, 235,0.2)"
-            }
-              ]
-            }}');     
+        $chart->setConfig('{            
+        type: "bar",
+        data:{
+            labels: '.json_encode($label).' , 
+            datasets: [
+                {
+                    label: "Materias Cursadas",
+                    fillColor: "rgba(255, 152, 0, 0.30)",                
+                    data: '.json_encode($nota).',
+                    backgroundColor:'.json_encode($col).' ,
+                    borderColor: "rgba(4,4,4, 1)",                
+                    borderWidth:1, 
+                    barThickness:15                                                  
+                },             
+                {
+                    type: "line",
+                    label: "Nota minima para aprobar",
+                    data: [3,3,3,3,3,3,3,3,3,3,3,3,3,3,3],
+                    fill: false,                
+                    borderColor: "rgb(54, 162, 235,0.2)"
+                }
+            ],            
+        },       
+        options: {
+            legend: {
+                labels: {
+                    filter: function(label) {
+                        if (label.text === "Nota minima para aprobar") return true; 
+                    }
+                }
+            },
+        }
+    }');     
         $url=$chart->getUrl();
         return $url;
     }
@@ -119,8 +135,12 @@ class BoletinController extends Controller
                 $label[]=$all->tag;                            
             }
             $url=self::QuickChartURL($label,$nota,$col);
-            $head=DB::SELECT("CALL studentsCourse('$st->id_matricula') ");            
-            $pdf = \PDF::loadView('boletin.pdf_boletin',compact('url','course','expedition','head','periodtx','period','observation','nmStudents','letter','modalidad'))->setPaper('letter')->save( public_path('tmp/').$st->id_matricula.'.pdf');                                 
+            $head=DB::SELECT("CALL studentsCourse('$st->id_matricula') ");  
+            $write=DB::SELECT("CALL sp_averageAndRank('$period','$idGrade')  ");
+            $readTmp=DB::SELECT("SELECT puesto,promedio FROM temp_ranking WHERE id_matricula='$st->id_matricula' ");
+            $puesto=$readTmp[0]->puesto;
+            $promedio=number_format($readTmp[0]->promedio,1);
+            $pdf = \PDF::loadView('boletin.pdf_boletin',compact('url','course','expedition','head','periodtx','period','observation','nmStudents','letter','modalidad','puesto','promedio'))->setPaper('letter')->save( public_path('tmp/').$st->id_matricula.'.pdf');                                 
             $pdfM->addPDF(public_path('tmp/').$st->id_matricula.'.pdf', 'all');
             $arrMat[$xy]=$st->id_matricula;
         }            
@@ -195,7 +215,7 @@ class BoletinController extends Controller
         });
     }
     public function loadCourseTeacher(){
-        \Excel::load('public\cargaDocente2.xlsx', function($reader) {         
+        \Excel::load('public\carganueva.xlsx', function($reader) {         
             $data=[];         
             $reader->each(function($row){     
                // if(!empty($row->id_grado)){
