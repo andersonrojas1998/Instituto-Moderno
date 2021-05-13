@@ -142,5 +142,6 @@ Route::group(['middleware' => ['auth']], function () {
     require (__DIR__ . '/rt_enrollment.php');
     require (__DIR__ . '/rt_grades.php');
     require (__DIR__ . '/rt_materias.php');
+    require (__DIR__ . '/rt_certificate.php');
 });
 
