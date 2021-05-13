@@ -97,5 +97,5 @@
 
 @endsection
 @push('custom-scripts')        
-    <script src="{{ asset('/lib/summaryRating.js') }}"></script>    
+    <script src="{{ asset('/lib/summaryRating.js?v.0') }}"></script>    
 @endpush
