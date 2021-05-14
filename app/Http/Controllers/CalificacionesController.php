@@ -219,24 +219,24 @@ class CalificacionesController extends Controller
                         $course=$data['course'];
 
 
-                        /** Interpretativa 34% */
+                        /** Interpretativa 25% */
                         $nota1=number_format ($row->i1,1); //floatval(); 
                         $nota2=number_format ($row->i2,1);
                         $nota3=number_format ($row->i3,1);
                         $nota4=number_format ($row->i4,1);
-                        /** Argumentativa  34% */
+                        /** Argumentativa  30% */
                         $nota5=number_format($row->a1,1);
                         $nota6=number_format($row->a2,1);
                         $nota7=number_format($row->a3,1);
-                        /** Propositiva   30%  */
+                        /** Propositiva   35%  */
                         $nota8=number_format($row->p1,1);
                         $nota9=number_format($row->p2,1);
                         $nota10=number_format($row->p3,1);
-                        /**Social 1% */
+                        /**Social 5% */
                         $nota11=number_format($row->s1,1);
                         $nota12=number_format($row->s2,1);
                         $nota13=number_format($row->s3,1);                        
-                        /**Autoe  1%  */
+                        /**Autoe  5%  */
                         $nota14=number_format($row->au1,1);
                         $nota15=number_format($row->au2,1);
                         
@@ -324,12 +324,12 @@ class CalificacionesController extends Controller
         
                 $autoPro=($nota14+$nota15)/$aut;
                 
-                $inter=round(($interPro)*34/ 100,2);
-                $argum=round(($argPro)*34/ 100, 2);
+                $inter=round(($interPro)*25/ 100,2);
+                $argum=round(($argPro)*30/ 100, 2);
 
-                $propo=round(($proPro)*30/100,2);
-                $social=round(($socPro)*1/100,2);
-                $autoe=round(($autoPro)*1/100,2);
+                $propo=round(($proPro)*35/100,2);
+                $social=round(($socPro)*5/100,2);
+                $autoe=round(($autoPro)*5/100,2);
                             
                 $notafinal=number_format($inter+$argum+$propo+$social+$autoe,1);
             
