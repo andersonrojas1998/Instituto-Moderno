@@ -23,7 +23,7 @@ class CalificacionesController extends Controller
     $period = \Request::input('perid');    
     $teacher=\Request::input('teacher');
     $course=\Request::input('course');
-
+    $year=date('Y');
     $alumnoGrade=DB::SELECT("SELECT B.id_matricula,A.nombre1,A.nombre2,A.apellido1,A.apellido2,C.grupo,
                                 (SELECT  nota_definitiva from calificaciones as tb1 where tb1.id_periodo=1 AND tb1.id_matricula=B.id_matricula AND tb1.id_docente='$teacher' AND tb1.id_asignatura='$course' LIMIT 1) as primerPeriodo,
                                 (SELECT  nota_definitiva from calificaciones as tb2 where tb2.id_periodo=2 AND tb2.id_matricula=B.id_matricula AND tb2.id_docente='$teacher' AND tb2.id_asignatura='$course' LIMIT 1) as segundoPeriodo,
@@ -31,7 +31,7 @@ class CalificacionesController extends Controller
                             FROM alumno AS A
                             INNER JOIN matricula AS B ON A.id_alumno=B.id_alumno
                             INNER JOIN grado AS C ON  B.id_grado=C.id_grado
-                            WHERE B.id_estado_matricula=1 AND B.id_grado='$grade' ORDER BY A.apellido1 ASC  ");                            
+                            WHERE B.id_estado_matricula=1 AND B.id_grado='$grade' AND B.año='$year' ORDER BY A.apellido1 ASC  ");                            
         $data=[]; $i=1;
         foreach($alumnoGrade as $key => $row){
             $data['data'][$key]['conc'] = $i;
@@ -48,11 +48,12 @@ class CalificacionesController extends Controller
     }
     public function summaryRating($period){    
         $id_user=Auth::user()->id;
+        $year=date('Y');
         $grades=DB::SELECT("SELECT tb3.id_asignatura,tb1.id_grado,tb1.nombre,tb1.grupo,DATE_FORMAT(tb3.created_at,'%M %d %Y') as created_at ,tb4.nombre as asignatura FROM grado as tb1
                             inner join matricula as tb2 on tb1.id_grado=tb2.id_grado
                             inner join calificaciones as tb3 on tb2.id_matricula=tb3.id_matricula
                             inner join asignatura as tb4 on tb3.id_asignatura=tb4.id_asignatura
-                            where tb2.id_estado_matricula=1 AND tb3.id_docente='$id_user' AND tb3.id_periodo='$period'  GROUP BY tb1.id_grado,tb3.id_asignatura,created_at,tb1.nombre,tb1.grupo,tb4.nombre ");
+                            where tb2.id_estado_matricula=1 AND tb3.id_docente='$id_user' AND tb2.año='$year' AND tb3.id_periodo='$period'  GROUP BY tb1.id_grado,tb3.id_asignatura,created_at,tb1.nombre,tb1.grupo,tb4.nombre ");
             $data=[]; $i=1;
             foreach($grades as $key => $row){
                 $data['data'][$key]['conc'] = $i;
@@ -70,7 +71,8 @@ class CalificacionesController extends Controller
         }
 
     public function generatedEnrollmentQualification($grade,$teacher,$period,$course){                  
-        $aco=($period==3)? 2:1;                                  
+        $aco=($period==3)? 2:1;
+        $year=date('Y');
         $alumnoGrade=DB::SELECT("SELECT B.id_matricula,A.nombre1,A.nombre2,A.apellido1,A.apellido2,C.grupo,
                                     (SELECT  nota_definitiva from calificaciones as tb1 where tb1.id_periodo=1 AND tb1.id_matricula=B.id_matricula AND tb1.id_docente='$teacher' AND tb1.id_asignatura='$course'  LIMIT 1) as primerPeriodo,
                                     (SELECT  nota_definitiva from calificaciones as tb2 where tb2.id_periodo=2 AND tb2.id_matricula=B.id_matricula AND tb2.id_docente='$teacher' AND tb2.id_asignatura='$course'  LIMIT 1) as segundoPeriodo,                                    
@@ -78,7 +80,7 @@ class CalificacionesController extends Controller
                             FROM alumno AS A
                             INNER JOIN matricula AS B ON A.id_alumno=B.id_alumno
                             INNER JOIN grado AS C ON  B.id_grado=C.id_grado
-                            WHERE B.id_estado_matricula=1 AND B.id_grado='$grade' ORDER BY A.apellido1 ASC ");
+                            WHERE B.id_estado_matricula=1 AND B.id_grado='$grade' AND B.año='$year'  ORDER BY A.apellido1 ASC ");
 
         $users=DB::SELECT("SELECT name  from  users WHERE id='$teacher' ");
         $curso=DB::SELECT("SELECT nombre  from  asignatura WHERE id_asignatura='$course' ");
@@ -207,38 +209,59 @@ class CalificacionesController extends Controller
         
         $users=DB::SELECT("SELECT id  from  users WHERE name='$teacher' ");
         $curso=DB::SELECT("SELECT id_asignatura  from  asignatura WHERE nombre='$course' ");
-        $data=['period'=>$perid,'teacher'=>$users[0]->id,'course'=>$curso[0]->id_asignatura,'grade'=>$grade];    
+        $data=['period'=>$perid,'teacher'=>$users[0]->id,'course'=>$curso[0]->id_asignatura,'grade'=>$grade];
                 
         $exception = DB::transaction(function() use ($data,$reader) {
-            try {   
-                $reader->each(function($row) use ($data){             
+            try {
+                $reader->each(function($row) use ($data){    
                 if (!$row->filter()->isEmpty()) {
                         $perid=$data['period'];
                         $matricula=intval($row->matricula); 
                         $teacher=$data['teacher'];
                         $course=$data['course'];
 
+                        $n1=empty(trim($row->i1))? null:trim($row->i1);
+                        $n2=empty(trim($row->i2))? null:trim($row->i2);
+                        $n3=empty(trim($row->i3))? null:trim($row->i3);
+                        $n4=empty(trim($row->i4))? null:trim($row->i4);
+                        
+
+                        $n5=empty(trim($row->a1))? null:trim($row->a1);
+                        $n6=empty(trim($row->a2))? null:trim($row->a2);
+                        $n7=empty(trim($row->a3))? null:trim($row->a3);
+
+                        $n8=empty(trim($row->p1))? null:trim($row->p1);
+                        $n9=empty(trim($row->p2))? null:trim($row->p2);
+                        $n10=empty(trim($row->p3))? null:trim($row->p3);
+
+
+                        $n11=empty(trim($row->s1))? null:trim($row->s1);
+                        $n12=empty(trim($row->s2))? null:trim($row->s2);
+                        $n13=empty(trim($row->s3))? null:trim($row->s3);
+
+                        $n14=empty(trim($row->au1))? null:trim($row->au1);
+                        $n15=empty(trim($row->au2))? null:trim($row->au2);
 
                         /** Interpretativa 25% */
-                        $nota1=number_format ($row->i1,1); //floatval(); 
-                        $nota2=number_format ($row->i2,1);
-                        $nota3=number_format ($row->i3,1);
-                        $nota4=number_format ($row->i4,1);
+                        $nota1=number_format($n1,1); 
+                        $nota2=number_format($n2,1);
+                        $nota3=number_format($n3,1);
+                        $nota4=number_format($n4,1);
                         /** Argumentativa  30% */
-                        $nota5=number_format($row->a1,1);
-                        $nota6=number_format($row->a2,1);
-                        $nota7=number_format($row->a3,1);
+                        $nota5=number_format($n5,1);
+                        $nota6=number_format($n6,1);
+                        $nota7=number_format($n7,1);
                         /** Propositiva   35%  */
-                        $nota8=number_format($row->p1,1);
-                        $nota9=number_format($row->p2,1);
-                        $nota10=number_format($row->p3,1);
+                        $nota8=number_format($n8,1);
+                        $nota9=number_format($n9,1);
+                        $nota10=number_format($n10,1);
                         /**Social 5% */
-                        $nota11=number_format($row->s1,1);
-                        $nota12=number_format($row->s2,1);
-                        $nota13=number_format($row->s3,1);                        
+                        $nota11=number_format($n11,1);
+                        $nota12=number_format($n12,1);
+                        $nota13=number_format($n13,1);
                         /**Autoe  5%  */
-                        $nota14=number_format($row->au1,1);
-                        $nota15=number_format($row->au2,1);
+                        $nota14=number_format($n14,1);
+                        $nota15=number_format($n15,1);
                         
                        
 
@@ -396,11 +419,12 @@ class CalificacionesController extends Controller
     }
     public function delQualifications($period,$asig,$grade){
         $user=Auth::user()->id;
+        $year=date('Y');
     return  DB::SELECT("DELETE calificaciones FROM calificaciones 
                 INNER JOIN matricula AS B ON calificaciones.id_matricula=B.id_matricula
                 INNER JOIN grado AS C ON  B.id_grado=C.id_grado
                 WHERE B.id_estado_matricula=1 AND calificaciones.id_periodo='$period' AND calificaciones.id_docente='$user' AND calificaciones.id_asignatura='$asig'
-                AND B.id_grado='$grade'  ");
+                AND B.id_grado='$grade'  AND B.año='$year'  ");
     }
     public function scoreStudents($grade,$period){
 
