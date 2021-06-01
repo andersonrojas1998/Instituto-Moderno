@@ -1,18 +1,18 @@
 $(document).ready(function() {
    
-    $.ajax({ url:"/showGradesAssign",type:"GET",success:function(data){
-        let arr=JSON.parse(data);
-        $('#sel_grades').select2().empty();
-        $('#sel_course').select2().empty(); 
-        $('#sel_grades').append('<option value="">Seleccione</option>');
-        for(let i=0;i<arr.length;i++){                                    
-            $('#sel_grades').append('<option   value="'+arr[i].id_grado+'" >'+ firstLetter(arr[i].grupo.toLowerCase())  +'</option>');
+    if($("#sel_grades").length>0){
+        $.ajax({ url:"/showGradesAssign",type:"GET",success:function(data){
+            let arr=JSON.parse(data);
+            $('#sel_grades').select2().empty();
+            $('#sel_course').select2().empty(); 
+            $('#sel_grades').append('<option value="">Seleccione</option>');
+            for(let i=0;i<arr.length;i++){                                    
+                $('#sel_grades').append('<option   value="'+arr[i].id_grado+'" >'+ firstLetter(arr[i].grupo.toLowerCase())  +'</option>');
+            }
+            $('#sel_grades').select2();
         }
-        $('#sel_grades').select2();
+        });
     }
-    });
-    
-
     $(document).on("click","#loadExcel",function(){        
         var formData = new FormData($("#formExcelLoad")[0]);        
         Swal.fire({

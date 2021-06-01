@@ -7,14 +7,10 @@
     
 
         <div class="d-flex flex-row-reverse bd-highlight">
-            <div class="p-2 bd-highlight"><div class="dropdown">
-            <button type="button" id="dropdownMenuButton5" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-success dropdown-toggle"> Descargar </button>
-            <div aria-labelledby="dropdownMenuButton5" class="dropdown-menu" style="">
-            <h6 class="dropdown-header">opciones descarga</h6> 
-            <div class="dropdown-divider"></div>
-            <a href="#" class="dropdown-item">Excel</a>
-            </div></div></div>            
-        </div>    
+            <div class="p-2 bd-highlight">
+                <a data-toggle="modal" data-target="#mdl_create_grades" id="show_create_grade"  class="btn btn-primary text-white" >Creaci&oacute;n <i class="mdi mdi-numeric icon-lg" data-toggle="tooltip" data-placement="top" data-title="Creacion de Grados" ></i> </a>
+            </div>            
+        </div>   
 </div>
     <div class="card-body">
     <div class="row">
@@ -36,7 +32,111 @@
                     </table>  
     </div>
     </div>
-    </div>  
+    </div>
+
+    <div class="modal fade" id="mdl_create_grades" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document" style="min-width:70%;">
+    <div class="modal-content " style="background:white;">
+      <div class="modal-header d-block bg-primary">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h5 class="modal-title text-uppercase text-center text-white">Creaci&oacute;n Grados</h5>        
+      </div>
+      <div class="modal-body">
+      <meta name="csrf-token" content="{{ csrf_token() }}">
+        <div class="row">
+            <div class="col-lg-4">
+            <label>Nombre:  <span class="text-danger">*</span></label>
+            <input class="form-control text-uppercase" id="nombre" placeholder="Ej: ONCE">
+            </div>
+        
+            <div class="col-lg-4">
+            <label>Grupo:  <span class="text-danger">*</span></label>
+            <input class="form-control" id="grupo" placeholder="Ej:  11-1" >
+            </div>
+
+            <div class="col-lg-4">
+            <label>Jornada:  <span class="text-danger">*</span></label>
+            <select class="form-control sel_jornadas" id="sel_jornadas">            
+            </select>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-lg-4">
+                <label>Tag:  <span class="text-danger">*</span></label>
+                <input class="form-control"  id="tag" placeholder="11">
+            </div>
+            <div class="col-lg-4">
+                <label>Nivel educativo:  <span class="text-danger">*</span></label>
+                <select class="form-control sel_educativo" id="sel_educativo">
+                </select>
+            </div>
+
+            <div class="col-lg-4">
+                <label>Director grupo:  <span class="text-danger">*</span></label>
+                <select class="form-control sel_teacher" id="sel_teacher">
+                </select>
+            </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-success btn-save-grade">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div> 
+
+<div class="modal fade" id="mdl_edit_grades" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document" style="min-width:70%;">
+    <div class="modal-content " style="background:white;">
+      <div class="modal-header d-block bg-warning">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h5 class="modal-title text-uppercase text-center">EDIDAR GRADO</h5>        
+      </div>
+      <div class="modal-body">
+      <meta name="csrf-token" content="{{ csrf_token() }}">
+        <div class="row">
+            <div class="col-lg-4">
+            <label>Nombre:  <span class="text-danger">*</span></label>
+            <input class="form-control text-uppercase" id="nombre_edit" placeholder="Ej: ONCE">
+            </div>
+        
+            <div class="col-lg-4">
+            <label>Grupo:  <span class="text-danger">*</span></label>
+            <input class="form-control" id="grupo_edit" placeholder="Ej:  11-1"  disabled>
+            </div>
+
+            <div class="col-lg-4">
+            <label>Jornada:  <span class="text-danger">*</span></label>
+            <select class="form-control sel_jornadas" id="sel_jornadas_edit">            
+            </select>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-lg-4">
+                <label>Tag:  <span class="text-danger">*</span></label>
+                <input class="form-control"  id="tag_edit" placeholder="11">
+            </div>            
+            <div class="col-lg-4">
+                <label>Director grupo:  <span class="text-danger">*</span></label>
+                <select class="form-control sel_teacher" id="sel_teacher_edit">
+                </select>
+            </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-success btn-update-grade">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
     </div>  
 @endsection
 

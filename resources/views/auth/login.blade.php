@@ -11,7 +11,7 @@
         <div class="row w-100">
         <div class="col-lg-4"></div>
         <div class="col-lg-4">
-            <img class="rounded" src="{{ asset('/icon.jpg') }}" height="100" width="110">                        
+            <img class="rounded" src="{{ asset('/icon.jpg') }}" height="102" width="108">                        
         </div>            
         <div class="col-lg-12">
         <figcaption class="blockquote-footer text-center">
@@ -55,17 +55,17 @@
           <div class="form-group d-flex justify-content-between">
             <div class="form-check form-check-flat mt-0">
               <label class="form-check-label">
-                <input type="checkbox" class="form-check-input text-primary" name="remember" {{ old('remember') ? 'checked' : '' }} checked> Recordarme </label>
+                <!-- <input type="checkbox" class="text-primary" name="remember" {{ old('remember') ? 'checked' : '' }} > Recordarme </label> -->
             </div>
             <a href="#" class="text-small forgot-password text-primary">¿Olvido Contraseña ?</a>
           </div>
-          <div class="form-group">
+          <!--<div class="form-group">
             <button class="btn btn-block g-login">
               <img class="mr-3" src="{{ url('assets/images/file-icons/icon-google.svg') }}" alt="">Log in with Google</button>
-          </div>
+          </div>-->
           <div class="text-block text-center my-3">
-            <span class="text-small font-weight-semibold">Not a member ?</span>
-            <a href="{{ url('/user-pages/register') }}" class="text-black text-small">Create new account</a>
+            <!--<span class="text-small font-weight-semibold">Not a member ?</span>
+            <a href="" class="text-black text-small">Create new account</a>-->
           </div>
         </form>
       </div>
@@ -80,7 +80,7 @@
           <a href="#">Terms</a>
         </li>
       </ul>
-      <p class="footer-text text-center">copyright © 2018 Bootstrapdash. All rights reserved.</p>
+      <p class="footer-text text-center">copyright © 2021 Instituto Moderno Decepez.</p>
     </div>
   </div>
 </div>
