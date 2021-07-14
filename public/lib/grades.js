@@ -78,20 +78,7 @@ $(document).ready(function() {
     
   });
 
-function sel_option(ulr,id) {
-    $(id).empty();
-    $.ajax({ 
-        url: ulr,
-        type:"GET",success:function(data){
-        let arr=JSON.parse(data);           
-        $(id).append('<option value="">Seleccione</option>');
-        for(let i=0;i<arr.length;i++){                            
-            $(id).append('<option   value="'+arr[i].id+'" >'+ arr[i].name   +'</option>');
-        }
-        $(id).select2();
-    }
-    });
-  }
+
   var dt_grades=function(){
     $('#dt_grades').DataTable({ 
         responsive: true,

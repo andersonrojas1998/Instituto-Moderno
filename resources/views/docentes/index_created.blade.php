@@ -5,9 +5,6 @@
         <h3 class="mb-1">Creaci&oacute;n de usuarios  <i class="mdi mdi-account-circle"></i></h3>      
 </div>
     <div class="card-body"> 
-
-
-
 <h4 class="text-center p-1 text-primary">Datos Basicos  <i class="mdi mdi-account-card-details"></i></h4>
 <hr>
 <form  id="form_createUser" enctype="multipart/form-data" method="post">

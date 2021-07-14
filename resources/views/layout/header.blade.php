@@ -131,7 +131,7 @@
           <a class="dropdown-item">
               <form id="logout-form" action="{{ url('/logout') }}" method="POST" >
 			        {{ csrf_field() }}
-			          <button class="btn btn-success text-center" type="submit">Cerrar sesi&oacute;n</button>                
+              <button  class="btn btn-sm btn-outline-primary btn-fw" type="submit"><i class="mdi mdi-logout-variant"></i>Cerrar sesi&oacute;n</button>			          
 		          </form>
           </a>
         </div>

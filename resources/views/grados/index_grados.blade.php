@@ -1,18 +1,15 @@
 @extends('layout.master')
 @section('content')
 <div class="card">
-<div class="p-4  bg-light ">
-           
-        <h4 class="mb-0">Administraci&oacute;n de Grados</h4>
-    
-
-        <div class="d-flex flex-row-reverse bd-highlight">
-            <div class="p-2 bd-highlight">
-                <a data-toggle="modal" data-target="#mdl_create_grades" id="show_create_grade"  class="btn btn-primary text-white" >Creaci&oacute;n <i class="mdi mdi-numeric icon-lg" data-toggle="tooltip" data-placement="top" data-title="Creacion de Grados" ></i> </a>
-            </div>            
-        </div>   
+<div class="p-4  bg-light text-center">           
+        <h4 class="mb-0">Administraci&oacute;n de Grados</h4>            
 </div>
     <div class="card-body">
+    <div class="d-flex flex-row-reverse bd-highlight mb-5">
+            <div class="p-2 bd-highlight">
+                <div data-toggle="tooltip" data-placement="top" data-title="Creacion de Grados"><a data-toggle="modal" data-target="#mdl_create_grades" id="show_create_grade"  class="btn btn-primary text-white" >Creaci&oacute;n <i class="mdi mdi-numeric icon-lg"  ></i> </a></div>
+            </div>            
+        </div>   
     <div class="row">
     <div class="table-responsive">
                 <table id="dt_grades" class="table table-striped table-bordered" style="width:100%">
@@ -48,17 +45,17 @@
         <div class="row">
             <div class="col-lg-4">
             <label>Nombre:  <span class="text-danger">*</span></label>
-            <input class="form-control text-uppercase" id="nombre" placeholder="Ej: ONCE">
+            <input class="form-control text-uppercase" type="text" id="nombre" placeholder="Ej: ONCE">
             </div>
         
             <div class="col-lg-4">
             <label>Grupo:  <span class="text-danger">*</span></label>
-            <input class="form-control" id="grupo" placeholder="Ej:  11-1" >
+            <input class="form-control" id="grupo"  type="text" placeholder="Ej:  11-1" >
             </div>
 
             <div class="col-lg-4">
             <label>Jornada:  <span class="text-danger">*</span></label>
-            <select class="form-control sel_jornadas" id="sel_jornadas">            
+            <select class="form-control sel_jornadas"  id="sel_jornadas">            
             </select>
             </div>
         </div>
@@ -66,7 +63,7 @@
         <div class="row">
             <div class="col-lg-4">
                 <label>Tag:  <span class="text-danger">*</span></label>
-                <input class="form-control"  id="tag" placeholder="11">
+                <input class="form-control" type="text"  id="tag" placeholder="11">
             </div>
             <div class="col-lg-4">
                 <label>Nivel educativo:  <span class="text-danger">*</span></label>

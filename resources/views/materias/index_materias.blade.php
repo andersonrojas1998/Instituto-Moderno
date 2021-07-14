@@ -1,20 +1,8 @@
 @extends('layout.master')
 @section('content')
 <div class="card">
-<div class="p-4  bg-light ">
-           
-        <h4 class="mb-0">Administraci&oacute;n de Materias</h4>
-    
-
-        <div class="d-flex flex-row-reverse bd-highlight">
-            <div class="p-2 bd-highlight"><div class="dropdown">
-            <button type="button" id="dropdownMenuButton5" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-success dropdown-toggle"> Descargar </button>
-            <div aria-labelledby="dropdownMenuButton5" class="dropdown-menu" style="">
-            <h6 class="dropdown-header">opciones descarga</h6> 
-            <div class="dropdown-divider"></div>
-            <a href="#" class="dropdown-item">Excel</a>
-            </div></div></div>            
-        </div>    
+<div class="p-4  bg-light ">           
+    <h4 class="mb-0 text-center">Administraci&oacute;n de Materias</h4>
 </div>
     <div class="card-body">
     <div class="row">
@@ -26,7 +14,7 @@
                         <th>Nombre</th>                        
                         <th>Tag </th>
                         <th>Orden Imprimir</th>                        
-                        <th></th>                     
+                        <!-- <th></th>                      -->
                         </tr>
                     </thead>
                     <tbody>                            

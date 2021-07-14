@@ -26,8 +26,7 @@ class GradeController extends Controller
   public function update(){
     
     $grado=grado::where('nombre',Request::input('nombre'))->where('grupo',Request::input('grupo'))->where('id_jornada',Request::input('id_jornada'))->get();
-    if(!isset($grado[0]->id)){
-    
+    if(!isset($grado[0]->id)){    
       DB::table('grado')
               ->where('id_grado', Request::input('id_grado'))
               ->update([

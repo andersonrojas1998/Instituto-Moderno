@@ -1,15 +1,15 @@
 @extends('layout.master')
 @section('content')
 <div class="card">
-<div class="p-4  bg-light ">        
-        <h4 class="mb-0">Administraci&oacute;n de Docentes</h4>
-        <div class="d-flex flex-row-reverse bd-highlight">
+<div class="p-4  bg-light text-center">        
+        <h4 class="mb-0">Administraci&oacute;n de Docentes</h4>        
+</div>
+    <div class="card-body">    
+    <div class="d-flex flex-row-reverse bd-highlight mb-5">
             <div class="p-2 bd-highlight">
                 <a href="/docentes/creacion" data-toggle="tooltip" data-placement="top" data-title="Creacion de Personal" class="btn btn-primary" >Creaci&oacute;n <i class="mdi mdi-account-circle icon-lg" ></i> </a>
             </div>            
         </div>
-</div>
-    <div class="card-body">    
     <div class="table-responsive">
                 <table id="dt_teacher" class="table table-bordered table-hover" style="width:100%;" >
                     <thead>
