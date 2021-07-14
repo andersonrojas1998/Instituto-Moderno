@@ -9,9 +9,10 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Bican\Roles\Traits\HasRoleAndPermission;
 use Bican\Roles\Contracts\HasRoleAndPermission as HasRoleAndPermissionContract;
 
-class User extends Authenticatable
+
+class User extends Authenticatable implements   HasRoleAndPermissionContract
 {
-	
+	use HasRoleAndPermission;
     use Notifiable;
 
     /**

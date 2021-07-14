@@ -19,7 +19,7 @@
                         <th>Nombre</th>                    
                         <th>Celular</th>                        
                         <th>Sede</th>
-                        <th>Cargo</th>   
+                        <th>Cargos</th>   
                         <th>Estado</th> 
                         <th></th>                
                     </tr>

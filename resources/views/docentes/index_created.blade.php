@@ -87,12 +87,15 @@
         <strong>Cargo :  <span class="text-danger">*</span></strong>
         <select class="form-control select2" name="cargo" required>
                 <option></option>
-                <option value="Administrativo">Administrativo</option>
+                @foreach($roles as $value)
+                <option value="{{$value->id}}">{{$value->name }}</option>
+                @endforeach
+                <!--<option value="Administrativo">Administrativo</option>
                 <option value="Coordinador">Coordinador</option>
                 <option value="Docente">Docente</option>
                 <option value="Rector">Rector</option>
                 <option value="Representante legal">Representante legal	</option>
-                <option value="Secretaria">Secretaria</option>                        
+                <option value="Secretaria">Secretaria</option>                        -->
             </select>
             <p class="text-muted">Por favor seleccione el cargo</p>
         </div>

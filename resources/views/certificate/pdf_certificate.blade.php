@@ -66,7 +66,8 @@
         </tbody>        
     </table>
      @if($aprobo==1)
-        <p class="w3-small">El estudiante Fue promovido(a) al grado <b> {{ $student[0]->grado_next }} </b>  de acuerdo a la ley de promoción y evolución según decreto 1290. </p>
+        @php  $data=(!empty($student[0]->grado_next))? 1:0;  @endphp
+        <p class="w3-small">El estudiante Fue promovido(a) {{ ($data)? 'al grado':'' }}   <b>{{ $student[0]->grado_next}} </b>    de acuerdo a la ley de promoción y evolución según decreto 1290. </p>
     @endif    
     <p class="w3-small">Expedido en Santiago de Cali, a los {{ date('d',strtotime($date)) }} d&iacute;as del mes  {{  date('m',strtotime($date))}} de {{date('Y',strtotime($date)) }}.</p>                   
         <p  class="w3-small" style="position:fixed;padding-left:120px;bottom:120px;" >

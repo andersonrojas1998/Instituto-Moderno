@@ -11,17 +11,23 @@ class DocenteController extends Controller
         return view('docentes.index_docentes');
     }
     public function index_create(){
-        return view('docentes.index_created');
+        $roles=DB::SELECT("SELECT id,name FROM roles");
+        return view('docentes.index_created',compact('roles'));
     }
     public function showTeacher($status=1){
-        $dataUs=DB::select("SELECT tb1.id,tb1.name FROM users as tb1  WHERE tb1.estado='$status' AND  cargo='Docente' ");        
+        $dataUs=DB::select("SELECT tb1.id,tb1.name FROM users as tb1  
+                            INNER JOIN role_user AS tb2 on tb1.id=tb2.user_id
+                            INNER JOIN roles as tb3 on tb2.role_id=tb3.id
+                            WHERE tb1.estado='$status' AND  tb3.slug='docente' ");        
         return json_encode($dataUs);
     }
 
     public function dt_user(){
-       $dataUs=DB::select("SELECT tb1.id,tb1.identificacion,tb1.name,tb1.estado,tb1.celular,tb2.nombre as sede,tb1.cargo,tb1.genero FROM users as tb1 inner join sede as tb2 on tb1.id_sede=tb2.id_sede");
+       $dataUs=DB::select("SELECT tb1.id,tb1.identificacion,tb1.name,tb1.estado,tb1.celular,tb2.nombre as sede,tb1.genero FROM users as tb1 INNER JOIN sede as tb2 on tb1.id_sede=tb2.id_sede");
         $data=[];
         foreach($dataUs as $key => $us){                            
+            
+
             $data['data'][$key]['con']=$key;   
             $data['data'][$key]['id']=$us->id;
             $data['data'][$key]['dni']=$us->identificacion;
@@ -29,7 +35,12 @@ class DocenteController extends Controller
             $data['data'][$key]['celular']=$us->celular;
             $data['data'][$key]['genero']=$us->genero;
             $data['data'][$key]['sede']=$us->sede;
-            $data['data'][$key]['cargo']=$us->cargo;
+            $cargos=DB::SELECT("SELECT tb3.name FROM role_user AS tb2 INNER JOIN roles as tb3 on tb2.role_id=tb3.id WHERE  tb2.user_id='$us->id' ");            
+            $name=[];
+            foreach($cargos as $i=>$v){
+                $name[]=$v->name;
+            }            
+            $data['data'][$key]['cargo']= implode($name,' - ');
             $data['data'][$key]['estado']=$us->estado;
             $data['data'][$key]['actions']='';
         }
@@ -54,7 +65,7 @@ class DocenteController extends Controller
 
         $user=User::where('identificacion',Request::input('identificacion'))->get();
         if(!isset($user[0]->id)){
-             DB::table('users')->insert([
+            $id=DB::table('users')->insertGetId([
                 'identificacion' =>Request::input('identificacion'),
                 'name' => Request::input('name'),
                 'email'=>Request::input('email'),
@@ -66,8 +77,10 @@ class DocenteController extends Controller
                 'fecha_nacimiento'=>date('Y-m-d',strtotime(Request::input('nacimiento'))),
                 'lugar_expedicion'=>Request::input('expedicion'),
                 'cargo'=>Request::input('cargo'),
-                'genero'=>Request::input('genero')
+                'genero'=>Request::input('genero')                
             ]);
+            $user = User::find($id);
+            $user->attachRole(Request::input('cargo'));
             return 1;
         }else{
             return 2;

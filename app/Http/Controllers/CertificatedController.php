@@ -23,13 +23,12 @@ class CertificatedController extends Controller
         $write=DB::SELECT("CALL sp_averageAndRank('3','$grade')  ");
         $readTmp=DB::SELECT("SELECT promedio FROM temp_ranking WHERE id_matricula='$student' ");
         $aprobo=($readTmp[0]->promedio >= 3.0)? 1:0;
-
         $student=DB::SELECT("CALL sp_infoStudent('$student')  ");
         $firstName=empty($student[0]->nombre1)? '':$student[0]->nombre1;
         $secondName=empty($student[0]->nombre2)? '':$student[0]->nombre2;
         $surname=empty($student[0]->apellido1)? '':$student[0]->apellido1;
         $secondSurname=empty($student[0]->apellido2)? '':$student[0]->apellido2;
-        $fullname=$firstName.' '.$secondName .' '. $surname. '  '. $secondSurname;
+        $fullname=$firstName.' '.$secondName .' '. $surname. '  '. $secondSurname;        
         $pdf = \PDF::loadView('certificate.pdf_certificate',compact('footerCoor','footerDni','footerCar','title','date','course','GAA','year','aprobo','fullname','student'))->setPaper('letter')->stream($GAA.".pdf");
         return $pdf;
     }
