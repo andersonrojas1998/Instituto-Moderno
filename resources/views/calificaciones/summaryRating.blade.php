@@ -4,7 +4,7 @@
 
     <div class="col-lg-12  grid-margin stretch-card">
         <div class="card">
-        <div class="p-4  bg-light ">           
+        <div class="p-4  bg-light text-center">           
             <h4 class="mb-0  text-primary">Resumen de Calificaciones</h4>
         </div>
         <div class="card-body">

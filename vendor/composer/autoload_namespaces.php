@@ -13,4 +13,5 @@ return array(
     'PDFMerger' => array($vendorDir . '/rguedes/pdfmerger/Classes'),
     'Mockery' => array($vendorDir . '/mockery/mockery/library'),
     'Maatwebsite\\Excel\\' => array($vendorDir . '/maatwebsite/excel/src'),
+    'Bican\\Roles' => array($vendorDir . '/bican/roles/src'),
 );

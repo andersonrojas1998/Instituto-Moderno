@@ -27,7 +27,8 @@ class CalificacionesController extends Controller
     $alumnoGrade=DB::SELECT("SELECT B.id_matricula,A.nombre1,A.nombre2,A.apellido1,A.apellido2,C.grupo,
                                 (SELECT  nota_definitiva from calificaciones as tb1 where tb1.id_periodo=1 AND tb1.id_matricula=B.id_matricula AND tb1.id_docente='$teacher' AND tb1.id_asignatura='$course' LIMIT 1) as primerPeriodo,
                                 (SELECT  nota_definitiva from calificaciones as tb2 where tb2.id_periodo=2 AND tb2.id_matricula=B.id_matricula AND tb2.id_docente='$teacher' AND tb2.id_asignatura='$course' LIMIT 1) as segundoPeriodo,
-                                (SELECT  nota_definitiva from calificaciones as tb3 where tb3.id_periodo=3 AND tb3.id_matricula=B.id_matricula AND tb3.id_docente='$teacher' AND tb3.id_asignatura='$course' LIMIT 1) as tercerPeriodo
+                                (SELECT  nota_definitiva from calificaciones as tb3 where tb3.id_periodo=3 AND tb3.id_matricula=B.id_matricula AND tb3.id_docente='$teacher' AND tb3.id_asignatura='$course' LIMIT 1) as tercerPeriodo,
+                                (SELECT SUM(acumulativo) as  num  from calificaciones as tb3 where tb3.id_matricula=B.id_matricula AND tb3.id_docente='$teacher' AND tb3.id_asignatura='$course') as acumulativo
                             FROM alumno AS A
                             INNER JOIN matricula AS B ON A.id_alumno=B.id_alumno
                             INNER JOIN grado AS C ON  B.id_grado=C.id_grado
@@ -42,12 +43,16 @@ class CalificacionesController extends Controller
             $data['data'][$key]['period2']=(empty($row->segundoPeriodo))? '' :number_format($row->segundoPeriodo,1);
             $data['data'][$key]['period3']=(empty($row->tercerPeriodo))?  '':number_format($row->tercerPeriodo,1);
             $data['data'][$key]['notas']='';
+            $data['data'][$key]['acumulativo']=(empty($row->acumulativo))?  '':number_format($row->acumulativo,1);
             ++$i;
         }
         return $data;
     }
     public function summaryRating($period){    
         $id_user=Auth::user()->id;
+        $validateP = new  PeriodoController();
+        $max=$validateP->validateTimePeriod($period);
+
         $year=date('Y');
         $grades=DB::SELECT("SELECT tb3.id_asignatura,tb1.id_grado,tb1.nombre,tb1.grupo,DATE_FORMAT(tb3.created_at,'%M %d %Y') as created_at ,tb4.nombre as asignatura FROM grado as tb1
                             inner join matricula as tb2 on tb1.id_grado=tb2.id_grado
@@ -65,18 +70,18 @@ class CalificacionesController extends Controller
                 $data['data'][$key]['created']=date('Y-m-d',strtotime($row->created_at));
                 $data['data'][$key]['status']=1;
                 $data['data'][$key]['actions']=$id_user;
+                $data['data'][$key]['validate']=json_decode($max);
                 ++$i;
             }
             return $data;
         }
 
-    public function generatedEnrollmentQualification($grade,$teacher,$period,$course){                  
-        $aco=($period==3)? 2:1;
+    public function generatedEnrollmentQualification($grade,$teacher,$period,$course){
         $year=date('Y');
         $alumnoGrade=DB::SELECT("SELECT B.id_matricula,A.nombre1,A.nombre2,A.apellido1,A.apellido2,C.grupo,
                                     (SELECT  nota_definitiva from calificaciones as tb1 where tb1.id_periodo=1 AND tb1.id_matricula=B.id_matricula AND tb1.id_docente='$teacher' AND tb1.id_asignatura='$course'  LIMIT 1) as primerPeriodo,
-                                    (SELECT  nota_definitiva from calificaciones as tb2 where tb2.id_periodo=2 AND tb2.id_matricula=B.id_matricula AND tb2.id_docente='$teacher' AND tb2.id_asignatura='$course'  LIMIT 1) as segundoPeriodo,                                    
-                                    (SELECT  acumulativo from calificaciones as tb3 where tb3.id_periodo='$aco' AND tb3.id_matricula=B.id_matricula AND tb3.id_docente='$teacher' AND tb3.id_asignatura='$course'  LIMIT 1) as acumulativo
+                                    (SELECT  nota_definitiva from calificaciones as tb2 where tb2.id_periodo=2 AND tb2.id_matricula=B.id_matricula AND tb2.id_docente='$teacher' AND tb2.id_asignatura='$course'  LIMIT 1) as segundoPeriodo,
+                                    (SELECT SUM(acumulativo) as  num  from calificaciones as tb3 where tb3.id_matricula=B.id_matricula AND tb3.id_docente='$teacher' AND tb3.id_asignatura='$course') as acumulativo
                             FROM alumno AS A
                             INNER JOIN matricula AS B ON A.id_alumno=B.id_alumno
                             INNER JOIN grado AS C ON  B.id_grado=C.id_grado
@@ -220,6 +225,12 @@ class CalificacionesController extends Controller
                         $teacher=$data['teacher'];
                         $course=$data['course'];
 
+                        $year=date('Y');
+                        $calificaciones=DB::SELECT("SELECT id_matricula FROM calificaciones WHERE  id_periodo='$perid' AND id_docente='$teacher' AND  id_asignatura='$course' AND id_matricula='$matricula' ");
+                        if(!empty($calificaciones[0]->id_matricula)){
+                            throw new \Exception(json_encode(['error'=>1,'message'=>'El alumno con matricula '. $calificaciones[0]->id_matricula .' ya cuenta con calificacion para el periodo '.$perid,'colum'=>$matricula ]));
+                        }
+
                         $n1=empty(trim($row->i1))? null:trim($row->i1);
                         $n2=empty(trim($row->i2))? null:trim($row->i2);
                         $n3=empty(trim($row->i3))? null:trim($row->i3);
@@ -262,14 +273,7 @@ class CalificacionesController extends Controller
                         /**Autoe  5%  */
                         $nota14=number_format($n14,1);
                         $nota15=number_format($n15,1);
-                        
-                       
-
-                     $year=date('Y');
-                     $calificaciones=DB::SELECT("SELECT id_matricula FROM calificaciones WHERE  id_periodo='$perid' AND id_docente='$teacher' AND  id_asignatura='$course' AND id_matricula='$matricula' ");
-                     if(!empty($calificaciones[0]->id_matricula)){
-                        throw new \Exception(json_encode(['error'=>1,'message'=>'El alumno con matricula '. $calificaciones[0]->id_matricula .' ya cuenta con calificacion para el periodo '.$perid,'colum'=>$matricula ]));
-                     }
+                                                                    
                                           
                      if($nota1 >5.0 ||  $nota2 >5.0 || $nota3 >5.0  || $nota4>5.0 ||  $nota5 >5.0 || $nota6 >5.0  || $nota7 >5.0 || $nota8>5.0 || $nota9>5.0 || $nota10>5.0 ||  $nota11>5.0 ||  $nota12>5.0 ||  $nota13>5.0  ||  $nota14>5.0  ||  $nota15>5.0  ){
                          throw new \Exception(json_encode(['error'=>1,'message'=>'Por favor valida todos los campos , revisa que  La nota no supere  a 5.0 ','colum'=>$matricula ]));
@@ -361,7 +365,7 @@ class CalificacionesController extends Controller
                         /// validar lo del 2 perido acomulativo                   
                         $percentage=DB::SELECT("SELECT porcentaje from periodo where codigo='$perid' ");
                         $acomulativo=number_format(($notafinal*$percentage[0]->porcentaje/100),1);
-                        ($row->def!=null)? $acomulativo+number_format($row->def,1):'';
+                        (!empty($row->def))? $acomulativo+number_format($row->def,1):'';
      
                         $aprobo=($notafinal > 3.0)? 1:0;
 
@@ -439,5 +443,208 @@ class CalificacionesController extends Controller
         }
         return json_encode($data);
     }
+    public function qualificationsOnline(){
+        $data=[];
+        $data=[
+            'period'=>\Request::input('period'),
+            'teacher'=>\Request::input('teacher'),
+            'course'=>\Request::input('course'),
+            'grade'=>\Request::input('grade'),
+            'data'=>json_decode(\Request::input('qualifications'))
+            ];                
+        $exception = DB::transaction(function() use ($data) {
+        try {
+                                
+            foreach($data['data'] as  $row){
+                    
+               
+                    $perid=$data['period'];
+                    $matricula=intval($row->matricula); 
+                    $teacher=$data['teacher'];
+                    $course=$data['course'];
 
+                    $year=date('Y');
+                    $calificaciones=DB::SELECT("SELECT id_matricula FROM calificaciones WHERE  id_periodo='$perid' AND id_docente='$teacher' AND  id_asignatura='$course' AND id_matricula='$matricula' ");
+                if(!empty($calificaciones[0]->id_matricula)){
+                    throw new \Exception(json_encode(['error'=>1,'message'=>'El alumno con matricula '. $calificaciones[0]->id_matricula .' ya cuenta con calificacion para el periodo '.$perid,'colum'=>$matricula ]));
+                }
+
+                    $n1=empty(trim($row->i1))? null:trim($row->i1);
+                    $n2=empty(trim($row->i2))? null:trim($row->i2);
+                    $n3=empty(trim($row->i3))? null:trim($row->i3);
+                    $n4=empty(trim($row->i4))? null:trim($row->i4);
+                    
+
+                    $n5=empty(trim($row->a1))? null:trim($row->a1);
+                    $n6=empty(trim($row->a2))? null:trim($row->a2);
+                    $n7=empty(trim($row->a3))? null:trim($row->a3);
+
+                    $n8=empty(trim($row->p1))? null:trim($row->p1);
+                    $n9=empty(trim($row->p2))? null:trim($row->p2);
+                    $n10=empty(trim($row->p3))? null:trim($row->p3);
+
+
+                    $n11=empty(trim($row->s1))? null:trim($row->s1);
+                    $n12=empty(trim($row->s2))? null:trim($row->s2);
+                    $n13=empty(trim($row->s3))? null:trim($row->s3);
+
+                    $n14=empty(trim($row->au1))? null:trim($row->au1);
+                    $n15=empty(trim($row->au2))? null:trim($row->au2);
+
+                        /** Interpretativa 25% */
+                        $nota1=number_format($n1,1); 
+                        $nota2=number_format($n2,1);
+                        $nota3=number_format($n3,1);
+                        $nota4=number_format($n4,1);
+                        /** Argumentativa  30% */
+                        $nota5=number_format($n5,1);
+                        $nota6=number_format($n6,1);
+                        $nota7=number_format($n7,1);
+                        /** Propositiva   35%  */
+                        $nota8=number_format($n8,1);
+                        $nota9=number_format($n9,1);
+                        $nota10=number_format($n10,1);
+                        /**Social 5% */
+                        $nota11=number_format($n11,1);
+                        $nota12=number_format($n12,1);
+                        $nota13=number_format($n13,1);
+                        /**Autoe  5%  */
+                        $nota14=number_format($n14,1);
+                        $nota15=number_format($n15,1);
+                        
+                       
+
+                     
+                                          
+                     if($nota1 >5.0 ||  $nota2 >5.0 || $nota3 >5.0  || $nota4>5.0 ||  $nota5 >5.0 || $nota6 >5.0  || $nota7 >5.0 || $nota8>5.0 || $nota9>5.0 || $nota10>5.0 ||  $nota11>5.0 ||  $nota12>5.0 ||  $nota13>5.0  ||  $nota14>5.0  ||  $nota15>5.0  ){
+                         throw new \Exception(json_encode(['error'=>1,'message'=>'Por favor valida todos los campos , revisa que  La nota no supere  a 5.0 ','Matricula'=>$matricula ]));
+                     }
+                     
+       
+                $i=0;
+                if($nota1 >0.0){
+                    ++$i;
+                }if ($nota2 > 0.0) {
+                    ++$i;
+                }if ($nota3 > 0.0) {
+                    ++$i;
+                }if ($nota4 > 0.0) {
+                    ++$i;
+                }
+
+                if($i==0){
+                    throw new \Exception(json_encode(['error'=>1,'message'=>'Por favor Ingrese al menos 1 nota en Interpretativa ','colum'=>$matricula ]));
+                }
+                $interPro=($nota1+$nota2+$nota3+$nota4)/$i;
+                
+                $a=0;
+                if($nota5 >0.0){
+                    $a++;
+                }if ($nota6 > 0.0) {
+                    ++$a;
+                }if($nota7 > 0.0) {
+                    ++$a;
+                }  
+
+                if($a==0){
+                    throw new \Exception(json_encode(['error'=>1,'message'=>'Por favor Ingrese al menos 1 nota en Argumentativa ','colum'=>$matricula ]));
+                }      
+                $argPro=($nota5+$nota6+$nota7)/$a;
+
+                $p=0;
+                if($nota8 >0.0){
+                    ++$p;
+                }if($nota9 > 0.0) {
+                    ++$p;
+                }if($nota10 > 0.0) {
+                    ++$p;
+                } 
+                
+                if($p==0){
+                    throw new \Exception(json_encode(['error'=>1,'message'=>'Por favor Ingrese al menos 1 nota en Propositiva ','colum'=>$matricula ]));
+                } 
+                $proPro=($nota8+$nota9+$nota10)/$p;
+
+                $s=0;
+                if($nota11 >0.0){
+                    ++$s;
+                }if($nota12 > 0.0) {
+                    ++$s;
+                }if ($nota13 > 0.0) {
+                    ++$s;
+                }   
+                
+                if($s==0){
+                    throw new \Exception(json_encode(['error'=>1,'message'=>'Por favor Ingrese al menos 1 nota en Social ','colum'=>$matricula ]));
+                } 
+                $socPro=($nota11+$nota12+$nota13)/$s;
+
+                $aut=0;
+                if($nota14 >0.0){
+                    ++$aut;
+                }if($nota15 > 0.0) {
+                    ++$aut;
+                }
+
+                if($aut==0){
+                    throw new \Exception(json_encode(['error'=>1,'message'=>'Por favor Ingrese al menos 1 nota en Autoe ','colum'=>$matricula ]));
+                }
+        
+                $autoPro=($nota14+$nota15)/$aut;
+                
+                $inter=round(($interPro)*25/ 100,2);
+                $argum=round(($argPro)*30/ 100, 2);
+
+                $propo=round(($proPro)*35/100,2);
+                $social=round(($socPro)*5/100,2);
+                $autoe=round(($autoPro)*5/100,2);
+                            
+                $notafinal=number_format($inter+$argum+$propo+$social+$autoe,1);
+            
+                $i=0;$a=0;$p=0;$s=0;$aut=0;
+
+                        /// validar lo del 2 perido acomulativo                   
+                        $percentage=DB::SELECT("SELECT porcentaje from periodo where codigo='$perid' ");
+                        $acomulativo=number_format(($notafinal*$percentage[0]->porcentaje/100),1);
+                        (!empty($row->def))? $acomulativo+number_format($row->def,1):'';
+     
+                        $aprobo=($notafinal > 3.0)? 1:0;
+
+                        $color=""; $rangoT=""; $letra="";
+                        switch(floatval($notafinal)){
+                            case (floatval($notafinal)>'0.0' && floatval($notafinal)<='2.9' ):
+                                 $color="rgba(235,3,3,1)";
+                                 $rangoT="BAJO";
+                                 $letra="BJ";
+                             break;
+                             case (floatval($notafinal)>='3.0' &&  '3.9'>=floatval($notafinal)):
+                                 $color="rgba(255,153,51,1)";
+                                 $rangoT="BASICO";
+                                 $letra="B";
+                             break;
+                             case (floatval($notafinal)>='4.0' &&  '4.6'>=floatval($notafinal)):
+                                 $color="rgba(255,243,51,1)";
+                                 $rangoT="ALTO";
+                                 $letra="A";
+                             break;
+                             case (floatval($notafinal)>'4.6'):
+                                 $color="rgba(53,193,4,1)";
+                                 $rangoT="SUPERIOR";
+                                 $letra="S";
+                             break;
+                         }
+                       
+                       DB::insert("INSERT INTO `calificaciones`(`id_periodo`, `id_matricula`, `id_docente`, `id_asignatura`,`nota_inter1`, `nota_inter2`, `nota_inter3`, `nota_inter4`,`nota_arg1`, `nota_arg2`, `nota_arg3`, `nota_prop1`, `nota_prop2`, `nota_prop3`, `nota_soc1`, `nota_soc2`, `nota_soc3`,`nota_auto`, `nota_coe`, `nota_recuperacion`, `nota_definitiva`, `aprobo`, `acumulativo`,`rango`,`letra`,`color`)
+                                                    VALUES ($perid,$matricula,$teacher,$course,$nota1,$nota2,$nota3,$nota4,$nota5,$nota6,$nota7,$nota8,$nota9,$nota10,$nota11,$nota12,$nota13,$nota14,$nota15,null,$notafinal,$aprobo,$acomulativo,'$rangoT','$letra','$color') ");
+                
+        }
+            $data['error']=false;
+
+        }catch(\PDOException $e) {                        
+            throw new \Exception(json_encode(['error'=>2,'message'=>$e->getMessage()]));
+        }               
+            
+    }); 
+        return json_encode($data);
+    }
 }

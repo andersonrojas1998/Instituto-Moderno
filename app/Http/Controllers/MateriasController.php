@@ -21,4 +21,8 @@ class MateriasController extends Controller
       }
       return json_encode($data);
     }
+    public function showAsinaturas(){
+        $mat=DB::SELECT("SELECT id_asignatura as id, nombre as name,orden_print,tag FROM asignatura");
+        return json_encode($mat);
+    }
 }

@@ -7,18 +7,42 @@ $(document).ready(function() {
 		},
 	});
     $('.select2').select2();
-
     $('[data-toggle="tooltip"]').tooltip();
 
+  if($('#sel_gradeStudents').length>0){
+        $.ajax({ url:"/grades",type:"GET",success:function(data){
+          let arr=JSON.parse(data);
+          for(let i=0;i<arr.length;i++){                    
+              $('#sel_gradeStudents').append('<option   value="'+arr[i].id_grado+'" >'+ firstLetter(arr[i].grupo.toLowerCase())  +'</option>');
+              $('#sel_gradesPrint').append('<option   value="'+arr[i].id_grado+'" >'+ firstLetter(arr[i].grupo.toLowerCase())  +'</option>');
+          }
+          $('#sel_gradeStudents').select2();
+          $('#sel_gradesPrint').select2();        
+      }
+      });
+  }
     
-} );
 
+    
+});
 
 function firstLetter(string){
     return string.charAt(0).toUpperCase() + string.slice(1);
+}
+function sel_option(url,id) {
+    $(id).empty();
+    $.ajax({ 
+        url: url,
+        type:"GET",success:function(data){
+        let arr=JSON.parse(data);           
+        $(id).append('<option value="">Seleccione</option>');
+        for(let i=0;i<arr.length;i++){                            
+            $(id).append('<option   value="'+arr[i].id+'" >'+ arr[i].name   +'</option>');
+        }
+        $(id).select2();
+    }
+    });
   }
-
-
 var sweetMessage= function(title,msg,type='success'){
     swal.fire(title,msg,type);
 }

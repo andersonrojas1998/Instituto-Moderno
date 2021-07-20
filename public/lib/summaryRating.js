@@ -81,9 +81,9 @@ function dt_summaryRating(period){
                 { "data": "asignatura"},
                 { "data": "created"},
                 { "data": "status", render(data){ return  '<label class="badge badge-success text-white p-1">Calificado</label>';  }},
-                { "data": "actions", render(data,ps,d){ 
-                    let buttons='<div id="btn_showQ" data-grade='+d.id_grado+' data-period='+period+' data-teacher='+d.actions+' data-course='+d.id_asignatura+' data-toggle="modal" data-target="#mdl_showQualification"><img src="/images/details_open.png" style="width:20px;height:20px;"> </div>'+
-                                '<div id="btn_delQualifications"  data-grade='+d.id_grado+' data-period='+period+' data-teacher='+d.actions+' data-course='+d.id_asignatura+' ><img src="/images/details_close.png" style="width:20px;height:20px;" data-toggle="tooltip" data-placement="top" data-title="Eliminar Calificaciones"> </div>';
+                { "data": "actions", render(data,ps,d){                     
+                    let del=(d.validate.result)? '<div id="btn_delQualifications"  data-grade='+d.id_grado+' data-period='+period+' data-teacher='+d.actions+' data-course='+d.id_asignatura+' ><img src="/images/details_close.png" style="width:20px;height:20px;" data-toggle="tooltip" data-placement="top" data-title="Eliminar Calificaciones"> </div>':'';
+                    let buttons='<div id="btn_showQ" data-grade='+d.id_grado+' data-period='+period+' data-teacher='+d.actions+' data-course='+d.id_asignatura+' data-toggle="modal" data-target="#mdl_showQualification"><img src="/images/details_open.png" style="width:20px;height:20px;"> </div>'+del;
                     return  buttons;     
                 } }                
         ]

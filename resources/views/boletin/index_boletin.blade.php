@@ -4,14 +4,12 @@
 <div class="p-4  bg-light ">                   
 <div class="jumbotron">
   <h1 class="display-4">Administraci&oacute;n de Boletines !</h1>
-  <p class="lead">En el cual podremos imprimir los resultados academicos por cada estudiente.</p>
+  <p class="lead">En el cual podremos imprimir los resultados academicos por cada estudiente.  <i class="mdi mdi-cloud-print"></i></p>
   <hr class="my-4">    
 </div>      
 </div>
     <div class="card-body">
     <div class="row">
-    <!-- <div class="col-lg-1"></div> -->
-
             <div class="col-lg-5 ml-5">
                  <div class="card card-border-outset mb-3" >
                  <img class="card-img-top img-circle" src="/images/print.png" height="60"  alt="Imprimir" style="width:100px;align-self:center;margin:12px;">                        
@@ -138,7 +136,6 @@
     </div>  
     </div>  
 @endsection
-
 @push('custom-scripts')    
     <script src="{{ asset('/lib/bulletin.js') }}"></script>    
 @endpush
@@ -148,5 +145,4 @@
     background:#fdfdee;padding:7px;border:outset;border-color:bisque;
 }
 </style>
-
 @endpush
