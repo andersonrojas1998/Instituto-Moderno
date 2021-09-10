@@ -139,6 +139,10 @@
   </div>
 </div>    
 @endsection
+@push('style') 
+<!--<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.0/css/jquery.dataTables.min.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.0.0/css/buttons.dataTables.min.css" media="screen" />-->
+@endpush
 @push('custom-scripts') 
     <script src="{{ asset('/js/validate.min.js')}}"></script>
     <script src="{{ asset('/js/validator.messages.js')}}"></script>   

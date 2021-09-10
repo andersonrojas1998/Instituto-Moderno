@@ -24,11 +24,13 @@
   <!-- end common css -->    
       {!! Html::style('https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css') !!}
       
-      {!! Html::style('https://cdn.datatables.net/1.10.24/css/dataTables.bootstrap4.min.css') !!}      
-      {!! Html::style('https://cdn.datatables.net/buttons/1.7.0/css/buttons.bootstrap4.min.css') !!}
-  
-  
+      
+      {!! Html::style('css/datatable/datatable.bootstrap4.min.css') !!}
+      {!! Html::style('css/datatable/buttons.datatable.min.css') !!}      
 
+
+
+      
   @stack('style')
 </head>
 <body data-base-url="{{url('/')}}">
@@ -50,11 +52,23 @@
   {!! Html::script('js/app.js') !!}
   {!! Html::script('assets/plugins/perfect-scrollbar/perfect-scrollbar.min.js') !!}
 
-  {!! Html::script('https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js') !!}      
-  {!! Html::script('https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js') !!}
-  {!! Html::script('https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap4.min.js') !!}
 
+  {!! Html::script('js/datatable/jquery.datatable.min.js') !!}
+  {!! Html::script('js/datatable/bootstrap.datatable.min.js') !!}    
+
+
+  {!! Html::script('https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js') !!}    
+    {!! Html::script('https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js') !!}    
+      {!! Html::script('https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js') !!}    
+
+  {!! Html::script('js/datatable/datatable.buttons.min.js') !!}
+  {!! Html::script('js/datatable/buttons.html5.min.js') !!}            
+  {!! Html::script('js/datatable/buttons.print.min.js') !!}
+
+  {!! Html::script('https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js') !!}      
   
+                    
+
   {!! Html::script('//cdn.jsdelivr.net/npm/sweetalert2@10') !!}  
   {!! Html::script('lib/global.js') !!}
   <!-- end base js -->
