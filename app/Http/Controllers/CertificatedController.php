@@ -47,7 +47,7 @@ class CertificatedController extends Controller
         $pdf = \PDF::loadView('certificate.pdf_constancia',compact('footerCoor','footerDni','footerCar','title','GAA','student','fullname','date'))->setPaper('letter')->stream($GAA.".pdf");
         return $pdf;
     }
-    public function indexPdfMatricula(){
+    public function indexPdfMatricula(){ /** Constancia */
         $title="FICHA DE MATRICULA No.";
         $GAA="GAA-FR-05";        
         $pdf = \PDF::loadView('certificate.pdf_constancia',compact('footerCoor','footerDni','footerCar','title'))->setPaper('letter')->stream($GAA.".pdf");
