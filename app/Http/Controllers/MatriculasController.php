@@ -3,7 +3,8 @@ namespace App\Http\Controllers;
 use DB;
 use App\User;
 use Request;
-
+use App\Model\alumno;
+use App\Model\matricula;
 class MatriculasController extends Controller
 {
     public function index(){
@@ -32,43 +33,56 @@ class MatriculasController extends Controller
         $pdf = \PDF::loadView('matricula.pdf_matricula',compact('footerCoor','footerDni','footerCar','title','GAA'))->setPaper('letter')->stream($GAA.".pdf");
         return $pdf;
     }
+    public function searchAcudiente($dni){
+       
+        $acudiente=DB::SELECT("select * from acudiente  where identificacion='$dni'  limit  5 ");    
+        return json_encode($acudiente);
+    }
+
     public function searchStudent($dni){
 
+        $data=[];
         $year=date('Y-m-d');
-        $consul=DB::SELECT("SELECT alumno. FROM matricula
+        $consul=DB::SELECT("SELECT * FROM matricula
         inner join alumno on matricula.id_alumno=alumno.id_alumno
         where alumno.identificacion='$dni' AND matricula.año='$year' ");
 
-        return count($consul[0]);
+        $data['count']=count($consul);
+        $alumno=DB::SELECT("SELECT * FROM alumno where identificacion='$dni' limit 1  ");
+        $data['alumno']=$alumno;
+
+        return json_encode($data);
 
     }
     public function registerEnrollment(){ 
 
         $barrios=DB::SELECT("SELECT * FROM barrio");
         $grupoEt=DB::SELECT("SELECT * FROM grupo_etnico");
-        return view('matricula.index_enrollment_out',compact('barrios','grupoEt'));
+        $tipoDoc=DB::SELECT("SELECT * FROM tipo_documento");
+        $tipoEps=DB::SELECT("SELECT * FROM tipo_eps");
+        $grados=DB::SELECT("SELECT * FROM grado");
+        $parentesco=DB::SELECT("SELECT * FROM tipo_parentesco ");
+        $discapacidades=DB::SELECT("SELECT * FROM tipo_discapacidad");        
+        $Msena=DB::SELECT("SELECT * FROM modalidad_sena");
+
+        return view('matricula.index_enrollment_out',compact('barrios','grupoEt','tipoDoc','tipoEps','grados','discapacidades','parentesco','Msena'));
     }
     public function storeEnrollement(){
+                
 
-    try {
-        DB::transaction(function(){
-                        
+    try{
+        DB::transaction(function(){            
+                $dniAcudiente=Request::input('ccAcudiente');               
+                $acudiente=DB::SELECT("select id_acudiente as id from acudiente  where identificacion='$dniAcudiente' ");
 
-                            $grados=DB::SELECT("select id_grado as id from  grado where grupo='$row->grupo_grado' ");                               
-                            $id_grado=isset($grados[0]->id)? $grados[0]->id:27;
-                            
-
-                            if(!empty($row->acudientenombre) && $row->acudientenombre!="N/A" ){
-                                $acudiente=DB::SELECT("select id_acudiente as id from acudiente  where identificacion='$row->cc' ");    
                                     if(empty($acudiente)){
                                         $ac=new acudiente();
-                                        $ac->nombre=$row->acudientenombre;
-                                        $ac->identificacion=$row->cc;
-                                        $ac->expedida =$row->expedida;
-                                        $ac->id_tipo_parentesco = $row->codigo_parentesco ;   /** colocar id parentesco */
-                                        $ac->direccion=$row->direccionacudi;
-                                        $ac->barrio_id=$row->codigo_barrio_acu;/**  colocar id */
-                                        $ac->telefono=$row->telefonoacudiente;
+                                        $ac->nombre=Request::input('nameAcudiente');
+                                        $ac->identificacion=$dniAcudiente;                                        
+                                        $ac->id_tipo_parentesco = Request::input('parentesco');
+                                        $ac->direccion= Request::input('dirAcudiente');
+                                        $ac->barrio_id=Request::input('barrioAcudiente');
+                                        $ac->telefono= Request::input('celAcudiente');
                                         $ac->updated_at=date('Y-m-d');
                                         $ac->responsable=1;
                                         $ac->save();
@@ -76,101 +90,101 @@ class MatriculasController extends Controller
                                     }else{
                                         $id_acudiente=$acudiente[0]->id;                                           
                                    }                                  
-                            }
+                            
 
-                            $id_padre='0';
-                            if(!empty($row->ccpadre)  &&  $row->nombrepadre!="N/A" ){
-                                $acudientePadre=DB::SELECT("select id_acudiente as id from acudiente  where identificacion='$row->ccpadre' ");
-                                if(empty($acudientePadre)){
-                    
+                            $id_padre='0';             
+                            $dniPadre=Request::input('dniPadre');
+                            $acudientePadre=DB::SELECT("select id_acudiente as id from acudiente  where identificacion='$dniPadre' ");
+                            if(empty($acudientePadre)){                    
                                     $padre=new acudiente();
-                                    $padre->nombre=$row->nombrepadre;
-                                    $padre->identificacion=$row->ccpadre;
-                                    $padre->expedida=$row->expedidapadre;                                        
-                                    $padre->direccion=$row->direccionpadre;
-                                    $padre->barrio_id=$row->barriopadre;
+                                    $padre->nombre=Request::input('nombrePadre');
+                                    $padre->identificacion=$dniPadre;                                    
+                                    $padre->direccion=Request::input('direccionPadre');
+                                    $padre->barrio_id=Request::input('barrioPadre');
                                     $padre->id_tipo_parentesco=15; /** Padre */
-                                    $padre->telefono=$row->telefonopadre;
-                                    $padre->profesion=$row->profesionpadre;
-                                    $padre->empresa=$row->empresapadre;
+                                    $padre->telefono=Request::input('celPadre');
+                                    $padre->profesion=Request::input('profesionPadre');
+                                    $padre->empresa=Request::input('empresaPadre');
                                     $padre->updated_at=date('Y-m-d');
                                     $padre->save();
                                     $id_padre=$padre->id;                                      
                                 }else{
                                     $id_padre=$acudientePadre[0]->id;                                      
                                 }                                                                        
-                            }
-                            $id_madre='0';
-                            if( !empty($row->ccmadre)  && $row->nombremadre!="N/A"){                    
-                                $acudienteMadre=DB::SELECT("select id_acudiente as id from acudiente  where identificacion='$row->ccmadre' ");                    
+                          
+                            $id_madre='0'; 
+                            $dniMadre=Request::input('dniMadre');                           
+                            $acudienteMadre=DB::SELECT("select id_acudiente as id from acudiente  where identificacion='$dniMadre' ");                    
                                 if(empty($acudienteMadre)){                    
                                     $madre=new acudiente();
-                                    $madre->nombre=$row->nombremadre;
-                                    $madre->identificacion= $row->ccmadre;
-                                    $madre->expedida=$row->expedidamadre;
+                                    $madre->nombre=Request::input('nombreMadre');
+                                    $madre->identificacion=$dniMadre;
                                     $madre->id_tipo_parentesco =9;
-                                    $madre->direccion=$row->direccionmadre;
-                                    $madre->barrio_id=$row->codigo_barrio_madre; /** */
-                                    $madre->telefono=$row->telefonomadre;
-                                    $madre->profesion=$row->profesionmadre;
-                                    $madre->empresa=$row->empresamadre; 
+                                    $madre->direccion=Request::input('direccionMadre');
+                                    $madre->barrio_id= Request::input('barrioMadre');
+                                    $madre->telefono=Request::input('celMadre');
+                                    $madre->profesion=Request::input('profesionMadre');
+                                    $madre->empresa= Request::input('empresaMadre');
                                     $madre->updated_at=date('Y-m-d');                                   
                                     $id_madre=$madre->id;
                                 }else{
                                     $id_madre=$acudienteMadre[0]->id;                                        
-                                }                                    
-                            }
-               
+                                }               
+                               
                             $alum= new alumno();
-                            $alum->id_tipo_doc=$row->tipo_docestu;
-                            $alum->identificacion=$row->documento;                    
-                            $alum->lugar_expedicion=$row->exp_muni;
-                            $alum->apellido1  =$row->apellido1;
-                            $alum->apellido2 =$row->apellido2;
-                            $alum->nombre1 =$row->nombre1;
-                            $alum->nombre2 =$row->nombre2;
-                            $alum->direccion =$row->direccion_residencia;
-                            $alum->telefono	 =$row->telefono;
-                            $alum->id_barrio= $row->codigo_barrio; // colocar id
+                            $alum->id_tipo_doc= Request::input('tipo_doc');
+                            $alum->identificacion=Request::input('dni');                    
+                            $alum->lugar_expedicion=Request::input('expedidoEn');
+                            $alum->apellido1  =Request::input('firstLastName');
+                            $alum->apellido2 =Request::input('secondLastName');
+                            $alum->nombre1 =Request::input('firstName');
+                            $alum->nombre2 =Request::input('secondName');
+                            $alum->direccion =Request::input('direccion');
+                            $alum->telefono	 =Request::input('tel');
+                            $alum->id_barrio=Request::input('barrio'); 
                             $alum->id_departamento =1;
                             $alum->id_municipio=1;
                             $alum->id_acudiente=$id_acudiente;
                             $alum->id_padre=$id_padre;
                             $alum->id_madre=$id_madre;
-                            $alum->id_tipo_eps=isset($row->codigo_eps)? $row->codigo_eps:25; /** colocar id  */
+                            $alum->id_tipo_eps=Request::input('eps');
                             $alum->password='$2y$10$odheLv9bS5EGTjxmIgFUmeaqy/GZrhT9UFn0lfUIpCX8tjc5Lo0ni';
-                            $alum->fecha_nacimiento=date('Y-m-d',strtotime($row->fecha_nac));
-                
-                            $alum->nac_muni=1;//$row->nac_mun;
-                            $alum->nac_depto=1;//$row->NAC_DEPTO;
-                
-                            $alum->genero=($row->genero=="MASCULINO")? 'M':'F';
+                            $alum->fecha_nacimiento=date('Y-m-d',strtotime(Request::input('dateBirthDay')));    
+                            $alum->nac_muni=1;
+                            $alum->nac_depto=1;                
+                            $alum->genero=Request::input('sexo');
                             $alum->save();                        
+
+
+                            $id_grado= Request::input('grado');
+                            $grados=DB::SELECT("select * from  grado where id_grado='$id_grado' ");
+                            
                             $mat=new matricula();
-                            $mat->simat=$row->simat;
-                            $mat->victima_conflicto=$row->poblacion_victima_del_conflicto;
-                            $mat->id_modalidad_sena=$modalidaId;
+                            $mat->id_modalidad_sena= Request::input('id_modalidad_sena');
                             $mat->id_alumno=$alum->id;
                             $mat->año=date('Y');
-                            $mat->grupo_simat=$row->grupo_simat;
-                            $mat->grado_cursar=strval($row->gradocursa);
+                            $mat->viveCon=empty(Request::input('viveCon'))? '':implode(',',Request::input('viveCon'));
+                            $mat->grado_cursar=$grados[0]->tag;
+
+                            $mat->total_hermanos=Request::input('nmHermanos');                            
+                            $mat->lugar_ocupa_hermanos=Request::input('lugarOcupa');
+                            $mat->parientes_inmode=Request::input('parientes');
+
                             $mat->fecha_matricula=date('Y-m-d');
                             $mat->id_estado_matricula=1;
-                            $mat->id_grado=$id_grado;     
-                            $mat->subsidiado=$row->subsidiado;  
-                            $mat->tipo_discapacidad=$row->tipo_discapacidad;
-                            $mat->grupo_etnico= isset($row->grpo_etnico)? $row->grpo_etnico:2;
+                            $mat->id_grado=$id_grado;
+                            $mat->subsidiado= Request::input('subsidiado');
+                            $mat->tipo_discapacidad=empty(Request::input('tipo_discapacidad'))? 4:Request::input('tipo_discapacidad');
+                            $mat->grupo_etnico=Request::input('grupo_etnico');
                             $mat->id_sede=1;
-                            $id_tp_matricula=3;
-                            if($row->repitente=="SI"){
-                                $id_tp_matricula=2;
-                            }elseif ($row->nuevo) {
-                                $id_tp_matricula=1;
-                            }                        
-                            $mat->id_tipo_matricula=$id_tp_matricula;            
-                            $mat->inst_anterior=$row->institucion_anterior;
-                            $mat->ciudad_colegio_origen=$row->ciudad_colegio_origen;
-                            $mat->save();                            
+                            $mat->id_tipo_matricula= Request::input('tipo_matricula');
+                            $mat->inst_anterior=Request::input('colegioProviene');
+                            $mat->ciudad_colegio_origen=Request::input('ciudadColegioProviene');
+                            $mat->save();    
+                            
+                            // validacion de estuduantes que no esten en BD 
+                            // validaion de matricula para el mismo año 
+                            // ajustar vista  nombres 
                                          
                 });                            
                 } catch (Exception $th) {                

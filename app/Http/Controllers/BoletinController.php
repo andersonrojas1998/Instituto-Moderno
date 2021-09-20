@@ -37,7 +37,7 @@ class BoletinController extends Controller
                             FROM alumno AS A
                             INNER JOIN matricula AS B ON A.id_alumno=B.id_alumno
                             INNER JOIN grado AS C ON  B.id_grado=C.id_grado
-                            WHERE B.id_estado_matricula=1 AND B.id_grado='$grade' B.año='$year' ORDER BY A.apellido1 ASC ");  
+                            WHERE B.id_estado_matricula=1 AND B.año=$year  AND B.id_grado=$grade   ORDER BY A.apellido1 ASC ");  
         return json_encode($alumnoGrade);
     }
     public function genetedBulletin($matricula,$expedition,$period,$obs,$grade,$letter=0,$idModalidad){       

@@ -10,29 +10,30 @@
         {!! Html::style('lib/enrollmentStudent/outside.css') !!}
         {!! Html::style('https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css') !!} 
         {!! Html::style('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css') !!} 
+        {!! Html::style('https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css') !!}
         
     </head>
-    <body>
-        
-
+    <body style="background-image: url('images/logo.jpg');background-repeat:no-repeat"  >
+    <meta name="csrf-token" content="{{ csrf_token() }}">    
     <div class="container-fluid">
     <div class="row justify-content-center">
         <div class="col-11 col-sm-11 col-md-10 col-lg-10 col-xl-8 text-center p-0 mt-3 mb-2">
             <div class="card px-0 pt-4 pb-0 mt-3 mb-3">
                 <h2 id="heading">FORMULARIO DE INSCRIPCI&Oacute;N</h2>
                 <p>Por favor diligencie todos los campos</p>
-                <form id="msform" style="padding:15px;">
+                <form id="msform"  type="post" enctype="multipart/form-data" style="padding:15px;">
                     <!-- progressbar -->
                     <ul id="progressbar">
                         <li class="active" id="account"><strong>Personal</strong></li>
                         <li id="personal"><strong>Familiar</strong></li>
-                        <li id="payment"><strong>Imagen carnet</strong></li>
+                        <!--<li id="payment"><strong>Imagen carnet</strong></li>-->
                         <li id="confirm"><strong>Finalizar</strong></li>
                     </ul>
                     <div class="progress">
                         <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
                     </div> <br> <!-- fieldsets -->
-                    <fieldset>
+                    <fieldset>                    
+                    <!-- <form  id="frm_enrollement"> -->
                         <div class="form-card">
                             <div class="row">
                                 <div class="col-7">
@@ -40,12 +41,22 @@
                                 </div>
                             </div>
                         <div class="row">
-                            <div class="col-lg-6">
+                        <div class="col-lg-4">
                                 <label class="fieldlabels">Registro Civil o TI No: <span class="text-danger">*</span></label> <input type="number" name="dni" id="dni" placeholder="Identificacion" /> </label>                                                     
                             </div>                            
-                            <div class="col-lg-6">
+                            <div class="col-lg-4">
                                 <label class="fieldlabels">Expedido en: <span class="text-danger">*</span></label> <input type="text" name="expedidoEn" placeholder="Expedicion" /> </label>                                                     
                             </div>
+                        <div class="col-lg-4">
+                                <label class="fieldlabels">Tipo Documento: <span class="text-danger">*</span></label> 
+                                <select class="form-control select2" name="tipo_doc" id="tipo_doc">
+                                    <option value="">Seleccione</option>
+                                    @foreach($tipoDoc as $doc)
+                                        <option value="{{$doc->id_tipo_doc }}">{{ $doc->descripcion}}</option>
+                                    @endforeach
+                                </select> 
+                            </div>
+                            
                         </div>
 
                         <div class="row">
@@ -68,30 +79,50 @@
                                 <label class="fieldlabels">Fecha nacimiento: <span class="text-danger">*</span></label> <input type="date" name="dateBirthDay" placeholder="Fecha"   /></label> 
                             </div>
                             <div class="col-lg-6">
-                                <label class="fieldlabels">Ciudad: <span class="text-danger">*</span></label> <input type="text" name="city"  placeholder="Ciudad"  /></label> 
-                            </div>
+                                <label class="fieldlabels">Eps: <span class="text-danger">*</span></label> 
+                                <select class="form-control select2" name="eps" id="eps">
+                                    <option value="">Seleccione</option>
+                                    @foreach($tipoEps as $eps)
+                                    <option value="{{ $eps->id_tipo_eps}}"> {{ $eps->nombre}}</option>
+                                    @endforeach
+                                </select>
+                            </div>                                                        
                         </div>
                         
-                        <div class="row">
+                        <div class="row p-2">
                             <div class="col-lg-6">
                                 <label class="fieldlabels">Sexo:  <span class="text-danger">*</span></label> 
-                                <select class="form-control" name="sexo">
+                                <select class="form-control select2" name="sexo" id="sexo">
                                     <option value="M">Masculino</option>
                                     <option value="F">Femenino</option>
                                 </select>
                             </div>
-                            <div class="col-lg-3">
-                                <label class="fieldlabels">Comuna: <span class="text-danger">*</span></label> <input type="number" name="comuna"  placeholder="Comuna"  /></label> 
+                            <div class="col-lg-6">
+                                <label class="fieldlabels">Grado:  <span class="text-danger">*</span></label> 
+                                <select class="form-control select2" name="grado" id="sel_grado">
+                                    <option value="">Seleccione.</option>
+                                    @foreach($grados as $grado)
+                                        <option value="{{ $grado->id_grado}}">{{ $grado->grupo}}</option>
+                                    @endforeach
+                                </select>
                             </div>
-                            <div class="col-lg-3">
-                                <label class="fieldlabels">Estrato: <span class="text-danger">*</span></label> <input type="number" name="estrato" placeholder="Estrato"  /></label> 
+                        </div>
+                        <div class="row">
+                        
+                        <div class="col-lg-6">
+                                <label class="fieldlabels">Modalidad Sena :  <span class="text-danger">*</span></label> 
+                                <select class="form-control select2" name="id_modalidad_sena">                                
+                                    @foreach($Msena as $sena)
+                                        <option value="{{ $sena->id_modalidad_sena}}" {{  ($sena->id_modalidad_sena==3)? 'selected':'' }}>{{ $sena->nombre }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-lg-12">
                                 <label class="fieldlabels" >Direcci&oacute;n Residencia: <span class="text-danger">*</span></label>
-                                <input class="form-control" type="text" placeholder="direccion" >
+                                <input class="form-control" name="direccion" type="text" placeholder="direccion" >
                             </div>
                         </div>
                         
@@ -99,7 +130,7 @@
                         <div class="row">
                         <div class="col-lg-4">
                                 <label class="fieldlabels">Barrio: <span class="text-danger">*</span></label> 
-                                <select class="form-control" name="barrio">
+                                <select class="form-control select2" name="barrio" id="barrio">
                                     <option value="">Seleccione</option> 
                                     @foreach($barrios as $bar)
                                     <option value="{{ $bar->id_barrio }}">{{ $bar->nombre }}</option> 
@@ -107,10 +138,10 @@
                                 </select>
                         </div>
                         <div class="col-lg-4">
-                            <label class="fieldlabels">Tel. fijo: <span class="text-danger">*</span></label> <input type="number" name="tel"  placeholder="Telefono"  /></label> 
+                            <label class="fieldlabels">Tel. fijo: <span class="text-danger">*</span></label> <input type="number" name="tel" id="tel"  placeholder="Telefono"  /></label> 
                         </div>                        
                         <div class="col-lg-4">
-                            <label class="fieldlabels">Celular : <span class="text-danger">*</span></label> <input type="number" name="celular"  placeholder="Celular"  /></label> 
+                            <label class="fieldlabels">Celular : <span class="text-danger">*</span></label> <input type="number" name="celular"  id="celular" placeholder="Celular"  /></label> 
                         </div> 
                         </div>
                         
@@ -122,35 +153,44 @@
                         
                         <label class="col-lg-9 fieldlabels" style="display:flex;">
                                 Padres
-                                <input class="form-control" type="checkbox"  value="Padres" style="height: 15px;">
+                                <input class="form-control" type="checkbox" name="viveCon[]" value="Padres" style="height: 15px;">
                                 Abuelos
-                                <input class="form-control" type="checkbox"  value="Abuelos" style="height: 15px;">
+                                <input class="form-control" type="checkbox" name="viveCon[]"  value="Abuelos" style="height: 15px;">
                                 Hermanos
-                                <input class="form-control" type="checkbox"  value="Hermanos" style="height: 15px;">
+                                <input class="form-control" type="checkbox" name="viveCon[]"  value="Hermanos" style="height: 15px;">
                                 Otros
-                                <input class="form-control" type="checkbox"  value="Otros" style="height: 15px;">
+                                <input class="form-control" type="checkbox"  name="viveCon[]" value="Otros" style="height: 15px;">
                         </label>                                                                                            
                         </div>
                         
                         <div class="row">
-                        <label class="col-lg-4 fieldlabels">
-                        Colegio de donde proviene: <span class="text-danger">*</span>
+                        <label class="col-lg-2 fieldlabels">
+                        Colegio proveniente: <span class="text-danger">*</span>
                         </label>
                         
-                        <label class="col-lg-8 fieldlabels">
+                        <label class="col-lg-4 fieldlabels">
                             <input  type="text" class="form-control" name="colegioProviene" placeholder="Institucion Educativo">
                         </label>
+
+
+                        <label class="col-lg-2 fieldlabels">
+                        Ciudad Colegio origen : <span class="text-danger">*</span>
+                        </label>
+                        <label class="col-lg-4 fieldlabels">
+                            <input  type="text" class="form-control" name="ciudadColegioProviene" placeholder="Ciudad">
+                        </label>
+
                         </div>
 
                         <div class="row">
                                 <label class="col-lg-4 fieldlabels">
-                                Cu&aacute;ntos hermanos tiene: 
+                                Cu&aacute;ntos hermanos tiene:   <span class="text-danger">*</span>
                                 </label>
                                 <div class="col-lg-2">
                                     <input type="number" name="nmHermanos" placeholder="Nro." >
                                 </div>
                                 <label class="col-lg-4 fieldlabels">
-                                Qu&eacute; lugar ocupa entre ellos:
+                                Qu&eacute; lugar ocupa entre ellos: <span class="text-danger">*</span>
                                 </label>
                                 <div class="col-lg-2">
                                     <input type="number" name="lugarOcupa" placeholder="Nro.">
@@ -160,20 +200,31 @@
                         <div class="row">
                         <div class="col-lg-6">
                                 <label class="fieldlabels">Tiene hermanos en el Instituto Moderno Desepaz : </label> 
-                                <select class="form-control" name="hermanosModerno">
+                                <select class="form-control select2" name="hermanosModerno">
                                     <option value=""></option>                                    
                                     <option value="SI">SI</option>                                    
                                     <option value="NO">NO</option>                                    
                                 </select>
                         </div>
-                        <div class="col-lg-6">
+                        <div class="col-lg-3">
                                 <label class="fieldlabels">Parientes : </label> 
-                                <select class="form-control" name="parientes">
+                                <select class="form-control select2" name="parientes">
                                     <option value=""></option>                                    
                                     <option value="SI">SI</option>                                    
                                     <option value="NO">NO</option>                                    
                                 </select>
                         </div>
+
+                        <div class="col-lg-3">
+                                <label class="fieldlabels">Subsidiado : </label> 
+                                <select class="form-control select2" name="subsidiado">
+                                    <option value=""></option>                                    
+                                    <option value="SI">SI</option>                                    
+                                    <option value="NO">NO</option>                                    
+                                </select>
+                        </div>
+                        
+
                         </div>
 
 
@@ -182,13 +233,23 @@
                         <div class="col-lg-8">
                         <label class="fieldlabels"> A qu&eacute; comunidad religiosa pertenece : <span class="text-danger">*</span></label> 
                         
-                        <select class="form-control" name="comunidadReligiosa">
+                        <select class="form-control select2" name="comunidadReligiosa" id="comunidadReligiosa">
                             <option value="Cristiana">Cristiana</option>
                             <option value="Catolica">Catolica</option>
                             <option value="Protestante">Protestante</option>
                             <option value="Otras">Otras</option>
                         </select>
                         </div>
+                        <div class="col-lg-4">
+                            <label class="fieldlabels">Tipo de Matricula : <span class="text-danger">*</span></label> 
+                                <select class="form-control select2" name="tipo_matricula" id="tipo_matricula" style="width:100% !important;">                                
+                                    <option value="1">NUEVO</option>                                    
+                                    <option value="2">REPITENTE</option>                                    
+                                    <option value="3">ANTIGUO</option>                                    
+                                </select>
+                        </div>
+
+
                         </div>
 
 
@@ -203,18 +264,13 @@
                                 </label>
                             </div>
                             <label class="col-lg-10 fieldlabels pnlDs pt-2" style="display:none;">
-                            Visual
-                                <input class="form-control" name="discapacidad" type="checkbox"  value="visual" style="height: 15px;">
-                                Motora
-                                <input class="form-control" name="discapacidad" type="checkbox"  value="motora" style="height: 15px;">
-                                Cognitiva
-                                <input class="form-control" name="discapacidad" type="checkbox"  value="cognitiva" style="height: 15px;">
-                                Autismo
-                                <input class="form-control" name="discapacidad"  type="checkbox"  value="autismo" style="height: 15px;">
-                                Múltiple
-                                <input class="form-control" name="discapacidad" type="checkbox"  value="multiple" style="height: 15px;">
-                                Otra
-                                <input class="form-control" name="discapacidad" type="checkbox"  value="otra" style="height: 15px;">                                
+                            
+                            <select class="form-control select2" name="tipo_discapacidad" style="width:100% !important;">
+                               <option value="">Seleccione</option>
+                               @foreach($discapacidades as $gp)
+                               <option value="{{ $gp->id_tipo_discapacidad}}">{{ $gp->descripcion}}</option>
+                               @endforeach
+                           </select>
                         </label>
                         
                         <label class="fieldlabels col-lg-9">
@@ -230,7 +286,7 @@
                            <div class="col-lg-8 pnlEt" style="display:none;">
                            
                            <label class="fieldlabels">Grupos Étnicos</label> 
-                           <select class="form-control">
+                           <select class="form-control select2" name="grupo_etnico" style="width:100% !important;">
                                <option value="">Seleccione</option>
                                @foreach($grupoEt as $gp)
                                <option value="{{ $gp->id_grupo_etnico}}">{{ $gp->descripcion}}</option>
@@ -262,50 +318,55 @@
                                     <h2 class="fs-title">DATOS DEL PADRE</h2>
                                 </div>
                             
-                            <div class="col-lg-4">
+                            
+                                <div class="col-lg-4">
+                                <label class="fieldlabels">CC : </label>                             
+                                <input type="number" name="dniPadre" id="dniPadre" placeholder="Cedula de Ciudadania" /> 
+                            </div>  
+
+                            
+                                <div class="col-lg-4">
                                 <label class="fieldlabels">Nombres y apellidos: </label>                             
-                                <input type="text" name="fname" placeholder="Nombres y apellidos" /> 
+                                <input type="text" name="nombrePadre" placeholder="Nombres y apellidos" /> 
                             </div>
 
-                            <div class="col-lg-4">
-                                <label class="fieldlabels">CC : </label>                             
-                                <input type="number" name="fname" placeholder="Cedula de Ciudadania" /> 
-                            </div>                            
+                                                      
                             
                             <div class="col-lg-4">
-                                <label class="fieldlabels">De : </label>                             
-                                <input type="text" name="fname" placeholder="Lugar" /> 
+                                <label class="fieldlabels">Direccion : </label>                             
+                                <input type="text" name="direccionPadre" placeholder="Lugar" /> 
                             </div>
 
 
                             <div class="col-lg-4">
                                 <label class="fieldlabels">Profesi&oacute;n : </label>                             
-                                <input type="text" name="fname" placeholder="Profesion" /> 
+                                <input type="text" name="profesionPadre" placeholder="Profesion" /> 
                             </div>
 
                             
                             <div class="col-lg-4">
                                 <label class="fieldlabels">Empresa donde labora : </label>                             
-                                <input type="text" name="fname" placeholder="Empresa" /> 
+                                <input type="text" name="empresaPadre" placeholder="Empresa" /> 
                             </div>
 
                             
                             <div class="col-lg-4">
                                 <label class="fieldlabels">Celular : </label>                             
-                                <input type="number" name="fname" placeholder="Celular" /> 
+                                <input type="number" name="celPadre" placeholder="Celular" /> 
                             </div>
 
                             
-                            <div class="col-lg-4">
-                                <label class="fieldlabels">Cargo : </label>                             
-                                <input type="number" name="fname" placeholder="Cargo" /> 
-                            </div>
                             
-
                             <div class="col-lg-4">
-                                <label class="fieldlabels">Teléfono de la Empresa: </label>                             
-                                <input type="number" name="fname" placeholder="Teléfono" /> 
+                                <label class="fieldlabels">Barrio: </label> 
+                                <select class="form-control select2" name="barrioPadre" id="barrioPadre" style="width:100% !important;">
+                                    <option value="">Seleccione</option> 
+                                    @foreach($barrios as $bar)
+                                    <option value="{{ $bar->id_barrio }}">{{ $bar->nombre }}</option> 
+                                    @endforeach
+                                </select>
                             </div>
+
 
                             </div>
                             
@@ -316,49 +377,50 @@
                             </div>
                             
                             <div class="col-lg-4">
-                                <label class="fieldlabels">Nombres y apellidos: </label>                             
-                                <input type="text" name="fname" placeholder="Nombres y apellidos" /> 
+                                <label class="fieldlabels">CC : </label>                             
+                                <input type="number" name="dniMadre" id="dniMadre" placeholder="Cedula de Ciudadania" /> 
                             </div>
 
                             <div class="col-lg-4">
-                                <label class="fieldlabels">CC : </label>                             
-                                <input type="number" name="fname" placeholder="Cedula de Ciudadania" /> 
+                                <label class="fieldlabels">Nombres y apellidos: </label>                             
+                                <input type="text" name="nombreMadre" placeholder="Nombres y apellidos" /> 
                             </div>
+
+                            
                             
                             
                             <div class="col-lg-4">
-                                <label class="fieldlabels">De : </label>                             
-                                <input type="text" name="fname" placeholder="Lugar" /> 
+                                <label class="fieldlabels">Direccion : </label>                             
+                                <input type="text" name="direccionMadre" placeholder="Lugar" /> 
                             </div>                                                                                                                                            
 
 
                             <div class="col-lg-4">
                                 <label class="fieldlabels">Profesi&oacute;n : </label>                             
-                                <input type="text" name="fname" placeholder="Profesion" /> 
+                                <input type="text" name="profesionMadre" placeholder="Profesion" /> 
                             </div>
 
                             
                             <div class="col-lg-4">
                                 <label class="fieldlabels">Empresa donde labora : </label>                             
-                                <input type="text" name="fname" placeholder="Empresa" /> 
+                                <input type="text" name="empresaMadre" placeholder="Empresa" /> 
                             </div>
 
                             
                             <div class="col-lg-4">
                                 <label class="fieldlabels">Celular : </label>                             
-                                <input type="number" name="fname" placeholder="Celular" /> 
+                                <input type="number" name="celMadre" placeholder="Celular" /> 
                             </div>
 
                             
                             <div class="col-lg-4">
-                                <label class="fieldlabels">Cargo : </label>                             
-                                <input type="number" name="fname" placeholder="Cargo" /> 
-                            </div>
-                            
-
-                            <div class="col-lg-4">
-                                <label class="fieldlabels">Teléfono de la Empresa: </label>                             
-                                <input type="number" name="fname" placeholder="Teléfono" /> 
+                                <label class="fieldlabels">Barrio: </label> 
+                                <select class="form-control select2" name="barrioMadre" id="barrioMadre" style="width:100% !important;">
+                                    <option value="">Seleccione</option> 
+                                    @foreach($barrios as $bar)
+                                    <option value="{{ $bar->id_barrio }}">{{ $bar->nombre }}</option> 
+                                    @endforeach
+                                </select>
                             </div>
 
                             </div>
@@ -369,38 +431,46 @@
                                 <h2 class="fs-title">DATOS DEL ACUDIENTE</h2>                                
                             </div>
 
+                            <div class="col-lg-4">
+                                <label class="fieldlabels">CC : <strong class="text-danger">*</strong></label>                             
+                                <input type="number" name="ccAcudiente" id="ccAcudiente" placeholder="Cedula de Ciudadania" /> 
+                            </div>
+
+                            <div class="col-lg-4">
+                                <label class="fieldlabels">Nombres y apellidos: <strong class="text-danger">*</strong></label>                             
+                                <input type="text" name="nameAcudiente" placeholder="Nombres y apellidos" /> 
+                            </div>
+
     <div class="col-lg-6">
     <label class="fieldlabels">
             Parentesco:  <strong class="text-danger">*</strong>            
     </label>
-        <select class="form-control">
-                <option value="Madre">Madre</option>
-                <option value="Padre">Padre</option>
+        <select class="form-control select2" name="parentesco" id="parentesco" style="width:100% !important;">
+                <option value="">Seleccione</option>
+                @foreach($parentesco as $p)
+                    <option value="{{ $p->id_tipo_parentesco }}">{{ $p->nombre }}</option>
+                @endforeach
             </select>
 
     </div>
-        
-    
-
-                            <div class="col-lg-4">
-                                <label class="fieldlabels">Nombres y apellidos: <strong class="text-danger">*</strong></label>                             
-                                <input type="text" name="fname" placeholder="Nombres y apellidos" /> 
-                            </div>
-
-                            <div class="col-lg-4">
-                                <label class="fieldlabels">CC : <strong class="text-danger">*</strong></label>                             
-                                <input type="number" name="fname" placeholder="Cedula de Ciudadania" /> 
-                            </div>
-
-
                             <div class="col-lg-4">
                                 <label class="fieldlabels">Celular :  <strong class="text-danger">*</strong></label>                             
-                                <input type="number" name="fname" placeholder="Celular" /> 
+                                <input type="number" name="celAcudiente" placeholder="Celular" /> 
+                            </div>
+
+                            <div class="col-lg-6">
+                                <label class="fieldlabels">Direccion :  <strong class="text-danger">*</strong></label>                             
+                                <input type="text" name="dirAcudiente" placeholder="Direccion de recidencia" /> 
                             </div>
 
                             <div class="col-lg-4">
-                                <label class="fieldlabels">Direccion :  <strong class="text-danger">*</strong></label>                             
-                                <input type="number" name="fname" placeholder="Direccion de recidencia" /> 
+                                <label class="fieldlabels">Barrio: <span class="text-danger">*</span></label> 
+                                <select class="form-control select2" name="barrioAcudiente" id="barrioAcudiente" style="width:100% !important;">
+                                    <option value="">Seleccione</option> 
+                                    @foreach($barrios as $bar)
+                                    <option value="{{ $bar->id_barrio }}">{{ $bar->nombre }}</option> 
+                                    @endforeach
+                                </select>
                             </div>
 
 
@@ -409,9 +479,12 @@
 
 
 
-                        </div> <input type="button" name="next" class="next action-button" value="Siguiente" /> <input type="button" name="previous" class="previous action-button-previous" value="Anterior" />
+                        </div>
+                        <input  class="action-button bg-success" id="btn_saveEnrollement" value="GUARDAR" /> <input type="button" name="previous" class="previous action-button-previous" value="Anterior" />
+                        <!--<input type="button" name="next" class="next action-button" value="Siguiente" /> <input type="button" name="previous" class="previous action-button-previous" value="Anterior" />-->
+
                     </fieldset>
-                    <fieldset>
+                    <!--<fieldset>
                         <div class="form-card">
                             <div class="row">
                                 <div class="col-7">
@@ -420,8 +493,8 @@
                                 
                             </div> <label class="fieldlabels">Foto:</label> <input type="file" name="pic" accept="image/*">                             
 
-                        </div> <input type="button" name="next" class="next action-button bg-success" value="GUARDAR" /> <input type="button" name="previous" class="previous action-button-previous" value="Anterior" />
-                    </fieldset>
+                        </div> <input type="submit" name="next" class="next action-button bg-success btn_saveEnrollement" value="GUARDAR" /> <input type="button" name="previous" class="previous action-button-previous" value="Anterior" />
+                    </fieldset>-->
                     <fieldset>
                         <div class="form-card">
                             <div class="row">
@@ -442,17 +515,19 @@
                                 </div>
                             </div>
                         </div>
+
                     </fieldset>
-                </form>
+                    </form>                
             </div>
         </div>
     </div>
 </div>
     {!! Html::script('https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js') !!}  
     {!! Html::script('https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js') !!}
-    {!! Html::script('lib/enrollmentStudent/outside.js') !!}
-    {!! Html::script('//cdn.jsdelivr.net/npm/sweetalert2@10') !!}      
+    {!! Html::script('https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js') !!}   
+    {!! Html::script('//cdn.jsdelivr.net/npm/sweetalert2@10') !!}                 
     <script src="{{ asset('/js/validate.min.js')}}"></script>
     <script src="{{ asset('/js/validator.messages.js')}}"></script>
+    {!! Html::script('lib/enrollmentStudent/outside.js') !!}
     </body>
 </html>
