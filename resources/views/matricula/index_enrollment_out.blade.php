@@ -13,7 +13,7 @@
         {!! Html::style('https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css') !!}
         
     </head>
-    <body style="background-image: url('images/logo.jpg');background-repeat:no-repeat"  >
+    <body style="background-image: url('images/register_2.jpg');"  >
     <meta name="csrf-token" content="{{ csrf_token() }}">    
     <div class="container-fluid">
     <div class="row justify-content-center">
@@ -65,13 +65,13 @@
                                 <label class="fieldlabels">Primer nombre: <span class="text-danger">*</span></label> <input type="text" name="firstName" placeholder="Primer nombre"  /></label>     
                             </div>
                             <div class="col-lg-3">
-                                <label class="fieldlabels">Segundo nombre: <span class="text-danger">*</span></label> <input type="text" name="secondName"  placeholder="Segundo nombre"  /></label> 
+                                <label class="fieldlabels">Segundo nombre: </label> <input type="text" name="secondName"  placeholder="Segundo nombre"  /></label> 
                             </div>
                             <div class="col-lg-3">
                                 <label class="fieldlabels">Primer Apellido: <span class="text-danger">*</span></label> <input type="text" name="firstLastName"  placeholder="Primer apellido"  /></label> 
                             </div>
                             <div class="col-lg-3">
-                                <label class="fieldlabels">Segundo Apellido: <span class="text-danger">*</span></label> <input type="text" name="secondLastName"  placeholder="Segundo apellido"  /></label> 
+                                <label class="fieldlabels">Segundo Apellido: </label> <input type="text" name="secondLastName"  placeholder="Segundo apellido"  /></label> 
                             </div>
                         </div>
                         <div class="row">

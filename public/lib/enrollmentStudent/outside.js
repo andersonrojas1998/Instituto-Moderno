@@ -15,11 +15,9 @@ $(document).ready(function(){
         if($("fieldset").index(next_fs) &&  
         $("#dni").val()==""  ||
         $('input[name="expedidoEn"]').val()=="" ||
-        $("#tipo_doc").val()=="" ||
-        $('input[name="secondName"]').val()=="" ||
+        $("#tipo_doc").val()=="" ||        
         $('input[name="firstName"]').val()=="" ||
-        $('input[name="firstLastName"]').val()=="" ||
-        $('input[name="secondLastName"]').val()=="" ||
+        $('input[name="firstLastName"]').val()=="" ||      
         $('input[name="dateBirthDay"]').val()=="" ||      
         $('#sel_grado').val()=="" ||
         $("#eps").val()=="" ||        
@@ -127,7 +125,8 @@ $(document).ready(function(){
                 dataType:"JSON",
                 success:function(data) {                   
                     if(data.count>0){
-                        sweetMessage('\u00A1Atenci\u00f3n!','El estudiante con la identificacion '+ val + ' ya se encuentra matriculado .','warning');
+                        $("#dni").val("");
+                        sweetMessage('\u00A1Atenci\u00f3n!','El estudiante con la identificacion '+ val + ' ya se encuentra matriculado  .','warning');                        
                     }else if(data.alumno.length>0){
                         console.log(data.alumno);
                         $('input[name="expedidoEn"]').val(data.alumno[0].lugar_expedicion);
@@ -214,18 +213,12 @@ $(document).ready(function(){
     });
 
     $(document).on("click","#btn_saveEnrollement",function(e) { 
-        
-        //e.preventDefault();                
-
+                
         if( $('#ccAcudiente').val()!="" &&  $('input[name="nameAcudiente"]').val()!=""  && 
             $('#parentesco').val()!=""  &&  $('input[name="celAcudiente"]').val()!=""   &&
             $('input[name="dirAcudiente"]').val()!="" &&  $('#barrioAcudiente').val()!=""
-        ){
-            console.log("***** ¬¬¬¬¬¬¬");
-
-            var data = new FormData($('#msform')[0]); 
-            console.log($('#msform').serialize());
-            //console.log(data);
+        ){            
+            var data = new FormData($('#msform')[0]);
             $.ajax({
                 type: 'POST',
                 url:'/matricula/storeEnrollement',
@@ -234,8 +227,8 @@ $(document).ready(function(){
                 processData: false,                      
                 headers:{ 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             success: function(data){
-                    console.log(data);
-    
+                    sweetMessage('\u00A1Registro exitoso!', '\u00A1 Se ha realizado con \u00E9xito su solicitud!'); 
+                    location.replace('/matricula/inicio');                    
                 }
             });
 

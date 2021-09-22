@@ -13,6 +13,13 @@ class MatriculasController extends Controller
     public function index_create(){
         return view('matricula.index_created');
     }
+    public function  listChangeStatus(){
+            $motivos=DB::SELECT("SELECT * FROM motivos_retiro");
+            $estado=DB::SELECT("SELECT * FROM estado_matricula");
+            return json_encode(['motivos'=>$motivos,'estados'=>$estado]);
+    }
+
+
     public function listEnrollment(){
         $year=date('Y');
         $dataUs=DB::select("CALL sp_enrollmentStudents('$year') ");
@@ -22,7 +29,8 @@ class MatriculasController extends Controller
              $data['data'][$key]['grado']=$us->grupo  .' '. $us->jornada;
              $data['data'][$key]['fecha_matricula']=date('Y-m-d H:i',strtotime($us->fecha_matricula));
              $data['data'][$key]['name']=$us->apellido1. ' '.$us->apellido2.' ' . $us->nombre1.' '.$us->nombre2;
-             $data['data'][$key]['estado']=$us->estado;             
+             $data['data'][$key]['estado']=$us->estado; 
+             $data['data'][$key]['idGrado']=$us->idGrado;             
              $data['data'][$key]['actions']='';
          }
          return json_encode($data);          
@@ -130,62 +138,75 @@ class MatriculasController extends Controller
                                 }else{
                                     $id_madre=$acudienteMadre[0]->id;                                        
                                 }               
+                              
                                
-                            $alum= new alumno();
-                            $alum->id_tipo_doc= Request::input('tipo_doc');
-                            $alum->identificacion=Request::input('dni');                    
-                            $alum->lugar_expedicion=Request::input('expedidoEn');
-                            $alum->apellido1  =Request::input('firstLastName');
-                            $alum->apellido2 =Request::input('secondLastName');
-                            $alum->nombre1 =Request::input('firstName');
-                            $alum->nombre2 =Request::input('secondName');
-                            $alum->direccion =Request::input('direccion');
-                            $alum->telefono	 =Request::input('tel');
-                            $alum->id_barrio=Request::input('barrio'); 
-                            $alum->id_departamento =1;
-                            $alum->id_municipio=1;
-                            $alum->id_acudiente=$id_acudiente;
-                            $alum->id_padre=$id_padre;
-                            $alum->id_madre=$id_madre;
-                            $alum->id_tipo_eps=Request::input('eps');
-                            $alum->password='$2y$10$odheLv9bS5EGTjxmIgFUmeaqy/GZrhT9UFn0lfUIpCX8tjc5Lo0ni';
-                            $alum->fecha_nacimiento=date('Y-m-d',strtotime(Request::input('dateBirthDay')));    
-                            $alum->nac_muni=1;
-                            $alum->nac_depto=1;                
-                            $alum->genero=Request::input('sexo');
-                            $alum->save();                        
+                            $dni=Request::input('dni');
+                            $id_alumno='';
+                            $alumno=DB::SELECT("SELECT * FROM alumno where identificacion = '$dni' ");    
+                            if(empty($alumno[0])){
+                                $alum= new alumno();
+                                $alum->id_tipo_doc= Request::input('tipo_doc');
+                                $alum->identificacion=$dni;
+                                $alum->lugar_expedicion=Request::input('expedidoEn');
+                                $alum->apellido1  =Request::input('firstLastName');
+                                $alum->apellido2 =Request::input('secondLastName');
+                                $alum->nombre1 =Request::input('firstName');
+                                $alum->nombre2 =Request::input('secondName');
+                                $alum->direccion =Request::input('direccion');
+                                $alum->telefono	 =Request::input('tel');
+                                $alum->id_barrio=Request::input('barrio'); 
+                                $alum->id_departamento =1;
+                                $alum->id_municipio=1;
+                                $alum->id_acudiente=$id_acudiente;
+                                $alum->id_padre=$id_padre;
+                                $alum->id_madre=$id_madre;
+                                $alum->id_tipo_eps=Request::input('eps');
+                                $alum->password='$2y$10$odheLv9bS5EGTjxmIgFUmeaqy/GZrhT9UFn0lfUIpCX8tjc5Lo0ni';
+                                $alum->fecha_nacimiento=date('Y-m-d',strtotime(Request::input('dateBirthDay')));    
+                                $alum->nac_muni=1;
+                                $alum->nac_depto=1;                
+                                $alum->genero=Request::input('sexo');
+                                $alum->save(); 
+                                $id_alumno=$alum->id;
+                            } else{
+                                $id_alumno=$alumno[0]->id_alumno;
+                            }      
 
+                                                   
 
-                            $id_grado= Request::input('grado');
-                            $grados=DB::SELECT("select * from  grado where id_grado='$id_grado' ");
-                            
-                            $mat=new matricula();
-                            $mat->id_modalidad_sena= Request::input('id_modalidad_sena');
-                            $mat->id_alumno=$alum->id;
-                            $mat->año=date('Y');
-                            $mat->viveCon=empty(Request::input('viveCon'))? '':implode(',',Request::input('viveCon'));
-                            $mat->grado_cursar=$grados[0]->tag;
+                            $year=date('Y-m-d');
+                            $consul=DB::SELECT("SELECT * FROM matricula
+                            inner join alumno on matricula.id_alumno=alumno.id_alumno
+                            where alumno.identificacion='$dni' AND matricula.año='$year' ");
 
-                            $mat->total_hermanos=Request::input('nmHermanos');                            
-                            $mat->lugar_ocupa_hermanos=Request::input('lugarOcupa');
-                            $mat->parientes_inmode=Request::input('parientes');
-
-                            $mat->fecha_matricula=date('Y-m-d');
-                            $mat->id_estado_matricula=1;
-                            $mat->id_grado=$id_grado;
-                            $mat->subsidiado= Request::input('subsidiado');
-                            $mat->tipo_discapacidad=empty(Request::input('tipo_discapacidad'))? 4:Request::input('tipo_discapacidad');
-                            $mat->grupo_etnico=Request::input('grupo_etnico');
-                            $mat->id_sede=1;
-                            $mat->id_tipo_matricula= Request::input('tipo_matricula');
-                            $mat->inst_anterior=Request::input('colegioProviene');
-                            $mat->ciudad_colegio_origen=Request::input('ciudadColegioProviene');
-                            $mat->save();    
-                            
-                            // validacion de estuduantes que no esten en BD 
-                            // validaion de matricula para el mismo año 
-                            // ajustar vista  nombres 
-                                         
+                            if(empty($consul[0])){
+                                $id_grado= Request::input('grado');
+                                $grados=DB::SELECT("select * from  grado where id_grado='$id_grado' ");
+                                
+                                $mat=new matricula();
+                                $mat->id_modalidad_sena= Request::input('id_modalidad_sena');
+                                $mat->id_alumno=$alum->id;
+                                $mat->año=date('Y');
+                                $mat->viveCon=empty(Request::input('viveCon'))? '':implode(',',Request::input('viveCon'));
+                                $mat->grado_cursar=$grados[0]->tag;
+    
+                                $mat->total_hermanos=Request::input('nmHermanos');                            
+                                $mat->lugar_ocupa_hermanos=Request::input('lugarOcupa');
+                                $mat->parientes_inmode=Request::input('parientes');
+    
+                                $mat->fecha_matricula=date('Y-m-d');
+                                $mat->id_estado_matricula=1;
+                                $mat->id_grado=$id_grado;
+                                $mat->subsidiado= Request::input('subsidiado');
+                                $mat->tipo_discapacidad=empty(Request::input('tipo_discapacidad'))? 4:Request::input('tipo_discapacidad');
+                                $mat->grupo_etnico=Request::input('grupo_etnico');
+                                $mat->id_sede=1;
+                                $mat->id_tipo_matricula= Request::input('tipo_matricula');
+                                $mat->inst_anterior=Request::input('colegioProviene');
+                                $mat->ciudad_colegio_origen=Request::input('ciudadColegioProviene');
+                                $mat->save();  
+                            }                                                                                                                                              
+                             return 1;            
                 });                            
                 } catch (Exception $th) {                
                     return response()->json(['message'=>'Error en la base de datos','error' => $th->getMessage()],400);              

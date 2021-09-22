@@ -107,21 +107,11 @@ $(document).ready(function() {
 
 
 var dt_teacher=function(){
-    $('#dt_teacher').DataTable({
-        //destroy: true,
-          //searching:false,
+    $('#dt_teacher').DataTable({        
           dom: 'Bfrtip',
           buttons: [
               'copy', 'csv', 'excel', 'pdf', 'print'
-          ],
-      //  lengthChange: false,
-        //buttons: [ 'copy', 'excel', 'pdf'],
-        /*buttons: [
-            'copyHtml5',
-            'excelHtml5',
-            'csvHtml5',
-            'pdfHtml5'
-        ],*/
+          ],      
         ajax: {
             url: "/dt_user",
             method: "GET", 

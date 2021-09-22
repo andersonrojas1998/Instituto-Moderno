@@ -10,4 +10,5 @@ Route::group(['prefix' => 'matricula'], function(){
     Route::get('/searching/student/{id}', 'MatriculasController@searchStudent');
     Route::get('/searching/father/{id}', 'MatriculasController@searchAcudiente');
     Route::post('/storeEnrollement', 'MatriculasController@storeEnrollement');
+    Route::get('/listChangeStatus', 'MatriculasController@listChangeStatus');
 });
