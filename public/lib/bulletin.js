@@ -15,8 +15,8 @@ $(document).ready(function() {
     $.ajax({ url:"/obsBulletin",type:"GET",success:function(data){
         let arr=JSON.parse(data);
         for(let i=0;i<arr.length;i++){                    
-            $('#sel_observations').append('<option   value="'+arr[i].id_nota+'" >'+ firstLetter(arr[i].descripcion.toLowerCase())  +'</option>');
-            $('#sel_observationsAll').append('<option   value="'+arr[i].id_nota+'" >'+ firstLetter(arr[i].descripcion.toLowerCase())  +'</option>');
+            $('#sel_observations').append('<option   value="'+arr[i].id_nota+'" >'+ arr[i].descripcion  +'</option>');
+            $('#sel_observationsAll').append('<option   value="'+arr[i].id_nota+'" >'+ arr[i].descripcion  +'</option>');
         }
         $('#sel_observations').select2();
         $('#sel_observationsAll').select2();        
