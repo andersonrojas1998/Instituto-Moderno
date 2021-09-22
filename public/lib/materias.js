@@ -5,6 +5,10 @@ $(document).ready(function() {
   
   var dt_materias=function(){
     $('#dt_materias').DataTable({ 
+        dom: 'Bfrtip',
+    buttons: [
+      'excel', 'pdf', 'print'
+    ],
         responsive: true,
         ajax: {
             url: "/dt_materias",

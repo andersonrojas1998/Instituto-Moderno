@@ -24,6 +24,10 @@ $(document).ready(function() {
 
 function dt_scoreStudents(grade,period){
     $('#dt_scoreStudents').DataTable({
+        dom: 'Bfrtip',
+          buttons: [
+              'copy', 'csv', 'excel', 'pdf', 'print'
+          ],
         responsive: true,
         destroy: true,           
         "ordering": false,

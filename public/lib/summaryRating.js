@@ -52,7 +52,11 @@ $(document).ready(function() {
 });
 
 function dt_summaryRating(period){
-    $('#dt_summaryRating').DataTable({        
+    $('#dt_summaryRating').DataTable({  
+        dom: 'Bfrtip',
+          buttons: [
+            'excel', 'pdf', 'print'
+          ],      
         lengthChange: false,        
         responsive: true,
         destroy: true,   

@@ -5,8 +5,10 @@ $(document).ready(function() {
 
 var dt_alumn=function(){
   var table=$('#dt_alumn').DataTable({ 
-     lengthChange: false,    
-    "buttons": ['copy', 'csv', 'excel', 'pdf', 'print', 'colvis'],
+    dom: 'Bfrtip',
+    buttons: [
+      'excel', 'pdf', 'print'
+    ],
       ajax: {
           url: "/dt_alumn",
           method: "GET", 

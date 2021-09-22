@@ -81,6 +81,10 @@ $(document).ready(function() {
 
   var dt_grades=function(){
     $('#dt_grades').DataTable({ 
+        dom: 'Bfrtip',
+    buttons: [
+      'excel', 'pdf', 'print'
+    ],
         responsive: true,
         ajax: {
             url: "/dt_grades",

@@ -53,6 +53,10 @@ $(document).ready(function() {
 
 var dt_courseGrades=function(id){
     $('#dt_courseGrades').DataTable({ 
+        dom: 'Bfrtip',
+        buttons: [
+          'excel', 'pdf', 'print'
+        ],
         responsive: true,
         destroy:true,
         ajax: {
