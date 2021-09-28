@@ -1,6 +1,6 @@
 <?php
 //Route::get('/loadExcelEnrollmentr', 'BoletinController@loadExcelEnrollment'); /** Lectura de matriculas excel */
-Route::get('/pdfEnrollment', 'MatriculasController@pdfEnrollment'); 
+Route::get('/pdfEnrollment/{id}/{status}/{idgrade?}', 'MatriculasController@pdfEnrollment'); 
 Route::get('/matricula-inicio', 'MatriculasController@registerEnrollment'); 
 
 Route::group(['prefix' => 'matricula'], function(){
@@ -11,4 +11,6 @@ Route::group(['prefix' => 'matricula'], function(){
     Route::get('/searching/father/{id}', 'MatriculasController@searchAcudiente');
     Route::post('/storeEnrollement', 'MatriculasController@storeEnrollement');
     Route::get('/listChangeStatus', 'MatriculasController@listChangeStatus');
+    Route::post('/edit_enrollement', 'MatriculasController@edit_enrollement');
+    Route::get('/ficha-matricula', 'MatriculasController@index_fichaMatricula');
 });

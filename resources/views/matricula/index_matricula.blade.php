@@ -37,11 +37,11 @@
         </button>
       </div>
       <div class="modal-body bg-white">
+      <meta name="csrf-token" content="{{ csrf_token() }}">
         <div class="row p-10">
             <div class="col-lg-6">
                 <label>Cambiar de Grado :</label>
-                <select class="form-control" id="sel_gradeStudents" style="width:100%;">
-                    <option></option>
+                <select class="form-control" id="sel_gradeStudents" style="width:100%;">                    
                 </select>
             </div>
         </div>
@@ -80,7 +80,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-        <button type="button" class="btn btn-success">Guardar</button>
+        <button type="button" class="btn btn-success btn_edit_enrollement">Guardar</button>
       </div>
     </div>
   </div>

@@ -13,10 +13,27 @@ class MatriculasController extends Controller
     public function index_create(){
         return view('matricula.index_created');
     }
+    public function index_fichaMatricula(){
+        return view('matricula.index_fichaMatricula');
+    }    
     public function  listChangeStatus(){
             $motivos=DB::SELECT("SELECT * FROM motivos_retiro");
             $estado=DB::SELECT("SELECT * FROM estado_matricula");
             return json_encode(['motivos'=>$motivos,'estados'=>$estado]);
+    }
+    public function edit_enrollement(){
+
+        $id_grado=Request::input('id_grado');        
+        $id_matricula=Request::input('id_matricula');
+        $id_estado=Request::input('estado');
+        $id_motivo=Request::input('motivo');
+        
+        if(isset($id_estado)){
+            $matricula=DB::SELECT("UPDATE matricula SET id_grado='$id_grado', id_estado_matricula='$id_estado' , id_motivos_retiro='$id_motivo'  WHERE  id_matricula='$id_matricula'  ");
+        }else{
+            $matricula=DB::SELECT("UPDATE matricula SET id_grado='$id_grado'   WHERE  id_matricula='$id_matricula'  ");
+        }
+        return 1;        
     }
 
 
@@ -35,12 +52,61 @@ class MatriculasController extends Controller
          }
          return json_encode($data);          
     }
-    public function pdfEnrollment(){ 
-        $title="FICHA DE INSCRIPCIÓN";
-        $GAA="GAA-FR-02";
-        $pdf = \PDF::loadView('matricula.pdf_matricula',compact('footerCoor','footerDni','footerCar','title','GAA'))->setPaper('letter')->stream($GAA.".pdf");
+    public function pdfEnrollment($id_matricula,$status=1,$id_grade=0){ 
+        
+        if($status==1){
+            return self::pdfDinamic($id_matricula);
+        }else{
+            $grade=BoletinController::studentsForGrades($id_grade);            
+            foreach(json_decode($grade)  as $g){
+                
+              //$pdf=self::pdfDinamic($id_matricula);
+                $id_matricula=$g->id_matricula;              
+                $student=DB::SELECT("CALL sp_infoEnrollementStudent('$id_matricula')  ");    
+                $title="FICHA DE MATRICULA No. ". $student[0]->id_matricula;
+                $GAA="GAA-FR-05";
+                $responzable=DB::SELECT("SELECT tb3.nombre,tb3.identificacion,tb3.direccion,tb4.nombre AS barrio,tb3.telefono,tb3.profesion,tb3.empresa,tb3.viveCon,tb3.responsable,tipo_parentesco.nombre as parentesco from  matricula as tb1 
+                INNER join alumno as tb2 on tb1.id_alumno=tb2.id_alumno inner join acudiente as tb3 on tb2.id_acudiente=tb3.id_acudiente inner join  barrio as tb4 on tb3.barrio_id=tb4.id_barrio
+                inner join tipo_parentesco on tb3.id_tipo_parentesco=tipo_parentesco.id_tipo_parentesco
+                WHERE tb1.id_matricula='$id_matricula'");
+                $mother=DB::SELECT("SELECT tb3.nombre,tb3.identificacion,tb3.direccion,tb4.nombre AS barrio,tb3.telefono,tb3.profesion,tb3.empresa,IF(tb3.viveCon='1','SI','') as viveCon,tb3.responsable from  matricula as tb1 
+                INNER join alumno as tb2 on tb1.id_alumno=tb2.id_alumno inner join acudiente as tb3 on tb2.id_madre=tb3.id_acudiente inner join  barrio as tb4 on tb3.barrio_id=tb4.id_barrio
+                WHERE tb1.id_matricula='$id_matricula'");
+                $father=DB::SELECT("SELECT tb3.nombre,tb3.identificacion,tb3.direccion,tb4.nombre AS barrio,tb3.telefono,tb3.profesion,tb3.empresa,IF(tb3.viveCon='1','SI','') as viveCon,tb3.responsable from  matricula as tb1 
+                INNER join alumno as tb2 on tb1.id_alumno=tb2.id_alumno inner join acudiente as tb3 on tb2.id_padre=tb3.id_acudiente inner join  barrio as tb4 on tb3.barrio_id=tb4.id_barrio
+                WHERE tb1.id_matricula='$id_matricula'");
+                $pdf = \PDF::loadView('matricula.pdf_matricula',compact('footerCoor','footerDni','footerCar','title','GAA','student','responzable','mother','father'))->setPaper('letter')->stream($GAA.".pdf");
+            }
+            return $pdf;
+        }
+        
+
+        
+
+        
         return $pdf;
     }
+    public function pdfDinamic($id_matricula){
+        
+        $student=DB::SELECT("CALL sp_infoEnrollementStudent('$id_matricula')  ");    
+        $title="FICHA DE MATRICULA No. ". $student[0]->id_matricula;
+        $GAA="GAA-FR-05";
+        $responzable=DB::SELECT("SELECT tb3.nombre,tb3.identificacion,tb3.direccion,tb4.nombre AS barrio,tb3.telefono,tb3.profesion,tb3.empresa,tb3.viveCon,tb3.responsable,tipo_parentesco.nombre as parentesco from  matricula as tb1 
+        INNER join alumno as tb2 on tb1.id_alumno=tb2.id_alumno inner join acudiente as tb3 on tb2.id_acudiente=tb3.id_acudiente inner join  barrio as tb4 on tb3.barrio_id=tb4.id_barrio
+        inner join tipo_parentesco on tb3.id_tipo_parentesco=tipo_parentesco.id_tipo_parentesco
+        WHERE tb1.id_matricula='$id_matricula'");
+        $mother=DB::SELECT("SELECT tb3.nombre,tb3.identificacion,tb3.direccion,tb4.nombre AS barrio,tb3.telefono,tb3.profesion,tb3.empresa,IF(tb3.viveCon='1','SI','') as viveCon,tb3.responsable from  matricula as tb1 
+        INNER join alumno as tb2 on tb1.id_alumno=tb2.id_alumno inner join acudiente as tb3 on tb2.id_madre=tb3.id_acudiente inner join  barrio as tb4 on tb3.barrio_id=tb4.id_barrio
+        WHERE tb1.id_matricula='$id_matricula'");
+        $father=DB::SELECT("SELECT tb3.nombre,tb3.identificacion,tb3.direccion,tb4.nombre AS barrio,tb3.telefono,tb3.profesion,tb3.empresa,IF(tb3.viveCon='1','SI','') as viveCon,tb3.responsable from  matricula as tb1 
+        INNER join alumno as tb2 on tb1.id_alumno=tb2.id_alumno inner join acudiente as tb3 on tb2.id_padre=tb3.id_acudiente inner join  barrio as tb4 on tb3.barrio_id=tb4.id_barrio
+        WHERE tb1.id_matricula='$id_matricula'");
+        $pdf = \PDF::loadView('matricula.pdf_matricula',compact('footerCoor','footerDni','footerCar','title','GAA','student','responzable','mother','father'))->setPaper('letter')->stream($GAA.".pdf");
+        return $pdf;
+    }
+
+
+
     public function searchAcudiente($dni){
        
         $acudiente=DB::SELECT("select * from acudiente  where identificacion='$dni'  limit  5 ");    
@@ -210,9 +276,6 @@ class MatriculasController extends Controller
                 });                            
                 } catch (Exception $th) {                
                     return response()->json(['message'=>'Error en la base de datos','error' => $th->getMessage()],400);              
-                }
-   
-
-
+                }   
     }
 }
