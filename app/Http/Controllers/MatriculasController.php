@@ -5,6 +5,7 @@ use App\User;
 use Request;
 use App\Model\alumno;
 use App\Model\matricula;
+use PDFMerger;
 class MatriculasController extends Controller
 {
     public function index(){
@@ -57,11 +58,12 @@ class MatriculasController extends Controller
         if($status==1){
             return self::pdfDinamic($id_matricula);
         }else{
-            $grade=BoletinController::studentsForGrades($id_grade);            
-            foreach(json_decode($grade)  as $g){
-                
-              //$pdf=self::pdfDinamic($id_matricula);
+            $grade=BoletinController::studentsForGrades($id_grade); 
+            $pdfM = new PDFMerger();           
+            $arrMat=[];
+            foreach(json_decode($grade)  as $xy=> $g){                
                 $id_matricula=$g->id_matricula;              
+                $arrMat[$xy]=$id_matricula;
                 $student=DB::SELECT("CALL sp_infoEnrollementStudent('$id_matricula')  ");    
                 $title="FICHA DE MATRICULA No. ". $student[0]->id_matricula;
                 $GAA="GAA-FR-05";
@@ -75,9 +77,14 @@ class MatriculasController extends Controller
                 $father=DB::SELECT("SELECT tb3.nombre,tb3.identificacion,tb3.direccion,tb4.nombre AS barrio,tb3.telefono,tb3.profesion,tb3.empresa,IF(tb3.viveCon='1','SI','') as viveCon,tb3.responsable from  matricula as tb1 
                 INNER join alumno as tb2 on tb1.id_alumno=tb2.id_alumno inner join acudiente as tb3 on tb2.id_padre=tb3.id_acudiente inner join  barrio as tb4 on tb3.barrio_id=tb4.id_barrio
                 WHERE tb1.id_matricula='$id_matricula'");
-                $pdf = \PDF::loadView('matricula.pdf_matricula',compact('footerCoor','footerDni','footerCar','title','GAA','student','responzable','mother','father'))->setPaper('letter')->stream($GAA.".pdf");
+                $pdf = \PDF::loadView('matricula.pdf_matricula',compact('footerCoor','footerDni','footerCar','title','GAA','student','responzable','mother','father'))->setPaper('letter')->setPaper('letter')->save( public_path('tmp/matricula/').$id_matricula.'.pdf');                
+                $pdfM->addPDF(public_path('tmp/matricula/').$id_matricula.'.pdf', 'all');
+                $arrMat[$xy]=$id_matricula;
             }
-            return $pdf;
+            $pdfM->merge('download', "mergedAllpdf.pdf");
+            foreach($arrMat as $value){
+                unlink(public_path('tmp/matricula/').$value.'.pdf');
+            }
         }
         
 
