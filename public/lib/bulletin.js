@@ -40,8 +40,59 @@ $(document).ready(function() {
         });
     });
 
-
     
+    $(document).on("click","#btn_fichaAllGrades",function(){             
+        let grade=$("#sel_gradesPrint").val();
+        if(grade!=""){
+            
+            let url='/pdfEnrollment/'+0+'/'+2+'/'+grade;
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET",url);
+            xhr.responseType = 'arraybuffer';           
+            xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded"); 
+            xhr.send(null);
+            sweetMessageTimeOut('Procesando ...', '\u00A1  Su solicitud  se encuentra en ejecuci\u00F3n ! ',8000);
+            xhr.onreadystatechange = function () {
+                if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {                                        
+                    var blobURL = new Blob([this.response], {type:'application/pdf'});
+                    var link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blobURL);
+                    window.open(link);
+                    sweetMessage('\u00A1Registro exitoso!', '\u00A1 Se ha realizado con \u00E9xito su solicitud!');
+                }
+                if (this.status === 500) { sweetMessage("ERROR!", "Error al generar el pdf !", "error", "#1976D2", false); }
+            }
+        }else{
+            sweetMessage('\u00A1Atenci\u00f3n!', 'Por favor complete  los campos requeridos.', 'warning');
+        }                          
+    });
+    $(document).on("click","#btn_showFichaStudent",function(){             
+        let grade=$("#sel_gradeStudents").val(); 
+        let students=$("#sel_studentsForGrade").val();
+        
+        if(grade!=""  &&  students!=""){
+            
+            let url='/pdfEnrollment/'+students+'/'+1;
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET",url);
+            xhr.responseType = 'arraybuffer';           
+            xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded"); 
+            xhr.send(null);
+            sweetMessageTimeOut('Procesando ...', '\u00A1  Su solicitud  se encuentra en ejecuci\u00F3n ! ',8000);
+            xhr.onreadystatechange = function () {
+                if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {                                        
+                    var blobURL = new Blob([this.response], {type:'application/pdf'});
+                    var link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blobURL);
+                    window.open(link);
+                    sweetMessage('\u00A1Registro exitoso!', '\u00A1 Se ha realizado con \u00E9xito su solicitud!');
+                }
+                if (this.status === 500) { sweetMessage("ERROR!", "Error al generar el pdf !", "error", "#1976D2", false); }
+            }
+        }else{
+            sweetMessage('\u00A1Atenci\u00f3n!', 'Por favor complete  los campos requeridos.', 'warning');
+        }                          
+    });
 
     $(document).on("click","#prt_bulletinStudent",function(){
       
