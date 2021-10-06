@@ -120,7 +120,7 @@ class MatriculasController extends Controller
                 $GAA="GAA-FR-05";                
                 $allPeriods=DB::SELECT("CALL sp_qualifyStudentAllPeriods('$id_matricula') "); 
                 $date=date('Y-m-d');
-                $write=DB::SELECT("CALL sp_averageAndRank('3','$grade')  ");
+                $write=DB::SELECT("CALL sp_averageAndRank('3','$id_grade')  ");
                 $readTmp=DB::SELECT("SELECT promedio FROM temp_ranking WHERE id_matricula='$id_matricula' ");
                 $aprobo=($readTmp[0]->promedio >= 3.0)? 1:0;
                 $student=DB::SELECT("CALL sp_infoStudent('$id_matricula')  ");
