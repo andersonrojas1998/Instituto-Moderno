@@ -17,6 +17,9 @@ class MatriculasController extends Controller
     public function index_fichaMatricula(){
         return view('matricula.index_fichaMatricula');
     }    
+    public function indexBookQualify(){
+        return view('matricula.index_bookQualify');
+    }
     public function  listChangeStatus(){
             $motivos=DB::SELECT("SELECT * FROM motivos_retiro");
             $estado=DB::SELECT("SELECT * FROM estado_matricula");
@@ -86,11 +89,6 @@ class MatriculasController extends Controller
                 unlink(public_path('tmp/matricula/').$value.'.pdf');
             }
         }
-        
-
-        
-
-        
         return $pdf;
     }
     public function pdfDinamic($id_matricula){
@@ -110,8 +108,36 @@ class MatriculasController extends Controller
         WHERE tb1.id_matricula='$id_matricula'");
         $pdf = \PDF::loadView('matricula.pdf_matricula',compact('footerCoor','footerDni','footerCar','title','GAA','student','responzable','mother','father'))->setPaper('letter')->stream($GAA.".pdf");
         return $pdf;
-    }
+    }    
+    public function  pdfBookQualify($id_grade){        
 
+        $grade=BoletinController::studentsForGrades($id_grade); 
+            $pdfM = new PDFMerger();           
+            $arrMat=[];
+            foreach(json_decode($grade)  as $xy=> $g){                
+                $id_matricula=$g->id_matricula;              
+                $arrMat[$xy]=$id_matricula;
+                $GAA="GAA-FR-05";                
+                $allPeriods=DB::SELECT("CALL sp_qualifyStudentAllPeriods('$id_matricula') "); 
+                $date=date('Y-m-d');
+                $write=DB::SELECT("CALL sp_averageAndRank('3','$grade')  ");
+                $readTmp=DB::SELECT("SELECT promedio FROM temp_ranking WHERE id_matricula='$id_matricula' ");
+                $aprobo=($readTmp[0]->promedio >= 3.0)? 1:0;
+                $student=DB::SELECT("CALL sp_infoStudent('$id_matricula')  ");
+                $firstName=empty($student[0]->nombre1)? '':$student[0]->nombre1;
+                $secondName=empty($student[0]->nombre2)? '':$student[0]->nombre2;
+                $surname=empty($student[0]->apellido1)? '':$student[0]->apellido1;
+                $secondSurname=empty($student[0]->apellido2)? '':$student[0]->apellido2;
+                $fullname=$firstName.' '.$secondName .' '. $surname. '  '. $secondSurname;                
+                $pdf = \PDF::loadView('matricula.pdf_bookQualify',compact('aprobo','allPeriods','date','student','fullname'))->setPaper('letter')->save( public_path('tmp/libro/').$id_matricula.'.pdf');                
+                $pdfM->addPDF(public_path('tmp/libro/').$id_matricula.'.pdf', 'all');                
+        }
+        $pdfM->merge('download', "mergedAllpdf.pdf");
+        foreach($arrMat as $value){
+            unlink(public_path('tmp/libro/').$value.'.pdf');
+        }        
+        return $pdf;
+    }
 
 
     public function searchAcudiente($dni){
