@@ -2,7 +2,8 @@
 //Route::get('/loadExcelEnrollmentr', 'BoletinController@loadExcelEnrollment'); /** Lectura de matriculas excel */
 Route::get('/pdfEnrollment/{id}/{status}/{idgrade?}', 'MatriculasController@pdfEnrollment'); 
 Route::get('/matricula-inicio', 'MatriculasController@registerEnrollment'); 
-
+Route::get('/libro-calificador', 'MatriculasController@indexBookQualify'); 
+Route::get('/libro-calificador-pdf/{idgrade}', 'MatriculasController@pdfBookQualify'); 
 Route::group(['prefix' => 'matricula'], function(){
     Route::get('inicio', 'MatriculasController@index'); 
     Route::get('creacion', 'MatriculasController@index_create'); 

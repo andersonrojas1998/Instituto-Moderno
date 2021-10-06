@@ -60,7 +60,7 @@
         <tr>            
             <td class="padding-1">{{ $value->nombre }} </td>
             <td class="w3-center padding-1">{{ $value->intensidad_horaria }}</td>                                    
-            <td class="w3-center padding-1">{{ $definitiva .' '. $rango }}</td>
+            <td class="w3-center padding-1">{{ number_format(floatval($definitiva),1) .' '. $rango }}</td>
         </tr>
         @endforeach                
         </tbody>        

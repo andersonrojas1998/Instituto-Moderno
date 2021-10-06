@@ -9,7 +9,7 @@ $(document).ready(function() {
     $('.select2').select2();
     $('[data-toggle="tooltip"]').tooltip();
 
-  if($('#sel_gradeStudents').length>0){
+  if($('#sel_gradeStudents').length>0   || $('#sel_gradesPrint').length>0 ){
         $.ajax({ url:"/grades",type:"GET",success:function(data){
           let arr=JSON.parse(data);
           for(let i=0;i<arr.length;i++){                    
