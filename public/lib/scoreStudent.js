@@ -54,7 +54,7 @@ function dt_scoreStudents(grade,period){
                     let bt;                    
                     switch (true) {
                         case (parseInt(data) == 1):
-                            bt='<h4><div class="badge badge-warning">'+data+'</div></h4><img src="/images/scoreP.png" style="width:90px;height:40px;">';
+                            bt='<h4><div class="badge badge-warning">'+data+'</div><img src="/images/scoreFirst.png"></h4>';
                         break;
                         case (parseInt(data) > 1 && parseInt(data) <= 5):
                             bt='<h4><div class="badge badge-success text-white">'+data+'</div></h4><img class="img-rounded" src="/images/scoreT.png" style="width:20px;height:20px;">';    

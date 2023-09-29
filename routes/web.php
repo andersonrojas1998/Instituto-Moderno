@@ -145,4 +145,5 @@ Route::group(['middleware' => ['auth']], function () {
     require (__DIR__ . '/rt_certificate.php');
     require (__DIR__ . '/rt_period.php');
     require (__DIR__ . '/rt_curso.php');
+    require (__DIR__ . '/rt_reports.php');
 });

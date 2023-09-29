@@ -80,7 +80,7 @@ class MatriculasController extends Controller
                 $father=DB::SELECT("SELECT tb3.nombre,tb3.identificacion,tb3.direccion,tb4.nombre AS barrio,tb3.telefono,tb3.profesion,tb3.empresa,IF(tb3.viveCon='1','SI','') as viveCon,tb3.responsable from  matricula as tb1 
                 INNER join alumno as tb2 on tb1.id_alumno=tb2.id_alumno inner join acudiente as tb3 on tb2.id_padre=tb3.id_acudiente inner join  barrio as tb4 on tb3.barrio_id=tb4.id_barrio
                 WHERE tb1.id_matricula='$id_matricula'");
-                $pdf = \PDF::loadView('matricula.pdf_matricula',compact('footerCoor','footerDni','footerCar','title','GAA','student','responzable','mother','father'))->setPaper('letter')->setPaper('letter')->save( public_path('tmp/matricula/').$id_matricula.'.pdf');                
+                $pdf = \PDF::loadView('matricula.pdf_matricula',compact('title','GAA','student','responzable','mother','father'))->setPaper('letter')->setPaper('letter')->save( public_path('tmp/matricula/').$id_matricula.'.pdf');                
                 $pdfM->addPDF(public_path('tmp/matricula/').$id_matricula.'.pdf', 'all');
                 $arrMat[$xy]=$id_matricula;
             }
@@ -106,7 +106,7 @@ class MatriculasController extends Controller
         $father=DB::SELECT("SELECT tb3.nombre,tb3.identificacion,tb3.direccion,tb4.nombre AS barrio,tb3.telefono,tb3.profesion,tb3.empresa,IF(tb3.viveCon='1','SI','') as viveCon,tb3.responsable from  matricula as tb1 
         INNER join alumno as tb2 on tb1.id_alumno=tb2.id_alumno inner join acudiente as tb3 on tb2.id_padre=tb3.id_acudiente inner join  barrio as tb4 on tb3.barrio_id=tb4.id_barrio
         WHERE tb1.id_matricula='$id_matricula'");
-        $pdf = \PDF::loadView('matricula.pdf_matricula',compact('footerCoor','footerDni','footerCar','title','GAA','student','responzable','mother','father'))->setPaper('letter')->stream($GAA.".pdf");
+        $pdf = \PDF::loadView('matricula.pdf_matricula',compact('title','GAA','student','responzable','mother','father'))->setPaper('letter')->stream($GAA.".pdf");
         return $pdf;
     }    
     public function  pdfBookQualify($id_grade){        
@@ -120,8 +120,31 @@ class MatriculasController extends Controller
                 $GAA="GAA-FR-05";                
                 $allPeriods=DB::SELECT("CALL sp_qualifyStudentAllPeriods('$id_matricula') "); 
                 $date=date('Y-m-d');
-                $write=DB::SELECT("CALL sp_averageAndRank('3','$id_grade')  ");
-                $readTmp=DB::SELECT("SELECT promedio FROM temp_ranking WHERE id_matricula='$id_matricula' ");
+               // $write=DB::SELECT("CALL sp_averageAndRank('3','$id_grade')  ");
+              //  $readTmp=DB::SELECT("SELECT promedio FROM temp_ranking WHERE id_matricula='$id_matricula' ");
+              $periodo=3;
+              $readTmp=DB::SELECT("DROP TEMPORARY TABLE IF EXISTS temp_ranking;
+              SET @numero=0;
+              create temporary table IF NOT EXISTS temp_ranking as  
+             SELECT  
+               @numero:=@numero+1 AS puesto,
+               AL.id_alumno,
+              AL.identificacion,
+              AL.nombre1 ,          
+              (select round(AVG(nota_definitiva),2) from calificaciones AS C
+              where  C.id_matricula=MT.id_matricula  AND id_periodo='$periodo') AS promedio
+              from matricula AS MT 
+              INNER JOIN grado as G on MT.id_grado=G.id_grado
+              INNER JOIN alumno AS AL on MT.id_alumno=AL.id_alumno
+              where G.id_grado='$id_grade'   AND  MT.año=YEAR(CURDATE())
+              ORDER BY (select round(AVG(nota_definitiva),2) from calificaciones AS C where  C.id_matricula=MT.id_matricula  AND id_periodo='$periodo')  DESC;        
+              SELECT puesto,promedio FROM temp_ranking WHERE id_matricula='$id_matricula';
+              ");        
+           //  validar si gano el año mediante  -- (por año para boletin y por acomulativo)
+
+
+
+
                 $aprobo=($readTmp[0]->promedio >= 3.0)? 1:0;
                 $student=DB::SELECT("CALL sp_infoStudent('$id_matricula')  ");
                 $firstName=empty($student[0]->nombre1)? '':$student[0]->nombre1;

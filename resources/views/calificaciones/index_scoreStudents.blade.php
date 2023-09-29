@@ -4,24 +4,27 @@
 
     <div class="col-lg-12  grid-margin stretch-card">
         <div class="card">
-        <div class="p-4" style="background:#FFF4DE;">           
-            <h4 class="mb-0 text-center text-warning">Puntuaci&oacute;n y Promedios  <i class="mdi mdi-certificate "></i></h4>
+    
+        <div class="pt-3 bg-light">
+            <h4 class="mb-0 text-center   font-weight-medium">Puntuaci&oacute;n y Promedios  <i class="mdi mdi-certificate text-warning"></i></h4>
         </div>
+        <hr>
+              
+        
         <div class="card-body">
 
         <div class="row">
-        <div class="col-lg-6 pt-20" >
-            <h4 class="text-primary">Calificar objetivos de aprendizaje generales:</h4>    
+        <div class="col-lg-2 pt-20" >
+            <h4 class=" card-title mb-5 text-primary">Calificar objetivos de aprendizaje generales:</h4>    
         </div>        
         <div class="col-lg-6">
             <ul>
-            <li><b>Puesto :</b> <p>muestra los puestos ocupados por Periodo y Grado</p> </li>
-            <li><b>Promedio :</b> <p>muestra la puntuaci&oacute;n promedio de todas las calificaciones</p> </li>
-            <li><b>Puntuación m&aacute;s alta :</b> <p>muestra la calificación más alta  por grado seleccionado</p> </li>
+            <li><p class="card-title mb-0">Puesto :</p> <p class="mb-2 text-muted">Muestra los puestos ocupados por periodo y grado</p> </li>
+            <li><p class="card-title mb-0">Promedio :</p> <p class="mb-3 text-muted">Muestra la puntuaci&oacute;n promedio de todas las calificaciones</p> </li>        
             </ul>
-        </div>
-        
-        </div>    
+        </div>        
+        </div> 
+        <hr>   
 
         <div class="row pt-5">
         <div class="col-lg-4 grid-margin stretch-card">

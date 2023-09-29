@@ -20,9 +20,30 @@ class CertificatedController extends Controller
         $title="CERTIFICADO";
         $GAA="GAA-FR-14";
         $course=DB::SELECT("CALL courseForAlumnLastPeriod('$student','3','$year')");
-        $write=DB::SELECT("CALL sp_averageAndRank('3','$grade')  ");
-        $readTmp=DB::SELECT("SELECT promedio FROM temp_ranking WHERE id_matricula='$student' ");
+
+        //$write=DB::SELECT("CALL sp_averageAndRank('3','$grade')  ");
+        //$readTmp=DB::SELECT("SELECT promedio FROM temp_ranking WHERE id_matricula='$student' ");
+        
+        $periodo=3;
+        $readTmp=DB::SELECT("DROP TEMPORARY TABLE IF EXISTS temp_ranking;
+        SET @numero=0;
+        create temporary table IF NOT EXISTS temp_ranking as  
+       SELECT  
+         @numero:=@numero+1 AS puesto,
+         AL.id_alumno,
+        AL.identificacion,
+        AL.nombre1 ,          
+        (select round(AVG(nota_definitiva),2) from calificaciones AS C
+        where  C.id_matricula=MT.id_matricula  AND id_periodo='$periodo') AS promedio
+        from matricula AS MT 
+        INNER JOIN grado as G on MT.id_grado=G.id_grado
+        INNER JOIN alumno AS AL on MT.id_alumno=AL.id_alumno
+        where G.id_grado='$id_grade'   AND  MT.año=YEAR(CURDATE())
+        ORDER BY (select round(AVG(nota_definitiva),2) from calificaciones AS C where  C.id_matricula=MT.id_matricula  AND id_periodo='$periodo')  DESC;        
+        SELECT puesto,promedio FROM temp_ranking WHERE id_matricula='$id_matricula';
+        ");  
         $aprobo=($readTmp[0]->promedio >= 3.0)? 1:0;
+
         $student=DB::SELECT("CALL sp_infoStudent('$student')  ");
         $firstName=empty($student[0]->nombre1)? '':$student[0]->nombre1;
         $secondName=empty($student[0]->nombre2)? '':$student[0]->nombre2;

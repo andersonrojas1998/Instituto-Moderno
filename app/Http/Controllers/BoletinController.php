@@ -40,7 +40,7 @@ class BoletinController extends Controller
                             WHERE B.id_estado_matricula=1 AND B.año=$year  AND B.id_grado=$grade   ORDER BY A.apellido1 ASC ");  
         return json_encode($alumnoGrade);
     }
-    public function genetedBulletin($matricula,$expedition,$period,$obs,$grade,$letter=0,$idModalidad){       
+    public function genetedBulletin($matricula,$expedition,$period,$obs,$grade,$letter=0,$idModalidad){               
         $observation=notas_adicionales::where('id_nota',$obs)->get();
         $modalidad=modalidad_inst::find($idModalidad);
         $periodtx=($period==1)?  'PRIMER':'SEGUNDO';        
@@ -63,8 +63,27 @@ class BoletinController extends Controller
         $url=self::QuickChartURL($label,$nota,$col);          
         $head=DB::SELECT("CALL studentsCourse('$matricula') ");
         $q=DB::SELECT("CALL numberStudentGrade('$grade')");
-        $write=DB::SELECT("CALL sp_averageAndRank('$period','$grade')  ");
-        $readTmp=DB::SELECT("SELECT puesto,promedio FROM temp_ranking WHERE id_matricula='$matricula' ");
+        //$write=DB::SELECT("CALL sp_averageAndRank('$period','$grade')  ");
+      //  $readTmp=DB::SELECT("SELECT puesto,promedio FROM temp_ranking WHERE id_matricula='$matricula' ");
+
+       
+        $readTmp=DB::SELECT("
+        SET @numero=0;
+        create temporary table IF NOT EXISTS temp_ranking as  
+       SELECT  
+         @numero:=@numero+1 AS puesto,
+         AL.id_alumno,
+        AL.identificacion,
+        AL.nombre1 ,          
+        (select round(AVG(nota_definitiva),2) from calificaciones AS C
+        where  C.id_matricula=MT.id_matricula  AND id_periodo='$period') AS promedio
+        from matricula AS MT 
+        INNER JOIN grado as G on MT.id_grado=G.id_grado
+        INNER JOIN alumno AS AL on MT.id_alumno=AL.id_alumno
+        where G.id_grado='$grade'   AND  MT.año=YEAR(CURDATE())
+        ORDER BY (select round(AVG(nota_definitiva),2) from calificaciones AS C where  C.id_matricula=MT.id_matricula  AND id_periodo='$period')  DESC;        
+        SELECT puesto,promedio FROM temp_ranking WHERE id_matricula='$matricula';
+        ");         
         $puesto=$readTmp[0]->puesto;
         $promedio=number_format($readTmp[0]->promedio,1);
         $nmStudents=$q[0]->cantidad;
@@ -137,10 +156,30 @@ class BoletinController extends Controller
             }
             $url=self::QuickChartURL($label,$nota,$col);
             $head=DB::SELECT("CALL studentsCourse('$st->id_matricula') ");  
-            $write=DB::SELECT("CALL sp_averageAndRank('$period','$idGrade')  ");
-            $readTmp=DB::SELECT("SELECT puesto,promedio FROM temp_ranking WHERE id_matricula='$st->id_matricula' ");
+
+           // $write=DB::SELECT("CALL sp_averageAndRank('$period','$idGrade')  ");
+            //$readTmp=DB::SELECT("SELECT puesto,promedio FROM temp_ranking WHERE id_matricula='$st->id_matricula' ");
+
+            $readTmp=DB::SELECT("DROP TEMPORARY TABLE IF EXISTS temp_ranking;
+              SET @numero=0;
+              create temporary table IF NOT EXISTS temp_ranking as  
+             SELECT  
+               @numero:=@numero+1 AS puesto,
+               AL.id_alumno,
+              AL.identificacion,
+              AL.nombre1 ,          
+              (select round(AVG(nota_definitiva),2) from calificaciones AS C
+              where  C.id_matricula=MT.id_matricula  AND id_periodo='$period') AS promedio
+              from matricula AS MT 
+              INNER JOIN grado as G on MT.id_grado=G.id_grado
+              INNER JOIN alumno AS AL on MT.id_alumno=AL.id_alumno
+              where G.id_grado='$idGrade'   AND  MT.año=YEAR(CURDATE())
+              ORDER BY (select round(AVG(nota_definitiva),2) from calificaciones AS C where  C.id_matricula=MT.id_matricula  AND id_periodo='$period')  DESC;        
+              SELECT puesto,promedio FROM temp_ranking WHERE id_matricula='$st->id_matricula';
+              ");             
             $puesto=$readTmp[0]->puesto;
             $promedio=number_format($readTmp[0]->promedio,1);
+          
             $pdf = \PDF::loadView('boletin.pdf_boletin',compact('url','course','expedition','head','periodtx','period','observation','nmStudents','letter','modalidad','puesto','promedio'))->setPaper('letter')->save( public_path('tmp/').$st->id_matricula.'.pdf');                                 
             $pdfM->addPDF(public_path('tmp/').$st->id_matricula.'.pdf', 'all');
             $arrMat[$xy]=$st->id_matricula;

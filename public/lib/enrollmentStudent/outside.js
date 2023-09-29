@@ -128,7 +128,7 @@ $(document).ready(function(){
                         $("#dni").val("");
                         sweetMessage('\u00A1Atenci\u00f3n!','El estudiante con la identificacion '+ val + ' ya se encuentra matriculado  .','warning');                        
                     }else if(data.alumno.length>0){
-                        console.log(data.alumno);
+                       // console.log(data.alumno);
                         $('input[name="expedidoEn"]').val(data.alumno[0].lugar_expedicion);
                         $('input[name="firstLastName"]').val(data.alumno[0].apellido1);
                         $('input[name="secondLastName"]').val(data.alumno[0].apellido2);

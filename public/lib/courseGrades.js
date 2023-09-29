@@ -33,7 +33,7 @@ $(document).ready(function() {
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                 dataType:"JSON",
                 success:function(data){
-                    if(data){
+                    if(parseInt(data)==1){
                         sweetMessage('\u00A1Registro exitoso!', '\u00A1 Se ha realizado con \u00E9xito su solicitud!');
                         setTimeout(function () { location.reload() }, 2000);
                     }else{

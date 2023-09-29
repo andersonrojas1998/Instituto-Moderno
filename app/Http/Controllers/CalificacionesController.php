@@ -362,7 +362,7 @@ class CalificacionesController extends Controller
             
                 $i=0;$a=0;$p=0;$s=0;$aut=0;
 
-                        /// validar lo del 2 perido acomulativo                   
+                        /* validar lo del 2 perido acomulativo */
                         $percentage=DB::SELECT("SELECT porcentaje from periodo where codigo='$perid' ");
                         $acomulativo=number_format(($notafinal*$percentage[0]->porcentaje/100),1);
                         (!empty($row->def))? $acomulativo+number_format($row->def,1):'';
@@ -432,13 +432,13 @@ class CalificacionesController extends Controller
     }
     public function scoreStudents($grade,$period){
 
-        $write=DB::SELECT("CALL sp_averageAndRank('$period','$grade')  ");
-        $readTmp=DB::SELECT("SELECT * FROM temp_ranking");
-
+        //$write=DB::SELECT("CALL sp_averageAndRank('$period','$grade')  ");
+        //$readTmp=DB::SELECT("SELECT * FROM temp_ranking");
+        $readTmp=DB::SELECT("CALL sp_avgGrades('$period','$grade')  ");
         $data=[];
         foreach($readTmp as $key=> $row){
             $data['data'][$key]['puesto']=$row->puesto;
-            $data['data'][$key]['promedio']=number_format($row->promedio,1);
+            $data['data'][$key]['promedio']=$row->promedio;
             $data['data'][$key]['alumno'] =$row->apellido1. ' '.$row->apellido2.' ' . $row->nombre1.' '.$row->nombre2;
         }
         return json_encode($data);

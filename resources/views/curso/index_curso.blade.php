@@ -18,7 +18,9 @@
 <div class="row">
 <div class="col-lg-4">
     <strong>Grados : </strong>    
-    <select class="form-control" id="sel_gradeStudents"></select>
+    <select class="form-control" id="sel_gradeStudents">
+        <option value="">Seleccione Grado</option>
+    </select>
 </div>
 </div>
 

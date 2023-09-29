@@ -23,7 +23,7 @@ class CursosController extends Controller
         return json_encode($data);
     }
     public function addCourseGrade(){
-        $grado=curso::where('id_grado',Request::input('id_grado'))->where('id_materia',Request::input('id_materia'))->get();
+        $grado=curso::where('id_grado',Request::input('id_grado'))->where('id_materia',Request::input('id_materia'))->where('año',date('Y'))->get();
         if(!isset($grado[0]->id)){
              DB::table('curso')->insert([
                 'id_grado' =>Request::input('id_grado'),
