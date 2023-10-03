@@ -34,7 +34,8 @@ class CertificatedController extends Controller
         AL.identificacion,
         AL.nombre1 ,          
         (select round(AVG(nota_definitiva),2) from calificaciones AS C
-        where  C.id_matricula=MT.id_matricula  AND id_periodo='$periodo') AS promedio
+        where  C.id_matricula=MT.id_matricula  AND id_periodo='$periodo') AS promedio,
+        MT.id  as id_matricula
         from matricula AS MT 
         INNER JOIN grado as G on MT.id_grado=G.id_grado
         INNER JOIN alumno AS AL on MT.id_alumno=AL.id_alumno
