@@ -123,7 +123,11 @@ class MatriculasController extends Controller
                // $write=DB::SELECT("CALL sp_averageAndRank('3','$id_grade')  ");
               //  $readTmp=DB::SELECT("SELECT promedio FROM temp_ranking WHERE id_matricula='$id_matricula' ");
               $periodo=3;
-              $readTmp=DB::SELECT("DROP TEMPORARY TABLE IF EXISTS temp_ranking;
+
+
+              $readTmp=DB::SELECT("CALL sp_averageAndRank('3','$id_grade','$id_matricula')  ");
+              
+             /* DB::SELECT("DROP TEMPORARY TABLE IF EXISTS temp_ranking;
               SET @numero=0;
               create temporary table IF NOT EXISTS temp_ranking as  
              SELECT  
@@ -139,7 +143,7 @@ class MatriculasController extends Controller
               where G.id_grado='$id_grade'   AND  MT.año=YEAR(CURDATE())
               ORDER BY (select round(AVG(nota_definitiva),2) from calificaciones AS C where  C.id_matricula=MT.id_matricula  AND id_periodo='$periodo')  DESC;        
               SELECT puesto,promedio FROM temp_ranking WHERE id_matricula='$id_matricula';
-              ");        
+              ");   */     
            //  validar si gano el año mediante  -- (por año para boletin y por acomulativo)
 
 

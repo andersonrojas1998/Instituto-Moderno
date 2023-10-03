@@ -67,7 +67,9 @@ class BoletinController extends Controller
       //  $readTmp=DB::SELECT("SELECT puesto,promedio FROM temp_ranking WHERE id_matricula='$matricula' ");
 
        
-        $readTmp=DB::SELECT("
+        $readTmp=DB::SELECT("CALL sp_averageAndRank('$period','$grade','$matricula')  ");
+        
+       /* DB::SELECT("
         SET @numero=0;
         create temporary table IF NOT EXISTS temp_ranking as  
        SELECT  
@@ -83,7 +85,7 @@ class BoletinController extends Controller
         where G.id_grado='$grade'   AND  MT.año=YEAR(CURDATE())
         ORDER BY (select round(AVG(nota_definitiva),2) from calificaciones AS C where  C.id_matricula=MT.id_matricula  AND id_periodo='$period')  DESC;        
         SELECT puesto,promedio FROM temp_ranking WHERE id_matricula='$matricula';
-        ");         
+        ");    */     
         $puesto=$readTmp[0]->puesto;
         $promedio=number_format($readTmp[0]->promedio,1);
         $nmStudents=$q[0]->cantidad;
@@ -160,7 +162,9 @@ class BoletinController extends Controller
            // $write=DB::SELECT("CALL sp_averageAndRank('$period','$idGrade')  ");
             //$readTmp=DB::SELECT("SELECT puesto,promedio FROM temp_ranking WHERE id_matricula='$st->id_matricula' ");
 
-            $readTmp=DB::SELECT("DROP TEMPORARY TABLE IF EXISTS temp_ranking;
+            $readTmp=DB::SELECT("CALL sp_averageAndRank('$period','$idGrade','$st->id_matricula')  ");
+            
+           /* DB::SELECT("DROP TEMPORARY TABLE IF EXISTS temp_ranking;
               SET @numero=0;
               create temporary table IF NOT EXISTS temp_ranking as  
              SELECT  
@@ -176,7 +180,7 @@ class BoletinController extends Controller
               where G.id_grado='$idGrade'   AND  MT.año=YEAR(CURDATE())
               ORDER BY (select round(AVG(nota_definitiva),2) from calificaciones AS C where  C.id_matricula=MT.id_matricula  AND id_periodo='$period')  DESC;        
               SELECT puesto,promedio FROM temp_ranking WHERE id_matricula='$st->id_matricula';
-              ");             
+              ");        */     
             $puesto=$readTmp[0]->puesto;
             $promedio=number_format($readTmp[0]->promedio,1);
           
