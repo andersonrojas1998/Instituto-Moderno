@@ -24,8 +24,9 @@ class CertificatedController extends Controller
         //$write=DB::SELECT("CALL sp_averageAndRank('3','$grade')  ");
         //$readTmp=DB::SELECT("SELECT promedio FROM temp_ranking WHERE id_matricula='$student' ");
         
+        $readTmp=DB::SELECT("CALL sp_averageAndRank('3','$grade','$student')");
         $periodo=3;
-        $readTmp=DB::SELECT("DROP TEMPORARY TABLE IF EXISTS temp_ranking;
+        /*$readTmp=DB::SELECT("DROP TEMPORARY TABLE IF EXISTS temp_ranking;
         SET @numero=0;
         create temporary table IF NOT EXISTS temp_ranking as  
        SELECT  
@@ -42,7 +43,7 @@ class CertificatedController extends Controller
         where G.id_grado='$grade'   AND  MT.año=YEAR(CURDATE())
         ORDER BY (select round(AVG(nota_definitiva),2) from calificaciones AS C where  C.id_matricula=MT.id_matricula  AND id_periodo='$periodo')  DESC;        
         SELECT puesto,promedio FROM temp_ranking WHERE id_matricula='$student';
-        ");  
+        ");  */
         $aprobo=($readTmp[0]->promedio >= 3.0)? 1:0;
 
         $student=DB::SELECT("CALL sp_infoStudent('$student')  ");
