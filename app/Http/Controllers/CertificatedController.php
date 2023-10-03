@@ -38,7 +38,7 @@ class CertificatedController extends Controller
         from matricula AS MT 
         INNER JOIN grado as G on MT.id_grado=G.id_grado
         INNER JOIN alumno AS AL on MT.id_alumno=AL.id_alumno
-        where G.id_grado='$id_grade'   AND  MT.año=YEAR(CURDATE())
+        where G.id_grado='$grade'   AND  MT.año=YEAR(CURDATE())
         ORDER BY (select round(AVG(nota_definitiva),2) from calificaciones AS C where  C.id_matricula=MT.id_matricula  AND id_periodo='$periodo')  DESC;        
         SELECT puesto,promedio FROM temp_ranking WHERE id_matricula='$id_matricula';
         ");  
