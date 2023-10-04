@@ -5,6 +5,7 @@ use App\User;
 use Request;
 use App\Model\alumno;
 use App\Model\matricula;
+use App\Model\acudiente;
 use PDFMerger;
 class MatriculasController extends Controller
 {
